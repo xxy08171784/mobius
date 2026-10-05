@@ -1,6 +1,6 @@
 # 选关地图规则合同（route_map_rules.md）
 
-日期：2026-10-05。状态：**v1 已实现**（规则层）。实现见 `gameplay/run/`，测试见 `tests/rules/map_generator_test.gd`。
+日期：2026-10-05。状态：**v2 已实现**（规则层）。实现见 `gameplay/run/`，测试见 `tests/rules/map_generator_test.gd`。
 本文是**精确合同**：拓扑、生成、类型分配、解锁规则以此为准；实现改动需同步更新本文件。
 
 术语：**入口** = 第 0 行可选节点；**层/行（row）** = 纵向进度，0 为底、越大越接近 boss；**列（col）** = 横向。
@@ -31,10 +31,12 @@ node.monster  node.elite  node.rest  node.shop  node.treasure  node.event  node.
 **纯函数**：不改入参、不用全局随机。确定性 = `(def, rng 初始状态)`。
 
 1. **入口列**：把 `[0, cols-1]` 做 Fisher-Yates 洗牌（用传入 rng），取前 `path_count` 个 → 入口互不相同、覆盖全宽。
-2. **路径游走**：每条路径从入口逐行上行到 `rows-1`。每步 `next_col = clamp(col + rng.randi_range(-1,1), 0, cols-1)`。
+2. **路径游走**：每条路径从入口逐行上行到 `rows-1`。每步在**合法候选中均匀抽签**决定列：
+   - 候选 = `{col-1, col, col+1} ∩ [0, cols-1]`，剔除会与既有同层边交叉的（见下）。
+   - **无交叉不变量**：新边 `(a→b)` 与既有同层边 `(c→d)` 若 `(a<c 且 b>d)` 或 `(a>c 且 b<d)` 则交叉 → 该候选列被剔除。
+   - **连续竖直限制**：上一步已走竖直边 `(col→col)` 时，若仍有斜向候选则去掉竖直候选，避免叠成长廊。
    - 目标格已存在 → 合并（加边，不新建节点）。
-   - **无交叉不变量**：新边 `(a→b)` 与既有同层边 `(c→d)` 若 `(a<c 且 b>d)` 或 `(a>c 且 b<d)` 则交叉 → 拒绝，退回正上方 `(col→col)`。
-   - 竖直边 `(a→a)` 对任意同层边恒不交叉，故**路径永不中断**，每个入口都可达 boss（无陷阱入口）。
+   - 竖直边 `(a→a)` 对任意同层边恒不交叉，故**候选永不为空、路径永不中断**，每个入口都可达 boss（无陷阱入口）。
 3. **boss**：单节点 `row = rows`，从 `rows-1` 全部节点连入，类型固定 `node.boss`。
 4. **类型分配**：自上而下（`rows` → 0）。
    - 固定行（`fixed_floors`）强制类型，不参与抽签、不被降级；但**其特殊类型仍参与相邻约束**（例如顶层 rest 会阻止 row `rows-1` 再出 rest）。
@@ -63,8 +65,9 @@ node.monster  node.elite  node.rest  node.shop  node.treasure  node.event  node.
 
 默认实例：`content/maps/route_map_default.tres`（改脚本默认值或在此覆盖）。
 
-## 6. 已知取舍（v1）
+## 6. 已知取舍（v2）
 
+- 每步在合法候选中均匀选列并**限制连续竖直**：竖直边占比由 ~45% 降到 ~31%，最长竖直走廊由 14 降到 ~7，更接近 StS 的蜿蜒观感（实测见 `docs/route_map_summary.md` §4）。
 - 独立游走偶尔产生**宽 2 甚至宽 1 的行**（1000 seed 实测宽 1 约 0.3%），与 StS 原版行为一致；不强制消除。
 - 内容绑定（`content_id`）本轮留空，待 `EncounterBuilder` + `ContentDB` 填充。
 - boss 固定单节点、`col=0`；多 boss / boss 变体留待难度系统。

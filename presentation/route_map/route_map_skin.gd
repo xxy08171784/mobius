@@ -24,7 +24,7 @@ const NODE_TYPES: Array[StringName] = [
 
 ## 路径线纯色（本轮未采用贴图，先用纯色替代）。
 @export var path_color: Color = Color(0.82, 0.77, 0.62, 0.75)
-@export var path_width: float = 4.0
+@export var path_width: float = 3.0
 
 ## 节点图标槽位：type_key -> 贴图。
 @export var node_icons: Dictionary[StringName, Texture2D] = {}

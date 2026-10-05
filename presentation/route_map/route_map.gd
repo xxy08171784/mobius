@@ -17,9 +17,18 @@ signal act_completed(act_index: int)
 ## run 种子（缺省固定，便于复现；接线 RunState 后由其决定）。
 @export var run_seed: int = 12345
 @export var col_spacing: float = 150.0
-@export var row_spacing: float = 175.0
+@export var row_spacing: float = 160.0
 @export var margin: float = 140.0
 @export var node_cell: float = 88.0
+
+## 每节点布局抖动幅度（按节点 ID 散列，确定性），让摆放更有机而非严格网格。
+@export var col_jitter: float = 30.0
+@export var row_jitter: float = 22.0
+
+## 卷轴最上方/最下方各留的比例不放节点（入口在最下带线、boss 在最上带线）。
+## 注意：这个比例是节点"图标外沿"的安全线；布局时还会再内缩半个节点尺寸，
+## 否则中心放 5% 线上，88px 的图标+抖动会压进背景图的上/下装饰带。
+@export var edge_fraction: float = 0.12
 
 var graph: RouteGraph = null
 var _current_id: int = -1
@@ -70,7 +79,8 @@ func _act_seed() -> int:
 
 
 func _apply_background() -> void:
-	$Background.texture = skin.background_for(act_index)
+	# 卷轴背景是 Canvas 的首个子节点：随 Scroll 一起滚动，节点图标画在它上面。
+	$Scroll/Canvas/Background.texture = skin.background_for(act_index)
 
 
 func _clear() -> void:
@@ -94,15 +104,32 @@ func _build_map() -> void:
 func _layout_views() -> void:
 	var def := _current_def()
 	var canvas: Control = $Scroll/Canvas
-	canvas.custom_minimum_size = Vector2(
-		margin * 2.0 + maxf(float(def.cols - 1), 0.0) * col_spacing,
-		margin * 2.0 + float(def.rows) * row_spacing)
+	var canvas_w := margin * 2.0 + maxf(float(def.cols - 1), 0.0) * col_spacing
+	var canvas_h := margin * 2.0 + float(def.rows) * row_spacing
+	var bg: Texture2D = skin.background_for(act_index)
+	if bg != null and bg.get_width() > 0:
+		# 画布高度按卷轴贴图等比推得：宽高比一致 → 整幅可见、不裁剪（宽度仍由列间距决定）。
+		canvas_h = canvas_w * float(bg.get_height()) / float(bg.get_width())
+	canvas.custom_minimum_size = Vector2(canvas_w, canvas_h)
+
+	# 顶部/底部各 edge_fraction 不放节点；再内缩半个节点尺寸，使节点"图标外沿"
+	# 恰好落在安全线上（入口 row 0 贴下带线内侧，boss 贴上带线内侧）。
+	var top_edge := canvas_h * edge_fraction + node_cell * 0.5
+	var bottom_edge := canvas_h * (1.0 - edge_fraction) - node_cell * 0.5
+	var row_steps := maxf(float(def.rows), 1.0)
 
 	for id in graph.nodes:
 		var n: MapNodeState = graph.nodes[id]
+		var t := float(n.row) / row_steps
 		var center := Vector2(
 			margin + float(n.col) * col_spacing,
-			margin + float(def.rows - n.row) * row_spacing)
+			lerpf(bottom_edge, top_edge, t))
+		if n.id == graph.boss_id:
+			# boss 视觉居中（图内 col 仍是 0，只调布局），row 各节点曲线扇入。
+			center.x = margin + float(def.cols - 1) * 0.5 * col_spacing
+		else:
+			var j := _cell_jitter(n.id)
+			center += Vector2(j.x * col_jitter, j.y * row_jitter)
 		_centers[id] = center
 		var view: MapNodeView = load("res://presentation/route_map/map_node_view.tscn").instantiate()
 		view.setup(id, n.type_key, skin)
@@ -114,6 +141,16 @@ func _layout_views() -> void:
 
 	$Scroll/Canvas/Edges.setup(graph, _centers, skin.path_color, skin.path_width)
 	_refresh_all()
+
+
+## 由节点 ID 散列出的确定性抖动 ∈ [-1,1]^2。只影响布局观感，不改图与存档。
+static func _cell_jitter(id: int) -> Vector2:
+	var h := absi(id) * 2654435761
+	var hx := (h >> 8) & 0xFFFF
+	var hy := (h >> 24) & 0xFFFF
+	return Vector2(
+		float(hx) / 65535.0 * 2.0 - 1.0,
+		float(hy) / 65535.0 * 2.0 - 1.0)
 
 
 func _scroll_to_bottom() -> void:

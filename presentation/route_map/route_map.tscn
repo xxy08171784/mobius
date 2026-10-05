@@ -12,16 +12,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_root")
 
-[node name="Background" type="TextureRect" parent="." unique_id=764331407]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-expand_mode = 1
-stretch_mode = 6
-
 [node name="Scroll" type="ScrollContainer" parent="." unique_id=1515636048]
 layout_mode = 1
 anchors_preset = 15
@@ -32,6 +22,16 @@ grow_vertical = 2
 
 [node name="Canvas" type="Control" parent="Scroll" unique_id=2119681359]
 layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="Scroll/Canvas" unique_id=764331407]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Edges" type="Control" parent="Scroll/Canvas" unique_id=1524519830]
 layout_mode = 1
