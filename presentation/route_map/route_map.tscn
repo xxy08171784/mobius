@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://yo16t1lnfyaf"]
+
+[ext_resource type="Script" uid="uid://cvymavloc1mvm" path="res://presentation/route_map/route_map.gd" id="1_root"]
+[ext_resource type="Script" uid="uid://bu06dtjecx8no" path="res://presentation/route_map/route_edges_view.gd" id="2_edges"]
+
+[node name="RouteMap" type="Control" unique_id=1158341300]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_root")
+
+[node name="Background" type="TextureRect" parent="." unique_id=764331407]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Scroll" type="ScrollContainer" parent="." unique_id=1515636048]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Canvas" type="Control" parent="Scroll" unique_id=2119681359]
+layout_mode = 2
+
+[node name="Edges" type="Control" parent="Scroll/Canvas" unique_id=1524519830]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_edges")
+
+[node name="Nodes" type="Control" parent="Scroll/Canvas" unique_id=1646576348]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

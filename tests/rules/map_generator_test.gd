@@ -18,6 +18,7 @@ func run_all() -> Array[String]:
 	_test_min_floors(fails)
 	_test_distribution(fails)
 	_test_unlock(fails)
+	_test_campaign(fails)
 	return fails
 
 
@@ -203,3 +204,42 @@ func _test_unlock(fails: Array[String]) -> void:
 			any_next = true
 	if not any_next:
 		fails.append("进入入口后无后继可进")
+
+
+## 三章（CampaignDef）：章数、每章可生成、每章种子确定且互异。
+func _test_campaign(fails: Array[String]) -> void:
+	var camp := CampaignDef.new()
+	if camp.act_count() != 3:
+		fails.append("默认章数应为 3，实为 %d" % camp.act_count())
+	# 每章配置非空、可生成有效地图。
+	for i in camp.act_count():
+		var def := camp.act_def(i)
+		if def == null:
+			fails.append("第 %d 章配置为空" % i)
+			continue
+		var rng := RandomNumberGenerator.new()
+		rng.seed = CampaignDef.derive_act_seed(SEEDS[0], i)
+		var g := MapGenerator.generate(def, rng)
+		if g.nodes.is_empty() or g.boss_id == -1:
+			fails.append("第 %d 章生成失败" % i)
+	# 种子：确定 + 每章互异。
+	var s0 := CampaignDef.derive_act_seed(SEEDS[0], 0)
+	var s0b := CampaignDef.derive_act_seed(SEEDS[0], 0)
+	if s0 != s0b:
+		fails.append("derive_act_seed 不确定")
+	var seeds := {}
+	for i in camp.act_count():
+		seeds[CampaignDef.derive_act_seed(SEEDS[0], i)] = true
+	if seeds.size() != camp.act_count():
+		fails.append("各章种子发生碰撞")
+	# 不同章生成不同地图。
+	var sig0 := _signature(_gen_act(camp, 0, SEEDS[0]))
+	var sig1 := _signature(_gen_act(camp, 1, SEEDS[0]))
+	if sig0 == sig1:
+		fails.append("不同章生成了相同地图")
+
+
+static func _gen_act(camp: CampaignDef, act: int, seed_value: int) -> RouteGraph:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = CampaignDef.derive_act_seed(seed_value, act)
+	return MapGenerator.generate(camp.act_def(act), rng)

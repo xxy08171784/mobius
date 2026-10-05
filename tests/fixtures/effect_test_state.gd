@@ -15,6 +15,18 @@ var positions: Dictionary = {
 var draw_pile: Array = [101, 102, 103, 104]
 
 
+## 深拷贝：Resource.duplicate(true) 不复制非导出脚本变量，会把这些字段重置为默认值，
+## 因此必须像 IntegratedBattleState 一样显式实现 duplicate_state()。
+func duplicate_state() -> EffectTestState:
+	var copy := EffectTestState.new()
+	copy.next_uid = next_uid
+	copy.next_event_seq = next_event_seq
+	copy.units = units.duplicate(true)
+	copy.positions = positions.duplicate(true)
+	copy.draw_pile = draw_pile.duplicate()
+	return copy
+
+
 func draw_cards(_unit_id: int, count: int, _rng: RandomNumberGenerator) -> Dictionary:
 	var drawn: Array = []
 	for _i: int in range(mini(count, draw_pile.size())):
