@@ -19,7 +19,7 @@ var resolving: Array[int] = []
 func add_card(card: BattleCardState, zone: StringName = ZONE_DRAW) -> bool:
 	if card == null or card.battle_uid < 0 or cards.has(card.battle_uid):
 		return false
-	var zone_array := get_zone(zone)
+	var zone_array: Array = get_zone(zone)
 	if zone_array == null:
 		return false
 	cards[card.battle_uid] = card

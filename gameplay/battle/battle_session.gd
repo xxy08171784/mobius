@@ -329,7 +329,7 @@ func _record_accepted(command_id: int, result: CommandResult) -> void:
 		state.seen_command_ids.append(command_id)
 	state.command_result_snapshots[command_id] = snapshot
 	while state.seen_command_ids.size() > MAX_SEEN_COMMANDS:
-		var old_id := state.seen_command_ids.pop_front()
+		var old_id: int = state.seen_command_ids.pop_front()
 		state.command_result_snapshots.erase(old_id)
 
 
@@ -339,7 +339,7 @@ func _cache_result(command_id: int, snapshot: Dictionary) -> void:
 	_result_cache[command_id] = snapshot
 	_result_cache_order.append(command_id)
 	while _result_cache_order.size() > MAX_SEEN_COMMANDS:
-		var old_id := _result_cache_order.pop_front()
+		var old_id: int = _result_cache_order.pop_front()
 		_result_cache.erase(old_id)
 
 

@@ -15,6 +15,17 @@ var positions: Dictionary = {
 var draw_pile: Array = [101, 102, 103, 104]
 
 
+## Resource.duplicate(true) 不会可靠复制这些非导出脚本字段，测试桩显式深拷贝。
+func duplicate_state() -> EffectTestState:
+	var copy := EffectTestState.new()
+	copy.next_uid = next_uid
+	copy.next_event_seq = next_event_seq
+	copy.units = units.duplicate(true)
+	copy.positions = positions.duplicate(true)
+	copy.draw_pile = draw_pile.duplicate()
+	return copy
+
+
 func draw_cards(_unit_id: int, count: int, _rng: RandomNumberGenerator) -> Dictionary:
 	var drawn: Array = []
 	for _i: int in range(mini(count, draw_pile.size())):

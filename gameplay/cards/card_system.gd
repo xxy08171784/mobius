@@ -34,7 +34,7 @@ func draw_cards(deck: DeckState, count: int, rng: RandomNumberGenerator) -> Dict
 				break
 		if deck.draw.is_empty():
 			break
-		var uid := deck.draw.pop_back()
+		var uid: int = deck.draw.pop_back()
 		deck.hand.append(uid)
 		drawn.append(uid)
 	return {"ok": true, "cards": drawn}
