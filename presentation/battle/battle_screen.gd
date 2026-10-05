@@ -1,5 +1,13 @@
 extends Control
 ## Phase 4 最小可玩战斗屏。正式美术未到位前全部使用 Godot Control 占位。
+## B 线接缝：demo_autostart=false 时由外部 configure() 注入 EncounterBuilder 的装配数据；
+## 终态经 battle_finished 信号交回 RunFlow。
+
+## 战斗进入终态（胜利/失败）时发出。
+signal battle_finished(result: BattleResult)
+
+## false = 由 RunFlow 驱动（先设 false 再 add_child，避免 _ready 自动开 demo）。
+@export var demo_autostart: bool = true
 
 const BOARD_VIEW_SCENE := preload("res://presentation/battle/board_view.tscn")
 const HAND_VIEW_SCENE := preload("res://presentation/cards/hand_view.tscn")
@@ -22,7 +30,8 @@ var _ui: Dictionary = {}
 func _ready() -> void:
 	_build_ui()
 	_populate_enemy_selector()
-	_start_demo()
+	if demo_autostart:
+		_start_demo()
 
 
 func _build_ui() -> void:
@@ -124,15 +133,36 @@ func _build_ui() -> void:
 
 
 func _start_demo() -> void:
+	var data := DemoBattleSetup.build("phase5-content-demo", _selected_enemy_id())
+	if data.is_empty():
+		(_ui["result_label"] as Label).text = "正式内容加载失败，请查看错误日志。"
+		return
+	_start_battle(data)
+
+
+## B 线接缝：用 EncounterBuilder.build 的装配数据开一场战斗（形状与 DemoBattleSetup 相同）。
+## 由 RunFlow 在 demo_autostart=false 时调用。
+func configure(data: Dictionary) -> void:
+	if data.is_empty():
+		var label := _ui.get("result_label") as Label
+		if label != null:
+			label.text = "战斗数据为空。"
+		return
+	# 外部模式：隐藏 demo 专用的敌人选择与重开。
+	if _enemy_selector != null and _enemy_selector.get_parent() != null:
+		(_enemy_selector.get_parent() as Control).visible = false
+	var restart := _ui.get("restart_button") as Button
+	if restart != null:
+		restart.visible = false
+	_start_battle(data)
+
+
+func _start_battle(data: Dictionary) -> void:
 	if _presenter != null:
 		_presenter.queue_free()
 	if _battle_input != null:
 		_battle_input.queue_free()
 
-	var data := DemoBattleSetup.build("phase5-content-demo", _selected_enemy_id())
-	if data.is_empty():
-		(_ui["result_label"] as Label).text = "正式内容加载失败，请查看错误日志。"
-		return
 	_session = BattleSession.new()
 	_session.setup(
 		data["rng"],
@@ -157,6 +187,11 @@ func _start_demo() -> void:
 	_battle_input = BattleInput.new()
 	add_child(_battle_input)
 	_battle_input.bind(_session, data["card_defs"], _presenter)
+	_battle_input.battle_finished.connect(_on_battle_input_finished)
+
+
+func _on_battle_input_finished(result: BattleResult) -> void:
+	battle_finished.emit(result)
 
 
 func _populate_enemy_selector() -> void:

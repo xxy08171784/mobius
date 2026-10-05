@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EventDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/event_choice.gd" id="1_choice"]
+[ext_resource type="Script" path="res://gameplay/run/event_def.gd" id="2_event"]
+
+[sub_resource type="Resource" id="Resource_c1"]
+script = ExtResource("1_choice")
+label = "喝下温汤，回复 10 点生命"
+hp_delta = 10
+
+[sub_resource type="Resource" id="Resource_c2"]
+script = ExtResource("1_choice")
+label = "拿起发光的卡牌"
+add_card_id = &"card.warrior.execute"
+
+[resource]
+script = ExtResource("2_event")
+id = &"event.forgotten_campfire"
+title = "被遗忘的营火"
+body = "篝火旁放着一碗温汤和一张微微发光的卡牌。"
+choices = Array[ExtResource("1_choice")]([SubResource("Resource_c1"), SubResource("Resource_c2")])

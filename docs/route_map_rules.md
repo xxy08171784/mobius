@@ -1,6 +1,6 @@
 # 选关地图规则合同（route_map_rules.md）
 
-日期：2026-10-05。状态：**v2 已实现**（规则层）。实现见 `gameplay/run/`，测试见 `tests/rules/map_generator_test.gd`。
+日期：2026-10-05。状态：**v2 已实现**（规则层）。实现见 `gameplay/run/`，测试见 `tests/rules/test_map_generator.gd`（由 `tests/run_all.gd` 采集）。
 本文是**精确合同**：拓扑、生成、类型分配、解锁规则以此为准；实现改动需同步更新本文件。
 
 术语：**入口** = 第 0 行可选节点；**层/行（row）** = 纵向进度，0 为底、越大越接近 boss；**列（col）** = 横向。

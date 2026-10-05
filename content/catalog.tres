@@ -33,6 +33,19 @@
 [ext_resource type="Resource" path="res://content/enemies/echo_guard_unit.tres" id="31_l6qib"]
 [ext_resource type="Resource" path="res://content/enemies/loop_hound_unit.tres" id="32_von3i"]
 [ext_resource type="Resource" path="res://content/enemies/mobius_warden_unit.tres" id="33_r8fvc"]
+[ext_resource type="Script" path="res://gameplay/units/character_def.gd" id="34_chdefs"]
+[ext_resource type="Script" path="res://gameplay/run/encounter_def.gd" id="35_encdef"]
+[ext_resource type="Resource" path="res://content/characters/hero.tres" id="36_hero01"]
+[ext_resource type="Resource" path="res://content/encounters/monster_ring_stalker.tres" id="37_encmon1"]
+[ext_resource type="Resource" path="res://content/encounters/monster_echo_guard.tres" id="38_encmon2"]
+[ext_resource type="Resource" path="res://content/encounters/monster_loop_hound.tres" id="39_encmon3"]
+[ext_resource type="Resource" path="res://content/encounters/elite_twin_guard.tres" id="40_encelite"]
+[ext_resource type="Resource" path="res://content/encounters/boss_mobius_warden.tres" id="41_encboss"]
+[ext_resource type="Script" path="res://gameplay/run/shop_def.gd" id="42_shopdef"]
+[ext_resource type="Script" path="res://gameplay/run/event_def.gd" id="43_evdef"]
+[ext_resource type="Resource" path="res://content/shops/route_shop.tres" id="44_shop01"]
+[ext_resource type="Resource" path="res://content/events/forgotten_campfire.tres" id="45_ev01"]
+[ext_resource type="Resource" path="res://content/events/loop_temptation.tres" id="46_ev02"]
 
 [resource]
 script = ExtResource("23_3ouml")
@@ -41,3 +54,7 @@ units = Array[ExtResource("28_k814x")]([ExtResource("29_wrdpo"), ExtResource("30
 enemies = Array[ExtResource("14_3o7yj")]([ExtResource("15_oppey"), ExtResource("16_t6r7t"), ExtResource("17_8e0yr"), ExtResource("18_7o0bq")])
 statuses = Array[ExtResource("24_traop")]([ExtResource("25_6kv2v"), ExtResource("26_dk4nj"), ExtResource("27_vyswj")])
 relics = Array[ExtResource("19_13dyc")]([ExtResource("20_4truf"), ExtResource("21_11qu4"), ExtResource("22_6dclc")])
+characters = Array[ExtResource("34_chdefs")]([ExtResource("36_hero01")])
+encounters = Array[ExtResource("35_encdef")]([ExtResource("37_encmon1"), ExtResource("38_encmon2"), ExtResource("39_encmon3"), ExtResource("40_encelite"), ExtResource("41_encboss")])
+shops = Array[ExtResource("42_shopdef")]([ExtResource("44_shop01")])
+events = Array[ExtResource("43_evdef")]([ExtResource("45_ev01"), ExtResource("46_ev02")])

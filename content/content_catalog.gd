@@ -7,3 +7,9 @@ extends Resource
 @export var enemies: Array[EnemyDef] = []
 @export var statuses: Array[StatusDef] = []
 @export var relics: Array[RelicDef] = []
+## B 线新增：角色与遭遇（Run/Route 使用）。
+@export var characters: Array[CharacterDef] = []
+@export var encounters: Array[EncounterDef] = []
+## B 线第二轮：商店与事件。
+@export var shops: Array[ShopDef] = []
+@export var events: Array[EventDef] = []

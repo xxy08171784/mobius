@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EncounterDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/encounter_def.gd" id="1_boss"]
+
+[resource]
+script = ExtResource("1_boss")
+id = &"encounter.boss.mobius_warden"
+enemy_ids = Array[StringName]([&"enemy.mobius_warden"])
+tier = &"boss"

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EncounterDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/encounter_def.gd" id="1_mon2"]
+
+[resource]
+script = ExtResource("1_mon2")
+id = &"encounter.monster.echo_guard"
+enemy_ids = Array[StringName]([&"enemy.echo_guard"])
+tier = &"monster"

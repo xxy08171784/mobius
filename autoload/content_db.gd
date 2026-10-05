@@ -11,6 +11,10 @@ var _units: Dictionary = {}
 var _enemies: Dictionary = {}
 var _statuses: Dictionary = {}
 var _relics: Dictionary = {}
+var _characters: Dictionary = {}
+var _encounters: Dictionary = {}
+var _shops: Dictionary = {}
+var _events: Dictionary = {}
 
 
 func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
@@ -31,6 +35,14 @@ func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
 		ok = _register(_statuses, definition.status_id if definition != null else &"", definition, "status") and ok
 	for definition: RelicDef in catalog.relics:
 		ok = _register(_relics, definition.relic_id if definition != null else &"", definition, "relic") and ok
+	for definition: CharacterDef in catalog.characters:
+		ok = _register(_characters, definition.id if definition != null else &"", definition, "character") and ok
+	for definition: EncounterDef in catalog.encounters:
+		ok = _register(_encounters, definition.id if definition != null else &"", definition, "encounter") and ok
+	for definition: ShopDef in catalog.shops:
+		ok = _register(_shops, definition.id if definition != null else &"", definition, "shop") and ok
+	for definition: EventDef in catalog.events:
+		ok = _register(_events, definition.id if definition != null else &"", definition, "event") and ok
 	if not ok:
 		_clear_indexes()
 		return false
@@ -68,6 +80,22 @@ func get_relic(id: StringName) -> RelicDef:
 	return _relics.get(id) as RelicDef
 
 
+func get_character(id: StringName) -> CharacterDef:
+	return _characters.get(id) as CharacterDef
+
+
+func get_encounter(id: StringName) -> EncounterDef:
+	return _encounters.get(id) as EncounterDef
+
+
+func get_shop(id: StringName) -> ShopDef:
+	return _shops.get(id) as ShopDef
+
+
+func get_event(id: StringName) -> EventDef:
+	return _events.get(id) as EventDef
+
+
 func all_cards() -> Dictionary:
 	return _cards.duplicate()
 
@@ -86,6 +114,22 @@ func status_ids() -> Array:
 
 func relic_ids() -> Array:
 	return _sorted_ids(_relics)
+
+
+func character_ids() -> Array:
+	return _sorted_ids(_characters)
+
+
+func encounter_ids() -> Array:
+	return _sorted_ids(_encounters)
+
+
+func shop_ids() -> Array:
+	return _sorted_ids(_shops)
+
+
+func event_ids() -> Array:
+	return _sorted_ids(_events)
 
 
 func _register(index: Dictionary, id: StringName, definition: Variant, kind: String) -> bool:
@@ -109,6 +153,10 @@ func _clear_indexes() -> void:
 	_enemies.clear()
 	_statuses.clear()
 	_relics.clear()
+	_characters.clear()
+	_encounters.clear()
+	_shops.clear()
+	_events.clear()
 
 
 func _sorted_ids(index: Dictionary) -> Array:

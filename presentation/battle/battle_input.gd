@@ -2,6 +2,9 @@ class_name BattleInput
 extends Node
 ## 将鼠标/UI 意图转换为 GameCommand；不直接改 BattleState。
 
+## 一场战斗进入终态时发出（携带 BattleResult）。B 线 RunFlow 据此回写 RunState。
+signal battle_finished(result: BattleResult)
+
 var _session: BattleSession = null
 var _card_defs: Dictionary = {}
 var _presenter: BattlePresenter = null
@@ -123,6 +126,8 @@ func _submit(command: GameCommand) -> void:
 	_busy = false
 	_sync_selection()
 	_presenter.set_busy(false)
+	if _session.state.is_terminal():
+		battle_finished.emit(_session.battle_result())
 
 
 func _player_id() -> int:

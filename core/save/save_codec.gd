@@ -6,10 +6,13 @@ extends RefCounted
 ## 需手动编码 Vector2i；64 位整数存为十进制字符串。
 
 const _STATE_TYPE_BATTLE := "BattleState"
+const _STATE_TYPE_RUN := "RunState"
 
 func encode_state(state: RefCounted) -> Dictionary:
 	if state is BattleState:
 		return _encode_battle_state(state as BattleState)
+	if state is RunState:
+		return _encode_run_state(state as RunState)
 	push_error("SaveCodec: unsupported state type")
 	return {}
 
@@ -23,6 +26,8 @@ func decode_state(data: Dictionary) -> RefCounted:
 	match String(migrated.get("state_type", "")):
 		_STATE_TYPE_BATTLE:
 			return _decode_battle_state(migrated)
+		_STATE_TYPE_RUN:
+			return _decode_run_state(migrated)
 		_:
 			push_error("SaveCodec: unsupported state_type")
 			return null
@@ -387,6 +392,157 @@ func _decode_intents(data: Array) -> Dictionary[int, IntentState]:
 		if key >= 0:
 			intents[key] = intent
 	return intents
+
+
+func _encode_run_state(state: RunState) -> Dictionary:
+	return {
+		"schema_version": SaveMigrator.CURRENT_SCHEMA_VERSION,
+		"state_type": _STATE_TYPE_RUN,
+		"state": {
+			"run_id": encode_value(state.run_id),
+			"seed": state.seed,
+			"character_id": encode_value(state.character_id),
+			"act_index": encode_value(state.act_index),
+			"current_node_id": encode_value(state.current_node_id),
+			"hp": encode_value(state.hp),
+			"max_hp": encode_value(state.max_hp),
+			"gold": encode_value(state.gold),
+			"next_card_uid": encode_value(state.next_card_uid),
+			"next_relic_uid": encode_value(state.next_relic_uid),
+			"next_battle_id": encode_value(state.next_battle_id),
+			"rng_snapshot": encode_value(state.rng_snapshot),
+			"map": _encode_route_graph(state.map),
+			"deck": _encode_run_cards(state.deck),
+			"relics": _encode_relics(state.relics),
+		},
+	}
+
+
+func _decode_run_state(data: Dictionary) -> RunState:
+	var payload: Dictionary = data.get("state", {})
+	var state := RunState.new()
+	state.run_id = int(decode_value(payload.get("run_id", encode_value(-1))))
+	state.seed = String(payload.get("seed", ""))
+	state.character_id = decode_value(payload.get("character_id", encode_value(&"")))
+	state.act_index = int(decode_value(payload.get("act_index", encode_value(0))))
+	state.current_node_id = int(decode_value(payload.get("current_node_id", encode_value(-1))))
+	state.hp = int(decode_value(payload.get("hp", encode_value(1))))
+	state.max_hp = int(decode_value(payload.get("max_hp", encode_value(1))))
+	state.gold = int(decode_value(payload.get("gold", encode_value(0))))
+	state.next_card_uid = int(decode_value(payload.get("next_card_uid", encode_value(1))))
+	state.next_relic_uid = int(decode_value(payload.get("next_relic_uid", encode_value(1))))
+	state.next_battle_id = int(decode_value(payload.get("next_battle_id", encode_value(1))))
+	state.rng_snapshot = decode_value(payload.get("rng_snapshot", encode_value({})))
+	state.map = _decode_route_graph(payload.get("map", {}))
+	state.deck = _decode_run_cards(payload.get("deck", []))
+	state.relics = _decode_relics(payload.get("relics", []))
+	return state
+
+
+func _encode_route_graph(graph: RouteGraph) -> Dictionary:
+	if graph == null:
+		return {}
+	var nodes: Array = []
+	var ids: Array[int] = []
+	for id: int in graph.nodes:
+		ids.append(id)
+	ids.sort()
+	for id: int in ids:
+		var n: MapNodeState = graph.nodes[id]
+		nodes.append({
+			"id": encode_value(n.id),
+			"row": encode_value(n.row),
+			"col": encode_value(n.col),
+			"type_key": encode_value(n.type_key),
+			"content_id": encode_value(n.content_id),
+			"visited": n.visited,
+			"is_entry": n.is_entry,
+			"prev_ids": encode_value(n.prev_ids),
+			"next_ids": encode_value(n.next_ids),
+		})
+	return {
+		"rows": encode_value(graph.rows),
+		"cols": encode_value(graph.cols),
+		"boss_id": encode_value(graph.boss_id),
+		"entry_ids": encode_value(graph.entry_ids),
+		"nodes": nodes,
+	}
+
+
+func _decode_route_graph(data: Dictionary) -> RouteGraph:
+	if data.is_empty():
+		return null
+	var graph := RouteGraph.new()
+	graph.rows = int(decode_value(data.get("rows", encode_value(0))))
+	graph.cols = int(decode_value(data.get("cols", encode_value(0))))
+	graph.boss_id = int(decode_value(data.get("boss_id", encode_value(-1))))
+	for entry: Dictionary in data.get("nodes", []):
+		var n := MapNodeState.new()
+		n.id = int(decode_value(entry.get("id", encode_value(-1))))
+		n.row = int(decode_value(entry.get("row", encode_value(0))))
+		n.col = int(decode_value(entry.get("col", encode_value(0))))
+		n.type_key = decode_value(entry.get("type_key", encode_value(&"")))
+		n.content_id = decode_value(entry.get("content_id", encode_value(&"")))
+		n.visited = bool(entry.get("visited", false))
+		n.is_entry = bool(entry.get("is_entry", false))
+		n.prev_ids = _to_int_array(decode_value(entry.get("prev_ids", [])))
+		n.next_ids = _to_int_array(decode_value(entry.get("next_ids", [])))
+		graph.nodes[n.id] = n
+		graph.node_by_cell[Vector2i(n.col, n.row)] = n.id
+	# _next_id 需大于全部已有 id，保证后续 add_node 不撞号。
+	var max_id := -1
+	for id: int in graph.nodes:
+		if id > max_id:
+			max_id = id
+	graph._next_id = max_id + 1
+	graph.entry_ids = _to_int_array(decode_value(data.get("entry_ids", [])))
+	return graph
+
+
+func _encode_run_cards(cards: Array[RunCardState]) -> Array:
+	var out: Array = []
+	for card: RunCardState in cards:
+		out.append({
+			"run_uid": encode_value(card.run_uid),
+			"card_id": encode_value(card.card_id),
+			"upgrade_level": encode_value(card.upgrade_level),
+			"permanent_modifiers": encode_value(card.permanent_modifiers),
+		})
+	return out
+
+
+func _decode_run_cards(data: Array) -> Array[RunCardState]:
+	var out: Array[RunCardState] = []
+	for entry: Dictionary in data:
+		var card := RunCardState.new()
+		card.run_uid = int(decode_value(entry.get("run_uid", encode_value(-1))))
+		card.card_id = decode_value(entry.get("card_id", encode_value(&"")))
+		card.upgrade_level = int(decode_value(entry.get("upgrade_level", encode_value(0))))
+		card.permanent_modifiers = decode_value(entry.get("permanent_modifiers", encode_value({})))
+		out.append(card)
+	return out
+
+
+func _encode_relics(relics: Array[RelicState]) -> Array:
+	var out: Array = []
+	for relic: RelicState in relics:
+		out.append({
+			"instance_id": encode_value(relic.instance_id),
+			"relic_id": encode_value(relic.relic_id),
+			"counters": encode_value(relic.counters),
+		})
+	return out
+
+
+func _decode_relics(data: Array) -> Array[RelicState]:
+	var out: Array[RelicState] = []
+	for entry: Dictionary in data:
+		var relic := RelicState.new()
+		relic.instance_id = int(decode_value(entry.get("instance_id", encode_value(-1))))
+		relic.relic_id = decode_value(entry.get("relic_id", encode_value(&"")))
+		relic.counters = decode_value(entry.get("counters", encode_value({})))
+		out.append(relic)
+	return out
 
 
 func _to_int_array(values: Array) -> Array[int]:

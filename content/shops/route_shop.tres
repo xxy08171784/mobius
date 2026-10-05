@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ShopDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/shop_def.gd" id="1_shop"]
+
+[resource]
+script = ExtResource("1_shop")
+id = &"shop.route"
+card_pool = Array[StringName]([&"card.warrior.strike", &"card.warrior.heavy_strike", &"card.warrior.guard", &"card.warrior.brace", &"card.warrior.quick_draw", &"card.warrior.pommel", &"card.warrior.lunge", &"card.warrior.execute", &"card.warrior.fortify", &"card.warrior.insight", &"card.warrior.jab", &"card.warrior.iron_wall"])
+offer_count = 4
+card_price = 50
+remove_price = 75
+heal_price = 30
+heal_amount = 10

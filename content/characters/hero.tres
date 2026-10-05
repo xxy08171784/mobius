@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CharacterDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/units/character_def.gd" id="1_hero"]
+
+[resource]
+script = ExtResource("1_hero")
+id = &"character.hero"
+display_name = "游侠"
+unit_def_id = &"unit.hero.prototype"
+starter_deck = Array[StringName]([&"card.warrior.strike", &"card.warrior.strike", &"card.warrior.strike", &"card.warrior.strike", &"card.warrior.guard", &"card.warrior.guard", &"card.warrior.guard", &"card.warrior.pommel", &"card.warrior.lunge", &"card.warrior.quick_draw"])
+starter_relics = Array[StringName]([&"relic.loop_compass"])
+class_tags = Array[StringName]([&"warrior"])

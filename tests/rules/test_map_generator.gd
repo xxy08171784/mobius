@@ -1,13 +1,11 @@
-class_name MapGeneratorTest
-extends RefCounted
-## 选关地图生成的无头测试。run_all() 返回失败信息列表（空 = 全过）。
-## 待 Phase 0 的 tests/run_all.gd 落地后由其发现并调用本类。
+extends "res://tests/test_case.gd"
+## 选关地图生成的无头测试。run() 返回失败信息列表（空 = 全过），由 tests/run_all.gd 采集。
 
 const SEEDS := [1, 42, 12345, 67890, 987654321]
 const DIST_SEEDS := 200
 
 
-func run_all() -> Array[String]:
+func run() -> Array[String]:
 	var fails: Array[String] = []
 	_test_determinism(fails)
 	_test_fixed_floors(fails)

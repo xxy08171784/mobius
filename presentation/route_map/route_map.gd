@@ -8,6 +8,8 @@ extends Control
 signal node_selected(node: MapNodeState)
 ## 进入 boss、本章完成时发出（携带本章号）。
 signal act_completed(act_index: int)
+## RunSession 驱动模式下，节点进入成功时发出转移 dict（{kind, battle?, content_id?}）。
+signal node_entered(transition: Dictionary)
 
 ## 三章配置。缺省时用 3 份默认 RouteMapDef。
 @export var campaign: CampaignDef = null
@@ -32,6 +34,9 @@ signal act_completed(act_index: int)
 
 var graph: RouteGraph = null
 var _current_id: int = -1
+
+## RunSession 驱动模式：图/访问态/章节流转都交由 RunSession，本视图只投影。
+var _session: RunSession = null
 
 var _node_views: Dictionary[int, MapNodeView] = {}
 var _centers: Dictionary[int, Vector2] = {}
@@ -70,7 +75,38 @@ func set_graph(g: RouteGraph) -> void:
 	_scroll_to_bottom()
 
 
+## 由 RunSession 驱动：图/访问态/章节流转都交给规则层，本视图只投影。
+## 之后刷新必须经 refresh_from_session()（enter_node 会替换 session.state）。
+func bind_run_session(session: RunSession) -> void:
+	_session = session
+	if session == null or session.state == null or session.state.map == null:
+		return
+	act_index = session.state.act_index
+	graph = session.state.map
+	_current_id = session.state.current_node_id
+	_clear()
+	_apply_background()
+	_layout_views()
+	_scroll_to_bottom()
+
+
+## enter_node 提交后调用：重新指到新 RunState 的地图并刷新派生状态。
+func refresh_from_session() -> void:
+	if _session == null or _session.state == null or _session.state.map == null:
+		return
+	act_index = _session.state.act_index
+	graph = _session.state.map
+	_current_id = _session.state.current_node_id
+	_refresh_all()
+
+
 func _current_def() -> RouteMapDef:
+	# RunSession 驱动时按实际图尺寸布局，不重新生成。
+	if _session != null and _session.state != null and _session.state.map != null:
+		var def := RouteMapDef.new()
+		def.rows = _session.state.map.rows
+		def.cols = _session.state.map.cols
+		return def
 	return campaign.act_def(act_index)
 
 
@@ -176,6 +212,19 @@ func _refresh_all() -> void:
 
 
 func _on_node_activated(id: int) -> void:
+	# RunSession 驱动模式：进入走规则入口，成功后投影新状态并发出转移。
+	if _session != null:
+		var transition := _session.enter_node(id)
+		if not bool(transition.get("ok", false)):
+			return
+		refresh_from_session()
+		var node := _session.state.map.get_node(id)
+		if node != null:
+			node_selected.emit(node)
+		node_entered.emit(transition)
+		return
+
+	# 独立原型模式（无 RunSession）：旧行为。
 	if not graph.enter(id):
 		return
 	_current_id = id
