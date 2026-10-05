@@ -1,6 +1,6 @@
 extends "res://tests/test_case.gd"
 ## UnitState 测试（B2）。run() -> Array[String]，空 = 全过。
-## 重点：位置不在 UnitState（从 BoardState 查）、状态容器为占位类型、资源/状态访问器。
+## 重点：位置不在 UnitState（从 BoardState 查）、StatusState 接口、资源/状态访问器。
 
 
 func run() -> Array[String]:
@@ -8,7 +8,7 @@ func run() -> Array[String]:
 	_test_create_and_basics()
 	_test_resources()
 	_test_block()
-	_test_status_container_placeholder()
+	_test_status_container()
 	_test_position_authority_in_board()
 	return failures()
 
@@ -46,14 +46,20 @@ func _test_block() -> void:
 	assert_equal(e.is_player(), false, "敌人阵营")
 
 
-func _test_status_container_placeholder() -> void:
+func _test_status_container() -> void:
 	var u := UnitState.create(1, &"u", UnitState.Team.ENEMY, 10)
-	var poison := RefCounted.new()
+	var poison := StatusState.new()
+	poison.instance_id = 7
+	poison.status_id = &"poison"
 	u.set_status(7, poison)
 	assert_true(u.has_status(7), "持有状态")
-	assert_true(u.get_status(7) is RefCounted, "占位类型 RefCounted（等 A1 StatusState）")
-	u.set_status(3, RefCounted.new())
-	assert_equal(u.status_ids(), [3, 7], "状态 ID 升序")
+	assert_true(u.get_status(7) is StatusState, "状态容器使用 A1 StatusState")
+	assert_equal(u.get_status(7).status_id, &"poison", "状态定义 ID 保存在 StatusState")
+	var guard := StatusState.new()
+	guard.instance_id = 3
+	guard.status_id = &"guard"
+	u.set_status(3, guard)
+	assert_equal(u.status_ids(), [3, 7], "状态实例 ID 升序")
 	u.remove_status(3)
 	assert_equal(u.has_status(3), false, "移除生效")
 	assert_equal(u.status_ids(), [7], "移除后序列")

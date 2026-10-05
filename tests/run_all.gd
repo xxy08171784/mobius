@@ -39,9 +39,9 @@ func _run_all() -> void:
 			print("[PASS] %s" % filename)
 		else:
 			failed += 1
-			printerr("[FAIL] %s" % filename)
+			print("[FAIL] %s" % filename)
 			for failure: Variant in failures:
-				printerr("  - %s" % failure)
+				print("  - %s" % failure)
 
-	print("Phase 0 tests: %d total, %d passed, %d failed" % [total, total - failed, failed])
+	print("Rule tests: %d total, %d passed, %d failed" % [total, total - failed, failed])
 	quit(0 if failed == 0 else 1)

@@ -22,10 +22,9 @@ var block: int = 0
 ## 资源（能量/行动点等）。键为稳定 StringName。
 var resources: Dictionary[StringName, int] = {}
 
-## 状态实例容器。§4 约定：**先用 Dictionary[int, RefCounted] 占位**，
-## 等 Track A 的 StatusState 命名落地后收紧值类型（顺序/生命周期见 §7/§8）。
-## 键 = 状态定义 ID（int）。
-var statuses: Dictionary[int, RefCounted] = {}
+## 状态实例容器。A1 已落地 StatusState，键使用稳定 instance_id。
+## status_id 本身保存在 StatusState 内，允许同一状态定义存在多个独立实例。
+var statuses: Dictionary[int, StatusState] = {}
 
 
 static func create(unit_id_: int, def_id_: StringName, team_: Team, max_hp_: int) -> UnitState:
@@ -62,23 +61,23 @@ func add_resource(key: StringName, delta: int) -> void:
 	resources[key] = get_resource(key) + delta
 
 
-func has_status(status_id: int) -> bool:
-	return statuses.has(status_id)
+func has_status(instance_id: int) -> bool:
+	return statuses.has(instance_id)
 
 
-func get_status(status_id: int) -> RefCounted:
-	return statuses.get(status_id)
+func get_status(instance_id: int) -> StatusState:
+	return statuses.get(instance_id)
 
 
-func set_status(status_id: int, status: RefCounted) -> void:
-	statuses[status_id] = status
+func set_status(instance_id: int, status: StatusState) -> void:
+	statuses[instance_id] = status
 
 
-func remove_status(status_id: int) -> void:
-	statuses.erase(status_id)
+func remove_status(instance_id: int) -> void:
+	statuses.erase(instance_id)
 
 
-## 状态 ID 升序（供确定性遍历/触发排序）。
+## 状态实例 ID 升序（供确定性遍历/触发排序）。
 func status_ids() -> Array[int]:
 	var ids: Array[int] = []
 	for id: int in statuses:

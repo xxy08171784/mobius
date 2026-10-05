@@ -1,0 +1,61 @@
+class_name CardDef
+extends Resource
+## 卡牌静态定义。Resource 约定只读，运行时变化放 RunCardState/BattleCardState。
+
+@export var card_id: StringName = &""
+@export var base_cost: int = 0
+@export var tags: Array[StringName] = []
+@export var effects: Array[EffectDef] = []
+@export var exhaust_on_play: bool = false
+
+## B1 的正式 TargetSpec 目标槽；null 表示该卡不需要目标。
+var target_rule: TargetSpec = null
+
+## level -> Dictionary 覆盖。
+## 支持字段：cost / tags / effects / target_rule / exhaust_on_play。
+@export var upgrade_overrides: Dictionary = {}
+
+
+func is_valid() -> bool:
+	return not card_id.is_empty() and base_cost >= 0
+
+
+func get_cost(upgrade_level: int = 0) -> int:
+	var data := _upgrade_data(upgrade_level)
+	return maxi(0, int(data.get("cost", base_cost)))
+
+
+func get_tags(upgrade_level: int = 0) -> Array[StringName]:
+	var data := _upgrade_data(upgrade_level)
+	if data.has("tags"):
+		var result: Array[StringName] = []
+		for tag: Variant in data["tags"]:
+			result.append(StringName(String(tag)))
+		return result
+	return tags.duplicate()
+
+
+func get_effects(upgrade_level: int = 0) -> Array:
+	var data := _upgrade_data(upgrade_level)
+	if data.has("effects"):
+		return Array(data["effects"]).duplicate()
+	return Array(effects).duplicate()
+
+
+func get_target_rule(upgrade_level: int = 0) -> TargetSpec:
+	var value: Variant = _upgrade_data(upgrade_level).get("target_rule", target_rule)
+	return value as TargetSpec
+
+
+func should_exhaust(upgrade_level: int = 0) -> bool:
+	return bool(_upgrade_data(upgrade_level).get("exhaust_on_play", exhaust_on_play))
+
+
+func _upgrade_data(level: int) -> Dictionary:
+	if level <= 0:
+		return {}
+	if upgrade_overrides.has(level):
+		return upgrade_overrides[level]
+	if upgrade_overrides.has(str(level)):
+		return upgrade_overrides[str(level)]
+	return {}
