@@ -156,8 +156,10 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 | 应有文件 | 内容 | 状态 |
 |---|---|---|
 | `run_session.gd` / `run_state.gd` | 单局生命周期 / 局内状态权威 | ⬜ 占位 |
-| `map_generator.gd` + `route_graph.gd` | 有向路线图生成 | ⬜ 占位 |
-| `map_node_state.gd` | 节点状态 | ⬜ 占位 |
+| `route_map_def.gd` | 地图生成配置（Resource，`RouteMapDef`） | ✅ 已有 |
+| `map_generator.gd` | **纯函数** `generate(def, rng) -> RouteGraph`（StS 式 DAG，见 `route_map_rules.md`） | ✅ 已有 |
+| `route_graph.gd` | 地图 DAG 数据 + 解锁/可达查询 | ✅ 已有 |
+| `map_node_state.gd` | 节点状态（类型键/访问/邻居） | ✅ 已有 |
 | `encounter_def.gd` / `encounter_builder.gd` | 遭遇配置 / 生成具体战斗 | ⬜ 占位 |
 | `reward_system.gd` / `shop_system.gd` / `event_system.gd` / `rest_system.gd` | 奖励/商店/事件/休息规则 | ⬜ 占位 |
 
@@ -198,6 +200,7 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 | `events/` | 事件内容 | ⬜ 占位 |
 | `rewards/` | 奖励池 | ⬜ 占位 |
 | `difficulty/` | 难度配置 | ⬜ 占位 |
+| `maps/` | 选关地图生成配置（`route_map_default.tres`） | ✅ 已有 |
 
 命名规范：每条内容配稳定 ID（如 `card.warrior.slash`），显示名走 `localization/` 文本键；effect 定义建议**独立 `.tres` 外链**，别内联进卡牌（避免共享子资源被改动）。
 
@@ -251,6 +254,7 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 | `godot_architecture.md` | 原始架构方案（只读，位于 Downloads） | — |
 | `architecture_review.md` | 评审：风险/缺口/修订清单 | ✅ 已有 |
 | `combat_rules.md` | 战斗规则精确合同（阶段/伤害管线/触发/位移/胜负） | ✅ 已有 |
+| `route_map_rules.md` | 选关地图生成合同（DAG 拓扑/固定行/相邻约束/解锁） | ✅ 已有 |
 | `directory_structure.md` | 本文件 | ✅ 已有 |
 
 ## 附：当前占位分布（`.gitkeep`）
