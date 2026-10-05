@@ -11,8 +11,16 @@ config_version=5
 [application]
 
 config/name="mobius"
+run/main_scene="res://app/main.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+App="*res://autoload/app.gd"
+ContentDB="*res://autoload/content_db.gd"
+SaveService="*res://autoload/save_service.gd"
+AudioService="*res://autoload/audio_service.gd"
 
 [display]
 
