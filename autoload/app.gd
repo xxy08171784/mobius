@@ -1,4 +1,3 @@
-class_name App
 extends Node
 ## 当前 Profile / Run 生命周期。autoload。
 ## 约束（architecture_review.md 中优先级）：只暴露 create_run/load_profile/end_run 等生命周期 API，

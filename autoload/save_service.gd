@@ -1,4 +1,3 @@
-class_name SaveService
 extends Node
 ## 存档读写门面。autoload。
 ## user://profile.json  user://settings.cfg  user://runs/current.json(.bak)

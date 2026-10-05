@@ -1,4 +1,3 @@
-class_name ContentDB
 extends Node
 ## 稳定内容 ID -> 只读定义。autoload。
 ## 启动时从显式 catalog 加载，既检查引用，也保证导出时保留资源。

@@ -1,4 +1,3 @@
-class_name AudioService
 extends Node
 ## 音量、BGM、音效播放。autoload。
 
