@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_38624"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_sl0rb"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_udm7e"]
+
+[sub_resource type="Resource" id="Resource_vijrf"]
+script = ExtResource("2_sl0rb")
+type_key = &"block"
+params = {
+"amount": 11
+}
+
+[sub_resource type="Resource" id="Resource_o1arc"]
+script = ExtResource("2_sl0rb")
+type_key = &"block"
+params = {
+"amount": 15
+}
+
+[resource]
+script = ExtResource("3_udm7e")
+card_id = &"card.warrior.brace"
+display_name = "固守"
+description = "获得 11 点护盾"
+base_cost = 2
+tags = Array[StringName]([&"skill"])
+effects = Array[ExtResource("1_38624")]([SubResource("Resource_vijrf")])
+attack_range = 0
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_38624")]([SubResource("Resource_o1arc")])
+}
+}

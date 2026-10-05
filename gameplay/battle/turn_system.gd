@@ -63,7 +63,10 @@ func run_end_turn(
 		return {"ok": false, "error_code": &"phase", "events": events}
 
 	state.phase = BattleState.Phase.PLAYER_END
-	_finish_owner_turn(state, UnitState.Team.PLAYER)
+	var player_finish := _finish_owner_turn(state, rng, UnitState.Team.PLAYER)
+	if not bool(player_finish.get("ok", false)):
+		return {"ok": false, "error_code": &"status_effect", "events": EventBatch.new()}
+	_append_events(events, player_finish.get("events"))
 	_discard_remaining_hand(state.deck)
 	var terminal := evaluate_outcome(state)
 	if terminal != BattleState.Phase.SETUP:
@@ -91,9 +94,10 @@ func run_end_turn(
 				"events": EventBatch.new(),
 			}
 		_append_events(events, action_result.get("events"))
-		enemy = state.get_unit(enemy_id)
-		if enemy != null:
-			_finish_single_owner_turn(enemy)
+		var enemy_finish := _finish_single_owner_turn(state, rng, enemy_id)
+		if not bool(enemy_finish.get("ok", false)):
+			return {"ok": false, "error_code": &"status_effect", "events": EventBatch.new()}
+		_append_events(events, enemy_finish.get("events"))
 
 		terminal = evaluate_outcome(state)
 		if terminal != BattleState.Phase.SETUP:
@@ -288,15 +292,48 @@ func _discard_remaining_hand(deck: DeckState) -> void:
 		_card_system.discard_from_hand(deck, int(uid_value))
 
 
-func _finish_owner_turn(state: BattleState, team: UnitState.Team) -> void:
+func _finish_owner_turn(state: BattleState, rng: RngStreams, team: UnitState.Team) -> Dictionary:
+	var events := EventBatch.new()
 	var ids := state.player_ids() if team == UnitState.Team.PLAYER else state.enemy_ids()
 	for unit_id: int in ids:
-		var unit := state.get_unit(unit_id)
-		if unit != null:
-			_finish_single_owner_turn(unit)
+		var result := _finish_single_owner_turn(state, rng, unit_id)
+		if not bool(result.get("ok", false)):
+			return {"ok": false, "events": EventBatch.new()}
+		_append_events(events, result.get("events"))
+	return {"ok": true, "events": events}
 
 
-func _finish_single_owner_turn(unit: UnitState) -> void:
+func _finish_single_owner_turn(state: BattleState, rng: RngStreams, unit_id: int) -> Dictionary:
+	var events := EventBatch.new()
+	var unit := state.get_unit(unit_id)
+	if unit == null:
+		return {"ok": true, "events": events}
+
+	var bleed_damage := StatusRules.owner_turn_end_damage(unit)
+	if unit.is_alive() and bleed_damage > 0:
+		var resolved := _resolver.resolve(
+			state,
+			{
+				"context": {"source_unit_id": -1},
+				"effects": [{
+					"type_key": &"damage",
+					"target": unit_id,
+					"params": {
+						"amount": bleed_damage,
+						"ignore_status_modifiers": true,
+						"status_id": StatusRules.BLEED,
+					},
+				}],
+			},
+			rng
+		)
+		if not bool(resolved.get("ok", false)):
+			return {"ok": false, "events": EventBatch.new()}
+		_copy_resolved_state_into(state, resolved["state_out"])
+		_restore_rng_from_resolution(rng, resolved["rng_out"])
+		_append_events(events, resolved["events"])
+		unit = state.get_unit(unit_id)
+
 	var expired: Array[int] = []
 	for instance_id: int in unit.status_ids():
 		var status := unit.get_status(instance_id)
@@ -305,6 +342,7 @@ func _finish_single_owner_turn(unit: UnitState) -> void:
 			expired.append(instance_id)
 	for instance_id: int in expired:
 		unit.remove_status(instance_id)
+	return {"ok": true, "events": events}
 
 
 func _copy_resolved_state_into(target: BattleState, source: BattleState) -> void:

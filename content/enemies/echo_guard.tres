@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_klxkj"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_4k16i"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_brox8"]
+
+[sub_resource type="Resource" id="Resource_ieher"]
+script = ExtResource("2_4k16i")
+id = &"echo_guard.defend"
+kind = 3
+target_policy = 1
+block = 6
+
+[sub_resource type="Resource" id="Resource_fju04"]
+script = ExtResource("2_4k16i")
+id = &"echo_guard.attack"
+damage = 6
+
+[sub_resource type="Resource" id="Resource_cxpci"]
+script = ExtResource("2_4k16i")
+id = &"echo_guard.approach"
+kind = 1
+
+[sub_resource type="Resource" id="Resource_b2s7q"]
+script = ExtResource("1_klxkj")
+sequence = Array[ExtResource("2_4k16i")]([SubResource("Resource_ieher"), SubResource("Resource_fju04"), SubResource("Resource_cxpci")])
+id = &"enemy.echo_guard.behavior"
+fallback_action_id = &"echo_guard.attack"
+
+[resource]
+script = ExtResource("3_brox8")
+id = &"enemy.echo_guard"
+unit_def_id = &"unit.enemy.echo_guard"
+behavior = SubResource("Resource_b2s7q")
+appearance_key = &"enemy.echo_guard"

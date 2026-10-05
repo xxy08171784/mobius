@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_d1xje"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_0axgp"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_ayd61"]
+
+[sub_resource type="Resource" id="Resource_x3oc7"]
+script = ExtResource("2_0axgp")
+id = &"loop_hound.approach"
+kind = 1
+move_steps = 2
+
+[sub_resource type="Resource" id="Resource_rcuju"]
+script = ExtResource("2_0axgp")
+id = &"loop_hound.attack_a"
+damage = 4
+
+[sub_resource type="Resource" id="Resource_7atus"]
+script = ExtResource("2_0axgp")
+id = &"loop_hound.attack_b"
+damage = 4
+
+[sub_resource type="Resource" id="Resource_chotl"]
+script = ExtResource("1_d1xje")
+sequence = Array[ExtResource("2_0axgp")]([SubResource("Resource_x3oc7"), SubResource("Resource_rcuju"), SubResource("Resource_7atus")])
+id = &"enemy.loop_hound.behavior"
+fallback_action_id = &"loop_hound.attack_a"
+
+[resource]
+script = ExtResource("3_ayd61")
+id = &"enemy.loop_hound"
+unit_def_id = &"unit.enemy.loop_hound"
+behavior = SubResource("Resource_chotl")
+appearance_key = &"enemy.loop_hound"

@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_j4aso"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_xm64p"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_3cuph"]
+
+[sub_resource type="Resource" id="Resource_qktbb"]
+script = ExtResource("2_xm64p")
+type_key = &"damage"
+params = {
+"amount": 3
+}
+
+[sub_resource type="Resource" id="Resource_jab_bleed"]
+script = ExtResource("2_xm64p")
+type_key = &"apply_status"
+params = {
+"duration": 2,
+"stacks": 1,
+"status_id": &"status.bleed"
+}
+
+[sub_resource type="Resource" id="Resource_cxmrt"]
+script = ExtResource("2_xm64p")
+type_key = &"damage"
+params = {
+"amount": 4
+}
+
+[sub_resource type="Resource" id="Resource_jab_bleed_up"]
+script = ExtResource("2_xm64p")
+type_key = &"apply_status"
+params = {
+"duration": 2,
+"stacks": 2,
+"status_id": &"status.bleed"
+}
+
+[resource]
+script = ExtResource("3_3cuph")
+card_id = &"card.warrior.jab"
+display_name = "快刺"
+description = "造成 3 点伤害，施加 1 层流血（2 回合）"
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_j4aso")]([SubResource("Resource_qktbb"), SubResource("Resource_jab_bleed")])
+content_target_kind = 1
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_j4aso")]([SubResource("Resource_cxmrt"), SubResource("Resource_jab_bleed_up")])
+}
+}

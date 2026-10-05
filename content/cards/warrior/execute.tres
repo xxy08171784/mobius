@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_dk18o"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_ukbpw"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_thgm3"]
+
+[sub_resource type="Resource" id="Resource_etjmf"]
+script = ExtResource("2_ukbpw")
+type_key = &"damage"
+params = {
+"amount": 12
+}
+
+[sub_resource type="Resource" id="Resource_rbm4q"]
+script = ExtResource("2_ukbpw")
+type_key = &"damage"
+params = {
+"amount": 16
+}
+
+[resource]
+script = ExtResource("3_thgm3")
+card_id = &"card.warrior.execute"
+display_name = "处决"
+description = "造成 12 点伤害"
+base_cost = 2
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_dk18o")]([SubResource("Resource_etjmf")])
+content_target_kind = 1
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_dk18o")]([SubResource("Resource_rbm4q")])
+}
+}

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_nchfk"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_ilvoq"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_h8srt"]
+
+[sub_resource type="Resource" id="Resource_c8eth"]
+script = ExtResource("2_ilvoq")
+type_key = &"block"
+params = {
+"amount": 5
+}
+
+[sub_resource type="Resource" id="Resource_hbi6h"]
+script = ExtResource("2_ilvoq")
+type_key = &"block"
+params = {
+"amount": 8
+}
+
+[resource]
+script = ExtResource("3_h8srt")
+card_id = &"card.warrior.guard"
+display_name = "格挡"
+description = "获得 5 点护盾"
+base_cost = 1
+tags = Array[StringName]([&"skill"])
+effects = Array[ExtResource("1_nchfk")]([SubResource("Resource_c8eth")])
+attack_range = 0
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_nchfk")]([SubResource("Resource_hbi6h")])
+}
+}

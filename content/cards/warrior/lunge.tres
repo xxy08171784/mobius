@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_1jn8u"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_isvb8"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_jt3v7"]
+
+[sub_resource type="Resource" id="Resource_ttbxr"]
+script = ExtResource("2_isvb8")
+type_key = &"damage"
+params = {
+"amount": 6
+}
+
+[sub_resource type="Resource" id="Resource_lunge_vuln"]
+script = ExtResource("2_isvb8")
+type_key = &"apply_status"
+params = {
+"duration": 2,
+"stacks": 1,
+"status_id": &"status.vulnerable"
+}
+
+[sub_resource type="Resource" id="Resource_b4jwx"]
+script = ExtResource("2_isvb8")
+type_key = &"damage"
+params = {
+"amount": 8
+}
+
+[sub_resource type="Resource" id="Resource_lunge_vuln_up"]
+script = ExtResource("2_isvb8")
+type_key = &"apply_status"
+params = {
+"duration": 3,
+"stacks": 1,
+"status_id": &"status.vulnerable"
+}
+
+[resource]
+script = ExtResource("3_jt3v7")
+card_id = &"card.warrior.lunge"
+display_name = "突刺"
+description = "距离 2 内造成 6 点伤害，施加易伤（2 回合）"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_1jn8u")]([SubResource("Resource_ttbxr"), SubResource("Resource_lunge_vuln")])
+attack_range = 2
+content_target_kind = 1
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_1jn8u")]([SubResource("Resource_b4jwx"), SubResource("Resource_lunge_vuln_up")])
+}
+}

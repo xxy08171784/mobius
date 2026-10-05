@@ -148,7 +148,7 @@ func _deck_for_work_state(state: Variant, fallback: DeckState) -> DeckState:
 	var embedded: Variant = EffectStateAccess.get_field(state, &"deck")
 	if embedded is DeckState:
 		return embedded as DeckState
-	# 无内嵌牌堆（测试桩）时克隆传入牌堆，保证规划纯函数不污染调用方的权威 DeckState。
+	# 无内嵌牌堆（例如独立测试桩）时也必须使用副本，保证规划纯函数不污染调用方的权威 DeckState。
 	return DeckState.new() if fallback == null else fallback.duplicate_deck()
 
 

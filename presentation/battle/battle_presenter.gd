@@ -10,6 +10,7 @@ var _ui: Dictionary = {}
 var _selected_cards: Array[int] = []
 var _target_unit_id: int = -1
 var _busy: bool = false
+var _preview_result: CommandResult = null
 var _animation_queue := BattleAnimationQueue.new()
 
 
@@ -41,6 +42,11 @@ func set_selection(cards: Array[int], target_unit_id: int) -> void:
 	refresh()
 
 
+func set_preview(result: CommandResult) -> void:
+	_preview_result = result
+	refresh()
+
+
 func set_busy(value: bool) -> void:
 	_busy = value
 	refresh()
@@ -57,6 +63,7 @@ func refresh() -> void:
 	var player_label := _ui.get("player_label") as Label
 	var intent_label := _ui.get("intent_label") as Label
 	var selection_label := _ui.get("selection_label") as Label
+	var preview_label := _ui.get("preview_label") as Label
 	var result_label := _ui.get("result_label") as Label
 	var play_button := _ui.get("play_button") as Button
 	var clear_button := _ui.get("clear_button") as Button
@@ -78,6 +85,8 @@ func refresh() -> void:
 		intent_label.text = _intent_text(state)
 	if selection_label != null:
 		selection_label.text = _selection_text()
+	if preview_label != null:
+		preview_label.text = _preview_text()
 
 	if result_label != null:
 		if state.phase == BattleState.Phase.VICTORY:
@@ -107,7 +116,11 @@ func present_result(result: CommandResult) -> void:
 	if result.events == null or result.events.size() == 0:
 		_append_log("动作已执行。")
 		return
-	await _animation_queue.play(result.events, Callable(self, "_present_event"))
+	await _animation_queue.play(
+		result.events,
+		Callable(self, "_present_event"),
+		Callable(self, "_present_visual_event")
+	)
 
 
 func reset_log() -> void:
@@ -118,20 +131,31 @@ func reset_log() -> void:
 
 
 func _present_event(event: GameEvent) -> void:
-	var actor := "玩家" if event.source_id == 1 else "敌人"
+	var actor := "玩家" if event.source_id == 1 else ("状态" if event.source_id < 0 else "敌人")
 	var target := "玩家" if event.target_id == 1 else "敌人"
 	var payload: Dictionary = {}
 	if event is EffectEvent:
 		payload = (event as EffectEvent).payload
 	match event.type_key:
 		&"damage":
-			_append_log("%s 对 %s 造成 %d 点伤害。" % [actor, target, int(payload.get("hp_damage", payload.get("amount", 0)))])
+			if payload.get("status_id", &"") == StatusRules.BLEED:
+				_append_log("%s 的流血造成 %d 点伤害。" % [target, int(payload.get("hp_damage", payload.get("amount", 0)))])
+			else:
+				_append_log("%s 对 %s 造成 %d 点伤害。" % [actor, target, int(payload.get("hp_damage", payload.get("amount", 0)))])
 		&"block_gained":
 			_append_log("%s 获得 %d 点护盾。" % [target, int(payload.get("amount", 0))])
 		&"unit_moved":
 			_append_log("%s 发生移动。" % target)
 		_:
 			_append_log("事件：%s" % String(event.type_key))
+
+
+func _present_visual_event(event: GameEvent) -> void:
+	if _board_view == null:
+		return
+	var unit_id := event.target_id if event.target_id >= 0 else event.source_id
+	if unit_id >= 0:
+		_board_view.pulse_unit(unit_id)
 
 
 func _append_log(message: String) -> void:
@@ -165,6 +189,46 @@ func _selection_text() -> String:
 	if _target_unit_id >= 0:
 		text += "  · 目标单位 %d" % _target_unit_id
 	return text
+
+
+func _preview_text() -> String:
+	if _selected_cards.is_empty():
+		return "预览：选择卡牌后显示结算结果"
+	if _preview_result == null:
+		return "预览：等待目标"
+	if not _preview_result.accepted:
+		return "预览：%s" % _error_text(_preview_result.error_code)
+	if _preview_result.events == null or _preview_result.events.size() == 0:
+		return "预览：可执行（无直接数值事件）"
+	var parts: Array[String] = []
+	var damage := 0
+	var block := 0
+	var draw_count := 0
+	var statuses: Array[String] = []
+	for event: GameEvent in _preview_result.events.events:
+		var payload: Dictionary = {}
+		if event is EffectEvent:
+			payload = (event as EffectEvent).payload
+		match event.type_key:
+			&"damage":
+				damage += int(payload.get("hp_damage", payload.get("amount", 0)))
+			&"block_gained":
+				block += int(payload.get("amount", 0))
+			&"cards_drawn":
+				draw_count += Array(payload.get("cards", [])).size()
+			&"status_applied":
+				statuses.append(String(payload.get("status_id", "")))
+	if damage > 0:
+		parts.append("造成 %d HP 伤害" % damage)
+	if block > 0:
+		parts.append("获得 %d 护盾" % block)
+	if draw_count > 0:
+		parts.append("抽 %d 张牌" % draw_count)
+	if not statuses.is_empty():
+		parts.append("施加 %s" % ", ".join(statuses))
+	if parts.is_empty():
+		parts.append("%d 个事件" % _preview_result.events.size())
+	return "预览：" + "；".join(parts)
 
 
 func _phase_text(phase: BattleState.Phase) -> String:

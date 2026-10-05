@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_5sbni"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_ouvss"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_5wqid"]
+
+[sub_resource type="Resource" id="Resource_t3a2n"]
+script = ExtResource("2_ouvss")
+id = &"ring_stalker.approach"
+kind = 1
+move_steps = 2
+
+[sub_resource type="Resource" id="Resource_pg5xo"]
+script = ExtResource("2_ouvss")
+id = &"ring_stalker.attack"
+damage = 5
+
+[sub_resource type="Resource" id="Resource_vswqr"]
+script = ExtResource("2_ouvss")
+id = &"ring_stalker.defend"
+kind = 3
+target_policy = 1
+block = 4
+
+[sub_resource type="Resource" id="Resource_pod0f"]
+script = ExtResource("1_5sbni")
+sequence = Array[ExtResource("2_ouvss")]([SubResource("Resource_t3a2n"), SubResource("Resource_pg5xo"), SubResource("Resource_vswqr")])
+id = &"enemy.ring_stalker.behavior"
+fallback_action_id = &"ring_stalker.attack"
+
+[resource]
+script = ExtResource("3_5wqid")
+id = &"enemy.ring_stalker"
+unit_def_id = &"unit.enemy.ring_stalker"
+behavior = SubResource("Resource_pod0f")
+appearance_key = &"enemy.ring_stalker"

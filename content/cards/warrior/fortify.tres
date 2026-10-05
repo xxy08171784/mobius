@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_tbjjp"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_lmm0a"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_ddg2e"]
+
+[sub_resource type="Resource" id="Resource_8v7sv"]
+script = ExtResource("2_lmm0a")
+type_key = &"block"
+params = {
+"amount": 7
+}
+
+[sub_resource type="Resource" id="Resource_hbkrj"]
+script = ExtResource("2_lmm0a")
+type_key = &"block"
+params = {
+"amount": 10
+}
+
+[resource]
+script = ExtResource("3_ddg2e")
+card_id = &"card.warrior.fortify"
+display_name = "加固"
+description = "获得 7 点护盾"
+base_cost = 1
+tags = Array[StringName]([&"skill"])
+effects = Array[ExtResource("1_tbjjp")]([SubResource("Resource_8v7sv")])
+attack_range = 0
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_tbjjp")]([SubResource("Resource_hbkrj")])
+}
+}

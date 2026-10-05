@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_e86h5"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_vctr4"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_8kp5c"]
+
+[sub_resource type="Resource" id="Resource_ixyc5"]
+script = ExtResource("2_vctr4")
+type_key = &"damage"
+params = {
+"amount": 10
+}
+
+[sub_resource type="Resource" id="Resource_qe610"]
+script = ExtResource("2_vctr4")
+type_key = &"damage"
+params = {
+"amount": 13
+}
+
+[resource]
+script = ExtResource("3_8kp5c")
+card_id = &"card.warrior.heavy_strike"
+display_name = "重击"
+description = "造成 10 点伤害"
+base_cost = 2
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_e86h5")]([SubResource("Resource_ixyc5")])
+content_target_kind = 1
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_e86h5")]([SubResource("Resource_qe610")])
+}
+}

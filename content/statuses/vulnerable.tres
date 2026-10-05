@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_y2y25"]
+
+[resource]
+script = ExtResource("1_y2y25")
+status_id = &"status.vulnerable"
+display_name = "易伤"
+description = "受到的普通伤害提高 50%。"

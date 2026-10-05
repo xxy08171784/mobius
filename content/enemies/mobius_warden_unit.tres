@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/units/unit_def.gd" id="1_j3a4l"]
+
+[resource]
+script = ExtResource("1_j3a4l")
+id = &"unit.enemy.mobius_warden"
+base_stats = Dictionary[StringName, int]({
+&"stat.attack": 8,
+&"stat.max_hp": 60,
+&"stat.move": 2,
+&"stat.range": 1
+})
+appearance_key = &"enemy.mobius_warden"

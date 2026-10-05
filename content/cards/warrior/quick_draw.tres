@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_x82su"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_pp6i3"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_5c81s"]
+
+[sub_resource type="Resource" id="Resource_pruxw"]
+script = ExtResource("2_pp6i3")
+type_key = &"draw"
+params = {
+"count": 2
+}
+
+[sub_resource type="Resource" id="Resource_hj0xw"]
+script = ExtResource("2_pp6i3")
+type_key = &"draw"
+params = {
+"count": 2
+}
+
+[resource]
+script = ExtResource("3_5c81s")
+card_id = &"card.warrior.quick_draw"
+display_name = "迅捷思考"
+description = "抽 2 张牌"
+base_cost = 1
+tags = Array[StringName]([&"skill"])
+effects = Array[ExtResource("1_x82su")]([SubResource("Resource_pruxw")])
+attack_range = 0
+upgrade_overrides = {
+1: {
+"cost": 0,
+"effects": Array[ExtResource("1_x82su")]([SubResource("Resource_hj0xw")])
+}
+}

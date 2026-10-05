@@ -3,17 +3,25 @@ extends Control
 
 const BOARD_VIEW_SCENE := preload("res://presentation/battle/board_view.tscn")
 const HAND_VIEW_SCENE := preload("res://presentation/cards/hand_view.tscn")
+const ENEMY_OPTIONS: Array = [
+	[&"enemy.ring_stalker", "环影猎手"],
+	[&"enemy.echo_guard", "回声守卫"],
+	[&"enemy.loop_hound", "循环猎犬"],
+	[&"enemy.mobius_warden", "莫比乌斯守望者 [Boss]"],
+]
 
 var _session: BattleSession = null
 var _presenter: BattlePresenter = null
 var _battle_input: BattleInput = null
 var _board_view: BoardView = null
 var _hand_view: HandView = null
+var _enemy_selector: OptionButton = null
 var _ui: Dictionary = {}
 
 
 func _ready() -> void:
 	_build_ui()
+	_populate_enemy_selector()
 	_start_demo()
 
 
@@ -63,9 +71,18 @@ func _build_ui() -> void:
 	content.add_child(side)
 
 	var help := Label.new()
-	help.text = "操作：\n1. 不选牌时点击空格 = 移动\n2. 点击卡牌选择组合顺序\n3. 点击敌人锁定目标\n4. 点击“打出所选”\n5. 点击“结束回合”看敌人行动"
+	help.text = "操作：\n1. 不选牌时点击空格 = 移动\n2. 点击卡牌选择组合顺序\n3. 点击敌人锁定目标\n4. 点击“打出所选”\n5. 点击“结束回合”看敌人行动\n6. 下方可切换敌人/Boss测试"
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	side.add_child(help)
+
+	var enemy_row := HBoxContainer.new()
+	enemy_row.add_theme_constant_override("separation", 8)
+	side.add_child(enemy_row)
+	_label_into(enemy_row, "测试敌人：")
+	_enemy_selector = OptionButton.new()
+	_enemy_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	enemy_row.add_child(_enemy_selector)
+	_enemy_selector.item_selected.connect(_on_enemy_selected)
 
 	_ui["result_label"] = _label_into(side, "")
 	var event_log := RichTextLabel.new()
@@ -88,6 +105,7 @@ func _build_ui() -> void:
 	hand_scroll.add_child(_hand_view)
 
 	_ui["selection_label"] = _label_into(root, "已选卡牌：无")
+	_ui["preview_label"] = _label_into(root, "预览：选择卡牌后显示结算结果")
 	var controls := HBoxContainer.new()
 	controls.alignment = BoxContainer.ALIGNMENT_CENTER
 	controls.add_theme_constant_override("separation", 12)
@@ -111,7 +129,10 @@ func _start_demo() -> void:
 	if _battle_input != null:
 		_battle_input.queue_free()
 
-	var data := DemoBattleSetup.build()
+	var data := DemoBattleSetup.build("phase5-content-demo", _selected_enemy_id())
+	if data.is_empty():
+		(_ui["result_label"] as Label).text = "正式内容加载失败，请查看错误日志。"
+		return
 	_session = BattleSession.new()
 	_session.setup(
 		data["rng"],
@@ -138,9 +159,32 @@ func _start_demo() -> void:
 	_battle_input.bind(_session, data["card_defs"], _presenter)
 
 
+func _populate_enemy_selector() -> void:
+	if _enemy_selector == null:
+		return
+	_enemy_selector.clear()
+	for option: Array in ENEMY_OPTIONS:
+		var index := _enemy_selector.item_count
+		_enemy_selector.add_item(String(option[1]))
+		_enemy_selector.set_item_metadata(index, option[0])
+	if _enemy_selector.item_count > 0:
+		_enemy_selector.select(0)
+
+
+func _selected_enemy_id() -> StringName:
+	if _enemy_selector == null or _enemy_selector.item_count == 0:
+		return &"enemy.ring_stalker"
+	return StringName(String(_enemy_selector.get_item_metadata(_enemy_selector.selected)))
+
+
+func _on_enemy_selected(_index: int) -> void:
+	if is_node_ready():
+		_start_demo()
+
+
 func _validate_card_target(
 	state: Variant,
-	_card: BattleCardState,
+	card: BattleCardState,
 	definition: CardDef,
 	target: Variant
 ) -> Dictionary:
@@ -160,8 +204,13 @@ func _validate_card_target(
 	if target_cell == BoardState.INVALID_CELL:
 		return {"ok": false, "fizzle": true}
 	var distance := absi(actor_cell.x - target_cell.x) + absi(actor_cell.y - target_cell.y)
+	var attack_range := definition.get_attack_range(card.upgrade_level)
+	var los_ok := (
+		not definition.needs_line_of_sight(card.upgrade_level)
+		or BoardQuery.has_line_of_sight(battle.board, actor_cell, target_cell)
+	)
 	return {
-		"ok": distance <= 1 and BoardQuery.has_line_of_sight(battle.board, actor_cell, target_cell),
+		"ok": distance <= attack_range and los_ok,
 		"fizzle": false,
 	}
 
