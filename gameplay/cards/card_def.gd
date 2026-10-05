@@ -2,11 +2,22 @@ class_name CardDef
 extends Resource
 ## 卡牌静态定义。Resource 约定只读，运行时变化放 RunCardState/BattleCardState。
 
+enum ContentTargetKind { NONE, UNIT, CELL, DIRECTION }
+
 @export var card_id: StringName = &""
+@export var display_name: String = ""
+@export_multiline var description: String = ""
 @export var base_cost: int = 0
 @export var tags: Array[StringName] = []
 @export var effects: Array[EffectDef] = []
 @export var exhaust_on_play: bool = false
+@export var attack_range: int = 1
+@export var requires_los: bool = true
+
+## TargetSpec 是冻结的 RefCounted 契约，不能直接序列化进 .tres。
+## 内容资源用这两个字段描述目标槽，运行时再合成为 TargetSpec。
+@export var content_target_kind: ContentTargetKind = ContentTargetKind.NONE
+@export_enum("Any", "Ally", "Enemy", "Self") var content_target_team: int = 2
 
 ## B1 的正式 TargetSpec 目标槽；null 表示该卡不需要目标。
 var target_rule: TargetSpec = null
@@ -44,7 +55,17 @@ func get_effects(upgrade_level: int = 0) -> Array:
 
 func get_target_rule(upgrade_level: int = 0) -> TargetSpec:
 	var value: Variant = _upgrade_data(upgrade_level).get("target_rule", target_rule)
-	return value as TargetSpec
+	if value is TargetSpec:
+		return value as TargetSpec
+	return _content_target_rule()
+
+
+func get_attack_range(upgrade_level: int = 0) -> int:
+	return maxi(0, int(_upgrade_data(upgrade_level).get("range", attack_range)))
+
+
+func needs_line_of_sight(upgrade_level: int = 0) -> bool:
+	return bool(_upgrade_data(upgrade_level).get("requires_los", requires_los))
 
 
 func should_exhaust(upgrade_level: int = 0) -> bool:
@@ -59,3 +80,17 @@ func _upgrade_data(level: int) -> Dictionary:
 	if upgrade_overrides.has(str(level)):
 		return upgrade_overrides[str(level)]
 	return {}
+
+
+func _content_target_rule() -> TargetSpec:
+	match content_target_kind:
+		ContentTargetKind.UNIT:
+			var unit_target := TargetSpec.UnitTarget.new()
+			unit_target.team = content_target_team as TargetSpec.UnitTarget.Team
+			return unit_target
+		ContentTargetKind.CELL:
+			return TargetSpec.CellTarget.new()
+		ContentTargetKind.DIRECTION:
+			return TargetSpec.DirectionTarget.new()
+		_:
+			return null

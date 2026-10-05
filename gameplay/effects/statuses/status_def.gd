@@ -10,6 +10,8 @@ enum TickTiming {
 }
 
 @export var status_id: StringName = &""
+@export var display_name: String = ""
+@export_multiline var description: String = ""
 @export var tick_timing: TickTiming = TickTiming.OWNER_TURN_END
 @export var priority: int = 0
 

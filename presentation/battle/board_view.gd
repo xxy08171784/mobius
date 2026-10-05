@@ -5,11 +5,13 @@ extends GridContainer
 signal cell_pressed(cell: Vector2i)
 
 var _buttons: Dictionary = {}
+var _last_state: BattleState = null
 
 
 func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool = false) -> void:
 	if state == null:
 		return
+	_last_state = state
 	if _buttons.size() != state.board.cols * state.board.rows:
 		_rebuild(state.board)
 
@@ -52,6 +54,9 @@ func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool
 					text_parts.append("HP %d/%d" % [unit.hp, unit.max_hp])
 					if unit.block > 0:
 						text_parts.append("盾 %d" % unit.block)
+					var status_text := _status_text(unit)
+					if not status_text.is_empty():
+						text_parts.append(status_text)
 			else:
 				var cell_state := state.board.get_cell(cell)
 				if cell_state != null and not cell_state.traversable:
@@ -62,6 +67,39 @@ func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool
 			button.text = "\n".join(text_parts)
 			button.disabled = busy or state.is_terminal()
 			button.tooltip_text = "棋盘格 (%d, %d)" % [x, y]
+
+
+func pulse_unit(unit_id: int) -> void:
+	if _last_state == null or _last_state.board == null:
+		return
+	var cell := _last_state.board.get_unit_cell(unit_id)
+	if cell == BoardState.INVALID_CELL or not _buttons.has(cell):
+		return
+	var button := _buttons[cell] as Button
+	button.pivot_offset = button.size * 0.5
+	button.scale = Vector2(0.88, 0.88)
+	var tween := create_tween()
+	tween.tween_property(button, "scale", Vector2.ONE, 0.12)
+
+
+func _status_text(unit: UnitState) -> String:
+	if unit == null or unit.statuses.is_empty():
+		return ""
+	var parts: Array[String] = []
+	for instance_id: int in unit.status_ids():
+		var status := unit.get_status(instance_id)
+		if status == null or status.is_expired():
+			continue
+		match status.status_id:
+			StatusRules.BLEED:
+				parts.append("流血%d(%d)" % [status.stacks, status.duration])
+			StatusRules.VULNERABLE:
+				parts.append("易伤(%d)" % status.duration)
+			StatusRules.FOCUS:
+				parts.append("专注%d(%d)" % [status.stacks, status.duration])
+			_:
+				parts.append(String(status.status_id))
+	return " ".join(parts)
 
 
 func _rebuild(board: BoardState) -> void:

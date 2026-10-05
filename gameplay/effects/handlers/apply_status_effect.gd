@@ -13,6 +13,9 @@ func apply(
 	_rng: RandomNumberGenerator
 ) -> Dictionary:
 	var target_id := EffectStateAccess.target_unit_id(context)
+	# 无目标技能默认把状态施加给来源单位，允许“专注”等自增益卡保持无目标合同。
+	if target_id < 0:
+		target_id = context.source_unit_id
 	var target: Variant = EffectStateAccess.get_unit(work_state, target_id)
 	if target == null:
 		return _error(&"invalid_target")

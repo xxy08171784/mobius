@@ -3,17 +3,115 @@ extends Node
 ## 启动时从显式 catalog 加载，既检查引用，也保证导出时保留资源。
 ## 约定：Def 资源只读，运行时禁止修改。
 
+const DEFAULT_CATALOG := "res://content/catalog.tres"
 
-func load_catalog(_path: String) -> void:
-	# TODO: 加载 catalog.tres 并建立 ID 索引。
-	pass
+var _loaded_path: String = ""
+var _cards: Dictionary = {}
+var _units: Dictionary = {}
+var _enemies: Dictionary = {}
+var _statuses: Dictionary = {}
+var _relics: Dictionary = {}
 
 
-func get_card(_id: StringName) -> RefCounted:
-	# TODO
-	return null
+func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
+	_clear_indexes()
+	var raw := load(path)
+	if not raw is ContentCatalog:
+		push_error("ContentDB: catalog is missing or has wrong type: %s" % path)
+		return false
+	var catalog := raw as ContentCatalog
+	var ok := true
+	for definition: CardDef in catalog.cards:
+		ok = _register(_cards, definition.card_id if definition != null else &"", definition, "card") and ok
+	for definition: UnitDef in catalog.units:
+		ok = _register(_units, definition.id if definition != null else &"", definition, "unit") and ok
+	for definition: EnemyDef in catalog.enemies:
+		ok = _register(_enemies, definition.id if definition != null else &"", definition, "enemy") and ok
+	for definition: StatusDef in catalog.statuses:
+		ok = _register(_statuses, definition.status_id if definition != null else &"", definition, "status") and ok
+	for definition: RelicDef in catalog.relics:
+		ok = _register(_relics, definition.relic_id if definition != null else &"", definition, "relic") and ok
+	if not ok:
+		_clear_indexes()
+		return false
+	_loaded_path = path
+	return true
 
 
-func get_enemy(_id: StringName) -> RefCounted:
-	# TODO
-	return null
+func ensure_loaded(path: String = DEFAULT_CATALOG) -> bool:
+	if is_loaded() and _loaded_path == path:
+		return true
+	return load_catalog(path)
+
+
+func is_loaded() -> bool:
+	return not _loaded_path.is_empty()
+
+
+func get_card(id: StringName) -> CardDef:
+	return _cards.get(id) as CardDef
+
+
+func get_unit(id: StringName) -> UnitDef:
+	return _units.get(id) as UnitDef
+
+
+func get_enemy(id: StringName) -> EnemyDef:
+	return _enemies.get(id) as EnemyDef
+
+
+func get_status(id: StringName) -> StatusDef:
+	return _statuses.get(id) as StatusDef
+
+
+func get_relic(id: StringName) -> RelicDef:
+	return _relics.get(id) as RelicDef
+
+
+func all_cards() -> Dictionary:
+	return _cards.duplicate()
+
+
+func card_ids() -> Array:
+	return _sorted_ids(_cards)
+
+
+func enemy_ids() -> Array:
+	return _sorted_ids(_enemies)
+
+
+func status_ids() -> Array:
+	return _sorted_ids(_statuses)
+
+
+func relic_ids() -> Array:
+	return _sorted_ids(_relics)
+
+
+func _register(index: Dictionary, id: StringName, definition: Variant, kind: String) -> bool:
+	if definition == null or id.is_empty():
+		push_error("ContentDB: invalid %s definition" % kind)
+		return false
+	if index.has(id):
+		push_error("ContentDB: duplicate %s id: %s" % [kind, String(id)])
+		return false
+	if definition.has_method("is_valid") and not bool(definition.call("is_valid")):
+		push_error("ContentDB: invalid %s content: %s" % [kind, String(id)])
+		return false
+	index[id] = definition
+	return true
+
+
+func _clear_indexes() -> void:
+	_loaded_path = ""
+	_cards.clear()
+	_units.clear()
+	_enemies.clear()
+	_statuses.clear()
+	_relics.clear()
+
+
+func _sorted_ids(index: Dictionary) -> Array:
+	var ids := index.keys()
+	ids.sort_custom(func(a: Variant, b: Variant) -> bool: return String(a) < String(b))
+	return ids

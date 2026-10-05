@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_jarh1"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_mhpqb"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_0enxh"]
+
+[sub_resource type="Resource" id="Resource_onbf4"]
+script = ExtResource("2_mhpqb")
+type_key = &"draw"
+params = {
+"count": 1
+}
+
+[sub_resource type="Resource" id="Resource_insight_focus"]
+script = ExtResource("2_mhpqb")
+type_key = &"apply_status"
+params = {
+"duration": 2,
+"stacks": 1,
+"status_id": &"status.focus"
+}
+
+[sub_resource type="Resource" id="Resource_stigw"]
+script = ExtResource("2_mhpqb")
+type_key = &"draw"
+params = {
+"count": 2
+}
+
+[sub_resource type="Resource" id="Resource_insight_focus_up"]
+script = ExtResource("2_mhpqb")
+type_key = &"apply_status"
+params = {
+"duration": 2,
+"stacks": 2,
+"status_id": &"status.focus"
+}
+
+[resource]
+script = ExtResource("3_0enxh")
+card_id = &"card.warrior.insight"
+display_name = "洞察"
+description = "抽 1 张牌，获得 1 层专注（2 回合）"
+tags = Array[StringName]([&"skill"])
+effects = Array[ExtResource("1_jarh1")]([SubResource("Resource_onbf4"), SubResource("Resource_insight_focus")])
+attack_range = 0
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_jarh1")]([SubResource("Resource_stigw"), SubResource("Resource_insight_focus_up")])
+}
+}

@@ -1,7 +1,6 @@
 class_name DamageEffectHandler
 extends EffectHandler
-## 基础伤害：合法性 -> StatSystem 统一取整 -> Block -> HP -> 事件/触发 -> 死亡。
-## 力量/虚弱/易伤等具体修饰来源尚未冻结，不在此擅自发明字段。
+## 基础伤害：合法性 -> 状态修饰 -> StatSystem 统一取整 -> Block -> HP -> 事件/触发 -> 死亡。
 
 
 func get_type_key() -> StringName:
@@ -19,8 +18,9 @@ func apply(
 	if target == null:
 		return _error(&"invalid_target")
 
+	var source: Variant = null
 	if context.source_unit_id >= 0:
-		var source: Variant = EffectStateAccess.get_unit(work_state, context.source_unit_id)
+		source = EffectStateAccess.get_unit(work_state, context.source_unit_id)
 		if source == null or _is_dead(source):
 			return _error(&"invalid_source")
 	if _is_dead(target):
@@ -28,9 +28,15 @@ func apply(
 
 	var params: Dictionary = effect.get("params", {})
 	var raw_amount := maxf(0.0, float(params.get("amount", 0.0)))
+	var flat_bonus := 0.0
+	var percent_bonus := 0.0
+	if not bool(params.get("ignore_status_modifiers", false)):
+		if source is UnitState:
+			flat_bonus += StatusRules.outgoing_damage_flat(source as UnitState)
+		if target is UnitState:
+			percent_bonus += StatusRules.incoming_damage_percent(target as UnitState)
 
-	# 先接入 B2 的统一 floor/钳制语义；具体攻防修饰以后只替换 flat/percent 输入。
-	var final_damage := maxi(0, StatSystem.compute(raw_amount, 0.0, 0.0, 0.0, INF))
+	var final_damage := maxi(0, StatSystem.compute(raw_amount, flat_bonus, percent_bonus, 0.0, INF))
 	var hp_before := int(EffectStateAccess.get_field(target, &"hp", 0))
 	var block_before := maxi(0, int(EffectStateAccess.get_field(target, &"block", 0)))
 	var absorbed := mini(block_before, final_damage)
@@ -53,7 +59,15 @@ func apply(
 		target_id,
 		{"hp": hp_before, "block": block_before},
 		{"hp": hp_after, "block": block_after},
-		{"amount": final_damage, "absorbed": absorbed, "hp_damage": hp_damage}
+		{
+			"amount": final_damage,
+			"raw_amount": raw_amount,
+			"flat_bonus": flat_bonus,
+			"percent_bonus": percent_bonus,
+			"absorbed": absorbed,
+			"hp_damage": hp_damage,
+			"status_id": params.get("status_id", &""),
+		}
 	)
 
 	var triggers: Array = [

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_0o5qg"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_y580i"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_x11rr"]
+
+[sub_resource type="Resource" id="Resource_vnfgm"]
+script = ExtResource("2_y580i")
+type_key = &"damage"
+params = {
+"amount": 5
+}
+
+[sub_resource type="Resource" id="Resource_1f261"]
+script = ExtResource("2_y580i")
+type_key = &"damage"
+params = {
+"amount": 7
+}
+
+[resource]
+script = ExtResource("3_x11rr")
+card_id = &"card.warrior.strike"
+display_name = "斩击"
+description = "造成 5 点伤害"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_0o5qg")]([SubResource("Resource_vnfgm")])
+content_target_kind = 1
+upgrade_overrides = {
+1: {
+"effects": Array[ExtResource("1_0o5qg")]([SubResource("Resource_1f261")])
+}
+}

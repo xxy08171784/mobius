@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_o28f5"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_84exm"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_s1stt"]
+
+[sub_resource type="Resource" id="Resource_r14rs"]
+script = ExtResource("2_84exm")
+id = &"mobius_warden.approach"
+kind = 1
+move_steps = 2
+
+[sub_resource type="Resource" id="Resource_gjo7j"]
+script = ExtResource("2_84exm")
+id = &"mobius_warden.charge"
+kind = 2
+damage = 12
+charge_turns = 1
+
+[sub_resource type="Resource" id="Resource_k7pob"]
+script = ExtResource("2_84exm")
+id = &"mobius_warden.defend"
+kind = 3
+target_policy = 1
+block = 8
+
+[sub_resource type="Resource" id="Resource_kg40j"]
+script = ExtResource("2_84exm")
+id = &"mobius_warden.attack"
+damage = 8
+
+[sub_resource type="Resource" id="Resource_axfxu"]
+script = ExtResource("1_o28f5")
+sequence = Array[ExtResource("2_84exm")]([SubResource("Resource_r14rs"), SubResource("Resource_gjo7j"), SubResource("Resource_k7pob"), SubResource("Resource_kg40j")])
+id = &"enemy.mobius_warden.behavior"
+fallback_action_id = &"mobius_warden.attack"
+
+[resource]
+script = ExtResource("3_s1stt")
+id = &"enemy.mobius_warden"
+unit_def_id = &"unit.enemy.mobius_warden"
+behavior = SubResource("Resource_axfxu")
+appearance_key = &"enemy.mobius_warden"

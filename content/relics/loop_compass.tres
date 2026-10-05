@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/relics/relic_def.gd" id="1_3mspt"]
+
+[resource]
+script = ExtResource("1_3mspt")
+relic_id = &"relic.loop_compass"
+display_name = "回环罗盘"
+description = "预留：战斗开始时提供额外移动资源。"
+trigger_key = &"battle_start"
+trigger_params = {
+"move_points": 1
+}

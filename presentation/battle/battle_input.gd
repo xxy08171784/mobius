@@ -49,8 +49,13 @@ func on_cell_pressed(cell: Vector2i) -> void:
 func play_selected() -> void:
 	if _busy or _session == null or _selected_cards.is_empty():
 		return
+	var command := _build_play_command(_allocate_command_id())
+	_submit(command)
+
+
+func _build_play_command(command_id: int) -> PlayCardsCommand:
 	var command := PlayCardsCommand.new()
-	command.command_id = _allocate_command_id()
+	command.command_id = command_id
 	command.actor_id = _player_id()
 	command.card_uids = _selected_cards.duplicate()
 	var targets: Array = []
@@ -78,7 +83,7 @@ func play_selected() -> void:
 		else:
 			targets.append(null)
 	command.targets = targets
-	_submit(command)
+	return command
 
 
 func end_turn() -> void:
@@ -134,3 +139,10 @@ func _allocate_command_id() -> int:
 func _sync_selection() -> void:
 	if _presenter != null:
 		_presenter.set_selection(_selected_cards, _selected_target_unit)
+		_presenter.set_preview(_preview_selection())
+
+
+func _preview_selection() -> CommandResult:
+	if _session == null or _selected_cards.is_empty() or not _session.state.accepts_input():
+		return null
+	return _session.preview(_build_play_command(-1))
