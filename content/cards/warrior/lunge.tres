@@ -42,6 +42,7 @@ card_id = &"card.warrior.lunge"
 display_name = "突刺"
 description = "距离 2 内造成 6 点伤害，施加易伤（2 回合）"
 base_cost = 1
+reward_pool_enabled = false
 tags = Array[StringName]([&"attack"])
 effects = Array[ExtResource("1_1jn8u")]([SubResource("Resource_ttbxr"), SubResource("Resource_lunge_vuln")])
 attack_range = 2

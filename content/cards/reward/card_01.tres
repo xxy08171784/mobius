@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_3d5uq"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_474ev"]
+
+[resource]
+script = ExtResource("2_474ev")
+card_id = &"card.reward.01"
+card_number = 1
+card_category = 1
+visual_key = &"card_01"
+icon_key = &"icon_01"
+display_name = "套索"
+description = "直线2格距离内拾取地面物品，或从敌人身上取回飞刀（每1把造成6点伤害）。"
+base_cost = 1
+tags = Array[StringName]([&"skill"])
+attack_range = 2
+content_target_kind = 2

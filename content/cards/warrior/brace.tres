@@ -24,6 +24,7 @@ card_id = &"card.warrior.brace"
 display_name = "固守"
 description = "获得 11 点护盾"
 base_cost = 2
+reward_pool_enabled = false
 tags = Array[StringName]([&"defense"])
 effects = Array[ExtResource("1_38624")]([SubResource("Resource_vijrf")])
 attack_range = 0

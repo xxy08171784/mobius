@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_0n6a3"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_n3pn8"]
+
+[resource]
+script = ExtResource("2_n3pn8")
+card_id = &"card.reward.13"
+card_number = 13
+card_category = 2
+visual_key = &"card_13"
+icon_key = &"icon_13"
+display_name = "冲刺斩"
+description = "往一个方向冲刺最远3格，造成10点基础伤害且每冲刺1格+5点伤害。"
+base_cost = 2
+tags = Array[StringName]([&"technique"])
+content_target_kind = 3

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_dle43"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_3bui8"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_4lyy7"]
+
+[sub_resource type="Resource" id="Resource_3bui8"]
+script = ExtResource("2_4lyy7")
+type_key = &"block"
+params = {
+"amount": 4.0
+}
+
+[sub_resource type="Resource" id="Resource_4lyy7"]
+script = ExtResource("2_4lyy7")
+type_key = &"draw"
+params = {
+"count": 2.0
+}
+
+[resource]
+script = ExtResource("2_3bui8")
+card_id = &"card.reward.07"
+card_number = 7
+card_category = 1
+visual_key = &"card_07"
+icon_key = &"icon_07"
+display_name = "躁动"
+description = "护甲+4，抽2张牌。"
+base_cost = 1
+tags = Array[StringName]([&"skill"])
+effects = Array[ExtResource("1_dle43")]([SubResource("Resource_3bui8"), SubResource("Resource_4lyy7")])

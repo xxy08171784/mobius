@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_0yybc"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_2361c"]
+
+[resource]
+script = ExtResource("2_2361c")
+card_id = &"card.reward.22"
+card_number = 22
+card_category = 3
+visual_key = &"card_22"
+icon_key = &"icon_22"
+display_name = "索命刀"
+description = "造成6点伤害。对有负面状态的敌人，此牌造成3倍伤害。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

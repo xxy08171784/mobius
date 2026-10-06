@@ -86,7 +86,8 @@ func battle_result() -> BattleResult:
 	var player_hp: Dictionary = {}
 	for player_id: int in state.player_ids():
 		player_hp[player_id] = state.get_unit(player_id).hp
-	result.persistent_changes = {"player_hp": player_hp}
+	result.persistent_changes = state.run_changes.duplicate(true)
+	result.persistent_changes["player_hp"] = player_hp
 	return result
 
 

@@ -41,6 +41,7 @@ script = ExtResource("3_0enxh")
 card_id = &"card.warrior.insight"
 display_name = "洞察"
 description = "抽 1 张牌，获得 1 层专注（2 回合）"
+reward_pool_enabled = false
 tags = Array[StringName]([&"skill"])
 effects = Array[ExtResource("1_jarh1")]([SubResource("Resource_onbf4"), SubResource("Resource_insight_focus")])
 attack_range = 0

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_s3rbr"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_2qmqc"]
+
+[resource]
+script = ExtResource("2_2qmqc")
+card_id = &"card.reward.04"
+card_number = 4
+card_category = 1
+visual_key = &"card_04"
+icon_key = &"icon_04"
+display_name = "欧拉欧拉欧拉"
+description = "往手牌放入3张[消耗]的拳牌。"
+base_cost = 2
+tags = Array[StringName]([&"skill"])

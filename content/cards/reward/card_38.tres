@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_bdi51"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_pgrmp"]
+
+[resource]
+script = ExtResource("2_pgrmp")
+card_id = &"card.reward.38"
+card_number = 38
+card_category = 4
+visual_key = &"card_38"
+icon_key = &"icon_38"
+display_name = "留一手"
+description = "护甲+5。抽1张牌并将其升级。"
+base_cost = 1
+tags = Array[StringName]([&"defense"])

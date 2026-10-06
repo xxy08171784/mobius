@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_3fhyx"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_3ogm4"]
+
+[resource]
+script = ExtResource("2_3ogm4")
+card_id = &"card.reward.33"
+card_number = 33
+card_category = 3
+visual_key = &"card_33"
+icon_key = &"icon_33"
+display_name = "砍爆"
+description = "伤害7。如果杀死敌人，对其周围8格造成溢出伤害值。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

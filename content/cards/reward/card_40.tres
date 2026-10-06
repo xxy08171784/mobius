@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_vm4gq"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_ls35s"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_tsh5e"]
+
+[sub_resource type="Resource" id="Resource_tsh5e"]
+script = ExtResource("2_ls35s")
+type_key = &"block"
+params = {
+"amount": 10.0
+}
+
+[resource]
+script = ExtResource("2_tsh5e")
+card_id = &"card.reward.40"
+card_number = 40
+card_category = 4
+visual_key = &"card_40"
+icon_key = &"icon_40"
+display_name = "符甲"
+description = "[消耗] 护甲+10，出牌时此牌不计入出牌数。"
+tags = Array[StringName]([&"defense"])
+effects = Array[ExtResource("1_vm4gq")]([SubResource("Resource_tsh5e")])
+exhaust_on_play = true
+play_count_weight = 0

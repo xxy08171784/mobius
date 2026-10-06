@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_7uasw"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_33aqk"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_ichjc"]
+
+[sub_resource type="Resource" id="Resource_ichjc"]
+script = ExtResource("2_33aqk")
+type_key = &"damage"
+params = {
+"amount": 5.0
+}
+
+[sub_resource type="Resource" id="Resource_33aqk"]
+script = ExtResource("2_33aqk")
+type_key = &"block"
+params = {
+"amount": 4.0,
+"target_mode": "source"
+}
+
+[resource]
+script = ExtResource("2_ichjc")
+card_id = &"card.reward.36"
+card_number = 36
+card_category = 3
+visual_key = &"card_36"
+icon_key = &"icon_36"
+display_name = "攻防一体"
+description = "造成5伤害，获得4护甲。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_7uasw")]([SubResource("Resource_ichjc"), SubResource("Resource_33aqk")])
+content_target_kind = 1

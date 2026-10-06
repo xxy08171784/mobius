@@ -1,0 +1,1325 @@
+{
+  "version": 2,
+  "scope": "正式奖励卡牌池（49张，不含截图顶部初始卡牌池）",
+  "source": "用户提供的最新版策划截图（含49张奖励卡费用）与用户指定的1-49永久顺序",
+  "numbering_frozen": true,
+  "cost_status": "49张奖励卡基础费用已由策划截图确认并写入base_cost。",
+  "cards": [
+    {
+      "number": 1,
+      "card_id": "card.reward.01",
+      "visual_key": "card_01",
+      "display_name": "套索",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "直线2格距离内拾取地面物品，或从敌人身上取回飞刀（每1把造成6点伤害）。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "item_pickup",
+        "knife_system",
+        "line_query"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "cell",
+        "range": 2,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 2,
+      "card_id": "card.reward.02",
+      "visual_key": "card_02",
+      "display_name": "立刻征用",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "从抽牌堆中挑选1张攻击类的牌放入手牌，本回合提升其6点攻击力。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "card_search",
+        "card_modifier"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 3,
+      "card_id": "card.reward.03",
+      "visual_key": "card_03",
+      "display_name": "谨慎",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 消耗所有勇气，每消耗1层获得2点护甲（总计?）。",
+      "base_cost": 0,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": true,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "resource",
+        "dynamic_value",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 4,
+      "card_id": "card.reward.04",
+      "visual_key": "card_04",
+      "display_name": "欧拉欧拉欧拉",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "往手牌放入3张[消耗]的拳牌。",
+      "base_cost": 2,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "card_generate"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 5,
+      "card_id": "card.reward.05",
+      "visual_key": "card_05",
+      "display_name": "招式领悟",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 选择手牌中的1张招式牌，降低其在本场战斗中的行动点消耗1点。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "card_select",
+        "card_modifier"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 6,
+      "card_id": "card.reward.06",
+      "visual_key": "card_06",
+      "display_name": "遣散",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 选择最多2张手牌放入已消耗牌堆，每消耗1张获得8点护甲。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "card_select",
+        "card_zone",
+        "dynamic_value",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 7,
+      "card_id": "card.reward.07",
+      "visual_key": "card_07",
+      "display_name": "躁动",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "护甲+4，抽2张牌。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "draw"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      },
+      "runtime_effects": [
+        {
+          "type": "block",
+          "params": {
+            "amount": 4
+          }
+        },
+        {
+          "type": "draw",
+          "params": {
+            "count": 2
+          }
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "card_id": "card.reward.08",
+      "visual_key": "card_08",
+      "display_name": "信心",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 获得1移动点、获得4层勇气、抽1牌。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "resource",
+        "draw"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      },
+      "runtime_effects": [
+        {
+          "type": "resource",
+          "params": {
+            "key": "move_points",
+            "operation": "add",
+            "amount": 1
+          }
+        },
+        {
+          "type": "resource",
+          "params": {
+            "key": "courage",
+            "operation": "add",
+            "amount": 4
+          }
+        },
+        {
+          "type": "draw",
+          "params": {
+            "count": 1
+          }
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "card_id": "card.reward.09",
+      "visual_key": "card_09",
+      "display_name": "振奋",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "如果没有勇气，则+7勇气，否则+3勇气。",
+      "base_cost": 0,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "conditional",
+        "resource"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 10,
+      "card_id": "card.reward.10",
+      "visual_key": "card_10",
+      "display_name": "恐吓",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 让2格距离内的1个敌人立刻被吓退2步。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "forced_displacement",
+        "range_query"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 2,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 11,
+      "card_id": "card.reward.11",
+      "visual_key": "card_11",
+      "display_name": "勇气迸发",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 对2格距离内所有敌人造成12点伤害。",
+      "base_cost": 0,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "area_query",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 12,
+      "card_id": "card.reward.12",
+      "visual_key": "card_12",
+      "display_name": "复制",
+      "category": "skill",
+      "category_label": "技能牌",
+      "effect_text": "[消耗] 复制1张手牌（能力类除外）。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "card_select",
+        "card_copy"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 13,
+      "card_id": "card.reward.13",
+      "visual_key": "card_13",
+      "display_name": "冲刺斩",
+      "category": "technique",
+      "category_label": "招式牌",
+      "effect_text": "往一个方向冲刺最远3格，造成10点基础伤害且每冲刺1格+5点伤害。",
+      "base_cost": 2,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "directional_dash",
+        "distance_scaling",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "direction"
+      }
+    },
+    {
+      "number": 14,
+      "card_id": "card.reward.14",
+      "visual_key": "card_14",
+      "display_name": "蹬踢后翻",
+      "category": "technique",
+      "category_label": "招式牌",
+      "effect_text": "[消耗] 造成9点伤害，击退敌人1格且自己会后退1格。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "push",
+        "self_displacement"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 15,
+      "card_id": "card.reward.15",
+      "visual_key": "card_15",
+      "display_name": "抓钩",
+      "category": "technique",
+      "category_label": "招式牌",
+      "effect_text": "对直线最远3格的目标造成5伤害并拖回2格，每拖动1格额外造成12%的出牌伤害。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "pull",
+        "distance_scaling"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 3,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 16,
+      "card_id": "card.reward.16",
+      "visual_key": "card_16",
+      "display_name": "旋风斩",
+      "category": "technique",
+      "category_label": "招式牌",
+      "effect_text": "对周身一圈8格造成5点伤害，每击中1个敌人自己获得2护甲。",
+      "base_cost": 2,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "area_query",
+        "damage",
+        "hit_count",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 17,
+      "card_id": "card.reward.17",
+      "visual_key": "card_17",
+      "display_name": "飞刀",
+      "category": "technique",
+      "category_label": "招式牌",
+      "effect_text": "[消耗] 往直线最远3格距离扔飞刀，造成8伤害。攻击附带标着飞刀状态。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "line_query",
+        "damage",
+        "knife_system",
+        "status",
+        "status_definition"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 3,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 18,
+      "card_id": "card.reward.18",
+      "visual_key": "card_18",
+      "display_name": "饮血剑",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "[消耗] 造成9伤害，若击杀敌人则恢复3点生命值并永久增加3点生命值上限。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "kill_condition",
+        "heal",
+        "permanent_max_hp"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 19,
+      "card_id": "card.reward.19",
+      "visual_key": "card_19",
+      "display_name": "妖刀",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "伤害6。若造成了生命值减少，则此牌在本次战斗伤害+4。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "hp_damage_condition",
+        "card_modifier"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 20,
+      "card_id": "card.reward.20",
+      "visual_key": "card_20",
+      "display_name": "击晕",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "[消耗] 造成12伤害，施加眩晕1回合。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "status",
+        "status_definition"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 21,
+      "card_id": "card.reward.21",
+      "visual_key": "card_21",
+      "display_name": "进攻秘术",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成6点基础伤害，每有一张其他牌同出，则+3伤害。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "combo_metadata",
+        "dynamic_value",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 22,
+      "card_id": "card.reward.22",
+      "visual_key": "card_22",
+      "display_name": "索命刀",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成6点伤害。对有负面状态的敌人，此牌造成3倍伤害。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "status_condition",
+        "dynamic_value",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 23,
+      "card_id": "card.reward.23",
+      "visual_key": "card_23",
+      "display_name": "重击",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成15点伤害，下回合多抽1张牌。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "scheduled_effect",
+        "draw"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 24,
+      "card_id": "card.reward.24",
+      "visual_key": "card_24",
+      "display_name": "击退",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "伤害5，击退1格。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "push"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      },
+      "runtime_effects": [
+        {
+          "type": "damage",
+          "params": {
+            "amount": 5
+          }
+        },
+        {
+          "type": "push",
+          "params": {
+            "steps": 1,
+            "direction_mode": "away_from_source"
+          }
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "card_id": "card.reward.25",
+      "visual_key": "card_25",
+      "display_name": "肉搏",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成13点伤害，仅当紧邻敌人时才可打出。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "adjacency_condition",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 26,
+      "card_id": "card.reward.26",
+      "visual_key": "card_26",
+      "display_name": "苦练",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "攻击结束后，提升同出的招式牌3点攻击力。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "combo_metadata",
+        "card_modifier"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 27,
+      "card_id": "card.reward.27",
+      "visual_key": "card_27",
+      "display_name": "妙用招式",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "若同“招式牌”一起出牌，则提供该招式牌150%的伤害值。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "combo_metadata",
+        "technique_synergy",
+        "dynamic_value"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 28,
+      "card_id": "card.reward.28",
+      "visual_key": "card_28",
+      "display_name": "重影刀",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成8伤害，出牌时算作出2张牌。",
+      "base_cost": 2,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 2,
+      "required_capabilities": [
+        "damage",
+        "play_count_weight"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      },
+      "runtime_effects": [
+        {
+          "type": "damage",
+          "params": {
+            "amount": 8
+          }
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "card_id": "card.reward.29",
+      "visual_key": "card_29",
+      "display_name": "英勇打击",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成6点伤害，+5层勇气。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "resource"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      },
+      "runtime_effects": [
+        {
+          "type": "damage",
+          "params": {
+            "amount": 6
+          }
+        },
+        {
+          "type": "resource",
+          "params": {
+            "key": "courage",
+            "operation": "add",
+            "amount": 5,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "card_id": "card.reward.30",
+      "visual_key": "card_30",
+      "display_name": "困兽之力",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "攻击力为【2格距离内敌人个数x5】。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "range_query",
+        "enemy_count",
+        "dynamic_value",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 31,
+      "card_id": "card.reward.31",
+      "visual_key": "card_31",
+      "display_name": "膝盖一箭",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "[消耗] 造成9伤害，施加钝足1回合。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "status",
+        "status_definition"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 32,
+      "card_id": "card.reward.32",
+      "visual_key": "card_32",
+      "display_name": "打了就跑",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "[消耗] 造成9点伤害，获得1点移动点。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "resource"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      },
+      "runtime_effects": [
+        {
+          "type": "damage",
+          "params": {
+            "amount": 9
+          }
+        },
+        {
+          "type": "resource",
+          "params": {
+            "key": "move_points",
+            "operation": "add",
+            "amount": 1,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "card_id": "card.reward.33",
+      "visual_key": "card_33",
+      "display_name": "砍爆",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "伤害7。如果杀死敌人，对其周围8格造成溢出伤害值。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "kill_condition",
+        "overflow_damage",
+        "area_query"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 34,
+      "card_id": "card.reward.34",
+      "visual_key": "card_34",
+      "display_name": "刺透",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "[消耗] 造成17点伤害。攻击无视护甲值。",
+      "base_cost": 2,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage_ignore_block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      },
+      "runtime_effects": [
+        {
+          "type": "damage",
+          "params": {
+            "amount": 17,
+            "ignore_block": true
+          }
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "card_id": "card.reward.35",
+      "visual_key": "card_35",
+      "display_name": "扎根打击",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "消耗所有移动点，每点移动能造成4点攻击。",
+      "base_cost": 0,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "resource",
+        "dynamic_value",
+        "damage"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      }
+    },
+    {
+      "number": 36,
+      "card_id": "card.reward.36",
+      "visual_key": "card_36",
+      "display_name": "攻防一体",
+      "category": "attack",
+      "category_label": "攻击牌",
+      "effect_text": "造成5伤害，获得4护甲。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "damage",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "unit",
+        "team": "enemy",
+        "range": 1,
+        "requires_los": true
+      },
+      "runtime_effects": [
+        {
+          "type": "damage",
+          "params": {
+            "amount": 5
+          }
+        },
+        {
+          "type": "block",
+          "params": {
+            "amount": 4,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    {
+      "number": 37,
+      "card_id": "card.reward.37",
+      "visual_key": "card_37",
+      "display_name": "堆叠防守",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "每抽出1次护甲+4（当前0），打出后重置。",
+      "base_cost": 0,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "on_draw",
+        "card_runtime_state",
+        "dynamic_value",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 38,
+      "card_id": "card.reward.38",
+      "visual_key": "card_38",
+      "display_name": "留一手",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+5。抽1张牌并将其升级。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "draw",
+        "card_upgrade"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 39,
+      "card_id": "card.reward.39",
+      "visual_key": "card_39",
+      "display_name": "防守秘术",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+5。每有一张其他牌同出，额外+3护甲。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "combo_metadata",
+        "dynamic_value"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 40,
+      "card_id": "card.reward.40",
+      "visual_key": "card_40",
+      "display_name": "符甲",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "[消耗] 护甲+10，出牌时此牌不计入出牌数。",
+      "base_cost": 0,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 0,
+      "required_capabilities": [
+        "block",
+        "play_count_weight"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      },
+      "runtime_effects": [
+        {
+          "type": "block",
+          "params": {
+            "amount": 10
+          }
+        }
+      ]
+    },
+    {
+      "number": 41,
+      "card_id": "card.reward.41",
+      "visual_key": "card_41",
+      "display_name": "恰当防守",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+5。手牌中有招式牌时，则护甲+11。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "hand_query",
+        "conditional"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 42,
+      "card_id": "card.reward.42",
+      "visual_key": "card_42",
+      "display_name": "重影盾",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+7，出牌计数时算作2张牌。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 2,
+      "required_capabilities": [
+        "block",
+        "play_count_weight"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      },
+      "runtime_effects": [
+        {
+          "type": "block",
+          "params": {
+            "amount": 7
+          }
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "card_id": "card.reward.43",
+      "visual_key": "card_43",
+      "display_name": "再生硬壳",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+9。下个回合也+9护甲。",
+      "base_cost": 2,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "scheduled_effect"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 44,
+      "card_id": "card.reward.44",
+      "visual_key": "card_44",
+      "display_name": "应激格挡",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+10，选择1张手牌放入弃牌堆。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "card_select",
+        "card_zone"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 45,
+      "card_id": "card.reward.45",
+      "visual_key": "card_45",
+      "display_name": "困兽之甲",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲值为【2格距离内敌人个数x8】。",
+      "base_cost": 2,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "range_query",
+        "enemy_count",
+        "dynamic_value",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 46,
+      "card_id": "card.reward.46",
+      "visual_key": "card_46",
+      "display_name": "疗伤",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "[消耗] 抽到手牌就+3点生命值恢复效果，最高能恢复9点（当前0）。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "on_draw",
+        "card_runtime_state",
+        "heal"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 47,
+      "card_id": "card.reward.47",
+      "visual_key": "card_47",
+      "display_name": "掌控",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "护甲+13，紧邻敌人时+5勇气。",
+      "base_cost": 1,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "block",
+        "adjacency_condition",
+        "resource"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 48,
+      "card_id": "card.reward.48",
+      "visual_key": "card_48",
+      "display_name": "扎根防守",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "消耗所有移动点，每1个移动点护甲+3。",
+      "base_cost": 0,
+      "exhaust_on_play": false,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "resource",
+        "dynamic_value",
+        "block"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    },
+    {
+      "number": 49,
+      "card_id": "card.reward.49",
+      "visual_key": "card_49",
+      "display_name": "守护之手",
+      "category": "defense",
+      "category_label": "防御牌",
+      "effect_text": "[消耗] 打出时：若同时打出其他牌，使其他牌获得+3护甲（持续至战斗结束）。",
+      "base_cost": 1,
+      "exhaust_on_play": true,
+      "implementation_state": "implemented",
+      "needs_confirmation": false,
+      "play_count_weight": 1,
+      "required_capabilities": [
+        "combo_metadata",
+        "card_modifier"
+      ],
+      "reward_pool_enabled": true,
+      "runtime_target": {
+        "kind": "none"
+      }
+    }
+  ]
+}

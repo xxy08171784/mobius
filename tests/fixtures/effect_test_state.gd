@@ -5,8 +5,8 @@ extends Resource
 var next_uid: int = 100
 var next_event_seq: int = 1
 var units: Dictionary = {
-	1: {"hp": 20, "block": 0, "alive": true, "statuses": {}},
-	2: {"hp": 10, "block": 3, "alive": true, "statuses": {}},
+	1: {"hp": 20, "max_hp": 20, "block": 0, "alive": true, "statuses": {}, "resources": {"courage": 3, "move_points": 2}},
+	2: {"hp": 10, "max_hp": 15, "block": 3, "alive": true, "statuses": {}, "resources": {}},
 }
 var positions: Dictionary = {
 	1: Vector2i(0, 0),

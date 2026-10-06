@@ -41,6 +41,7 @@ script = ExtResource("3_3cuph")
 card_id = &"card.warrior.jab"
 display_name = "快刺"
 description = "造成 3 点伤害，施加 1 层流血（2 回合）"
+reward_pool_enabled = false
 tags = Array[StringName]([&"attack"])
 effects = Array[ExtResource("1_j4aso")]([SubResource("Resource_qktbb"), SubResource("Resource_jab_bleed")])
 content_target_kind = 1

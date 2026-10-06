@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="1_card"]
+
+[resource]
+script = ExtResource("1_card")
+card_id = &"card.starter.relentless"
+card_category = 3
+icon_key = &"icon_01"
+display_name = "持续打击"
+description = "首次造成6点伤害，之后每次造成11点伤害。"
+base_cost = 1
+reward_pool_enabled = false
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1
+content_target_team = 2
+

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_83e0f"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_eupbl"]
+
+[resource]
+script = ExtResource("2_eupbl")
+card_id = &"card.reward.03"
+card_number = 3
+card_category = 1
+visual_key = &"card_03"
+icon_key = &"icon_03"
+display_name = "谨慎"
+description = "[消耗] 消耗所有勇气，每消耗1层获得2点护甲（总计?）。"
+tags = Array[StringName]([&"skill"])
+exhaust_on_play = true

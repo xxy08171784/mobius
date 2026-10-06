@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_j36rw"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_5km13"]
+
+[resource]
+script = ExtResource("2_5km13")
+card_id = &"card.reward.06"
+card_number = 6
+card_category = 1
+visual_key = &"card_06"
+icon_key = &"icon_06"
+display_name = "遣散"
+description = "[消耗] 选择最多2张手牌放入已消耗牌堆，每消耗1张获得8点护甲。"
+base_cost = 2
+tags = Array[StringName]([&"skill"])
+exhaust_on_play = true

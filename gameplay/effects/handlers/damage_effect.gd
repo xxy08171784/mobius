@@ -39,10 +39,12 @@ func apply(
 	var final_damage := maxi(0, StatSystem.compute(raw_amount, flat_bonus, percent_bonus, 0.0, INF))
 	var hp_before := int(EffectStateAccess.get_field(target, &"hp", 0))
 	var block_before := maxi(0, int(EffectStateAccess.get_field(target, &"block", 0)))
-	# ignore_block=true：无视护甲（中毒等 DoT 不吃护盾，§8）。
-	var absorbed := 0 if bool(params.get("ignore_block", false)) else mini(block_before, final_damage)
+	var ignore_block := bool(params.get("ignore_block", false))
+	# ignore_block=true：无视护甲（中毒、刺透等不吃护盾）。
+	var absorbed := 0 if ignore_block else mini(block_before, final_damage)
+
 	var hp_damage := final_damage - absorbed
-	var block_after := block_before - absorbed
+	var block_after := block_before if ignore_block else block_before - absorbed
 	var hp_after := maxi(0, hp_before - hp_damage)
 
 	if not EffectStateAccess.set_field(target, &"block", block_after):
@@ -67,6 +69,7 @@ func apply(
 			"percent_bonus": percent_bonus,
 			"absorbed": absorbed,
 			"hp_damage": hp_damage,
+			"ignore_block": ignore_block,
 			"status_id": params.get("status_id", &""),
 		}
 	)

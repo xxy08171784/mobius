@@ -52,7 +52,25 @@ func on_cell_pressed(cell: Vector2i) -> void:
 func play_selected() -> void:
 	if _busy or _session == null or _selected_cards.is_empty():
 		return
+	var choices: Dictionary = {}
+	for uid: int in _selected_cards:
+		var request := FormalCardRules.choice_request(
+			_session.state, uid, _selected_cards, _card_defs
+		)
+		if request.is_empty():
+			continue
+		if Array(request.get("candidates", [])).size() < int(request.get("min_count", 0)):
+			return
+		var popup := CardChoicePopup.new()
+		get_parent().add_child(popup)
+		popup.setup(_session.state, _card_defs, request)
+		popup.show_centered()
+		var response: Dictionary = await popup.choice_finished
+		if bool(response.get("cancelled", true)):
+			return
+		choices[uid] = response.get("selected", [])
 	var command := _build_play_command(_allocate_command_id())
+	command.choices = choices
 	_submit(command)
 
 
@@ -83,6 +101,13 @@ func _build_play_command(command_id: int) -> PlayCardsCommand:
 			var cell_target := TargetSpec.CellTarget.new()
 			cell_target.cell = _selected_cell
 			targets.append(cell_target)
+		elif rule is TargetSpec.DirectionTarget:
+			var direction_target := TargetSpec.DirectionTarget.new()
+			var actor_cell := _session.state.board.get_unit_cell(command.actor_id)
+			if _selected_cell != Vector2i(-1, -1) and actor_cell != BoardState.INVALID_CELL:
+				var delta := _selected_cell - actor_cell
+				direction_target.direction = Vector2i(signi(delta.x), signi(delta.y))
+			targets.append(direction_target)
 		else:
 			targets.append(null)
 	command.targets = targets
@@ -150,4 +175,9 @@ func _sync_selection() -> void:
 func _preview_selection() -> CommandResult:
 	if _session == null or _selected_cards.is_empty() or not _session.state.accepts_input():
 		return null
+	for uid: int in _selected_cards:
+		if not FormalCardRules.choice_request(
+			_session.state, uid, _selected_cards, _card_defs
+		).is_empty():
+			return null
 	return _session.preview(_build_play_command(-1))

@@ -1,0 +1,350 @@
+{
+  "version": 2,
+  "cards": {
+    "card.reward.01": "res://assets/textures/cards/generated/card_01.png",
+    "card.reward.02": "res://assets/textures/cards/generated/card_02.png",
+    "card.reward.03": "res://assets/textures/cards/generated/card_03.png",
+    "card.reward.04": "res://assets/textures/cards/generated/card_04.png",
+    "card.reward.05": "res://assets/textures/cards/generated/card_05.png",
+    "card.reward.06": "res://assets/textures/cards/generated/card_06.png",
+    "card.reward.07": "res://assets/textures/cards/generated/card_07.png",
+    "card.reward.08": "res://assets/textures/cards/generated/card_08.png",
+    "card.reward.09": "res://assets/textures/cards/generated/card_09.png",
+    "card.reward.10": "res://assets/textures/cards/generated/card_10.png",
+    "card.reward.11": "res://assets/textures/cards/generated/card_11.png",
+    "card.reward.12": "res://assets/textures/cards/generated/card_12.png",
+    "card.reward.13": "res://assets/textures/cards/generated/card_13.png",
+    "card.reward.14": "res://assets/textures/cards/generated/card_14.png",
+    "card.reward.15": "res://assets/textures/cards/generated/card_15.png",
+    "card.reward.16": "res://assets/textures/cards/generated/card_16.png",
+    "card.reward.17": "res://assets/textures/cards/generated/card_17.png",
+    "card.reward.18": "res://assets/textures/cards/generated/card_18.png",
+    "card.reward.19": "res://assets/textures/cards/generated/card_19.png",
+    "card.reward.20": "res://assets/textures/cards/generated/card_20.png",
+    "card.reward.21": "res://assets/textures/cards/generated/card_21.png",
+    "card.reward.22": "res://assets/textures/cards/generated/card_22.png",
+    "card.reward.23": "res://assets/textures/cards/generated/card_23.png",
+    "card.reward.24": "res://assets/textures/cards/generated/card_24.png",
+    "card.reward.25": "res://assets/textures/cards/generated/card_25.png",
+    "card.reward.26": "res://assets/textures/cards/generated/card_26.png",
+    "card.reward.27": "res://assets/textures/cards/generated/card_27.png",
+    "card.reward.28": "res://assets/textures/cards/generated/card_28.png",
+    "card.reward.29": "res://assets/textures/cards/generated/card_29.png",
+    "card.reward.30": "res://assets/textures/cards/generated/card_30.png",
+    "card.reward.31": "res://assets/textures/cards/generated/card_31.png",
+    "card.reward.32": "res://assets/textures/cards/generated/card_32.png",
+    "card.reward.33": "res://assets/textures/cards/generated/card_33.png",
+    "card.reward.34": "res://assets/textures/cards/generated/card_34.png",
+    "card.reward.35": "res://assets/textures/cards/generated/card_35.png",
+    "card.reward.36": "res://assets/textures/cards/generated/card_36.png",
+    "card.reward.37": "res://assets/textures/cards/generated/card_37.png",
+    "card.reward.38": "res://assets/textures/cards/generated/card_38.png",
+    "card.reward.39": "res://assets/textures/cards/generated/card_39.png",
+    "card.reward.40": "res://assets/textures/cards/generated/card_40.png",
+    "card.reward.41": "res://assets/textures/cards/generated/card_41.png",
+    "card.reward.42": "res://assets/textures/cards/generated/card_42.png",
+    "card.reward.43": "res://assets/textures/cards/generated/card_43.png",
+    "card.reward.44": "res://assets/textures/cards/generated/card_44.png",
+    "card.reward.45": "res://assets/textures/cards/generated/card_45.png",
+    "card.reward.46": "res://assets/textures/cards/generated/card_46.png",
+    "card.reward.47": "res://assets/textures/cards/generated/card_47.png",
+    "card.reward.48": "res://assets/textures/cards/generated/card_48.png",
+    "card.reward.49": "res://assets/textures/cards/generated/card_49.png"
+  },
+  "by_number": {
+    "01": {
+      "card_id": "card.reward.01",
+      "display_name": "套索",
+      "visual_key": "card_01",
+      "path": "res://assets/textures/cards/generated/card_01.png"
+    },
+    "02": {
+      "card_id": "card.reward.02",
+      "display_name": "立刻征用",
+      "visual_key": "card_02",
+      "path": "res://assets/textures/cards/generated/card_02.png"
+    },
+    "03": {
+      "card_id": "card.reward.03",
+      "display_name": "谨慎",
+      "visual_key": "card_03",
+      "path": "res://assets/textures/cards/generated/card_03.png"
+    },
+    "04": {
+      "card_id": "card.reward.04",
+      "display_name": "欧拉欧拉欧拉",
+      "visual_key": "card_04",
+      "path": "res://assets/textures/cards/generated/card_04.png"
+    },
+    "05": {
+      "card_id": "card.reward.05",
+      "display_name": "招式领悟",
+      "visual_key": "card_05",
+      "path": "res://assets/textures/cards/generated/card_05.png"
+    },
+    "06": {
+      "card_id": "card.reward.06",
+      "display_name": "遣散",
+      "visual_key": "card_06",
+      "path": "res://assets/textures/cards/generated/card_06.png"
+    },
+    "07": {
+      "card_id": "card.reward.07",
+      "display_name": "躁动",
+      "visual_key": "card_07",
+      "path": "res://assets/textures/cards/generated/card_07.png"
+    },
+    "08": {
+      "card_id": "card.reward.08",
+      "display_name": "信心",
+      "visual_key": "card_08",
+      "path": "res://assets/textures/cards/generated/card_08.png"
+    },
+    "09": {
+      "card_id": "card.reward.09",
+      "display_name": "振奋",
+      "visual_key": "card_09",
+      "path": "res://assets/textures/cards/generated/card_09.png"
+    },
+    "10": {
+      "card_id": "card.reward.10",
+      "display_name": "恐吓",
+      "visual_key": "card_10",
+      "path": "res://assets/textures/cards/generated/card_10.png"
+    },
+    "11": {
+      "card_id": "card.reward.11",
+      "display_name": "勇气迸发",
+      "visual_key": "card_11",
+      "path": "res://assets/textures/cards/generated/card_11.png"
+    },
+    "12": {
+      "card_id": "card.reward.12",
+      "display_name": "复制",
+      "visual_key": "card_12",
+      "path": "res://assets/textures/cards/generated/card_12.png"
+    },
+    "13": {
+      "card_id": "card.reward.13",
+      "display_name": "冲刺斩",
+      "visual_key": "card_13",
+      "path": "res://assets/textures/cards/generated/card_13.png"
+    },
+    "14": {
+      "card_id": "card.reward.14",
+      "display_name": "蹬踢后翻",
+      "visual_key": "card_14",
+      "path": "res://assets/textures/cards/generated/card_14.png"
+    },
+    "15": {
+      "card_id": "card.reward.15",
+      "display_name": "抓钩",
+      "visual_key": "card_15",
+      "path": "res://assets/textures/cards/generated/card_15.png"
+    },
+    "16": {
+      "card_id": "card.reward.16",
+      "display_name": "旋风斩",
+      "visual_key": "card_16",
+      "path": "res://assets/textures/cards/generated/card_16.png"
+    },
+    "17": {
+      "card_id": "card.reward.17",
+      "display_name": "飞刀",
+      "visual_key": "card_17",
+      "path": "res://assets/textures/cards/generated/card_17.png"
+    },
+    "18": {
+      "card_id": "card.reward.18",
+      "display_name": "饮血剑",
+      "visual_key": "card_18",
+      "path": "res://assets/textures/cards/generated/card_18.png"
+    },
+    "19": {
+      "card_id": "card.reward.19",
+      "display_name": "妖刀",
+      "visual_key": "card_19",
+      "path": "res://assets/textures/cards/generated/card_19.png"
+    },
+    "20": {
+      "card_id": "card.reward.20",
+      "display_name": "击晕",
+      "visual_key": "card_20",
+      "path": "res://assets/textures/cards/generated/card_20.png"
+    },
+    "21": {
+      "card_id": "card.reward.21",
+      "display_name": "进攻秘术",
+      "visual_key": "card_21",
+      "path": "res://assets/textures/cards/generated/card_21.png"
+    },
+    "22": {
+      "card_id": "card.reward.22",
+      "display_name": "索命刀",
+      "visual_key": "card_22",
+      "path": "res://assets/textures/cards/generated/card_22.png"
+    },
+    "23": {
+      "card_id": "card.reward.23",
+      "display_name": "重击",
+      "visual_key": "card_23",
+      "path": "res://assets/textures/cards/generated/card_23.png"
+    },
+    "24": {
+      "card_id": "card.reward.24",
+      "display_name": "击退",
+      "visual_key": "card_24",
+      "path": "res://assets/textures/cards/generated/card_24.png"
+    },
+    "25": {
+      "card_id": "card.reward.25",
+      "display_name": "肉搏",
+      "visual_key": "card_25",
+      "path": "res://assets/textures/cards/generated/card_25.png"
+    },
+    "26": {
+      "card_id": "card.reward.26",
+      "display_name": "苦练",
+      "visual_key": "card_26",
+      "path": "res://assets/textures/cards/generated/card_26.png"
+    },
+    "27": {
+      "card_id": "card.reward.27",
+      "display_name": "妙用招式",
+      "visual_key": "card_27",
+      "path": "res://assets/textures/cards/generated/card_27.png"
+    },
+    "28": {
+      "card_id": "card.reward.28",
+      "display_name": "重影刀",
+      "visual_key": "card_28",
+      "path": "res://assets/textures/cards/generated/card_28.png"
+    },
+    "29": {
+      "card_id": "card.reward.29",
+      "display_name": "英勇打击",
+      "visual_key": "card_29",
+      "path": "res://assets/textures/cards/generated/card_29.png"
+    },
+    "30": {
+      "card_id": "card.reward.30",
+      "display_name": "困兽之力",
+      "visual_key": "card_30",
+      "path": "res://assets/textures/cards/generated/card_30.png"
+    },
+    "31": {
+      "card_id": "card.reward.31",
+      "display_name": "膝盖一箭",
+      "visual_key": "card_31",
+      "path": "res://assets/textures/cards/generated/card_31.png"
+    },
+    "32": {
+      "card_id": "card.reward.32",
+      "display_name": "打了就跑",
+      "visual_key": "card_32",
+      "path": "res://assets/textures/cards/generated/card_32.png"
+    },
+    "33": {
+      "card_id": "card.reward.33",
+      "display_name": "砍爆",
+      "visual_key": "card_33",
+      "path": "res://assets/textures/cards/generated/card_33.png"
+    },
+    "34": {
+      "card_id": "card.reward.34",
+      "display_name": "刺透",
+      "visual_key": "card_34",
+      "path": "res://assets/textures/cards/generated/card_34.png"
+    },
+    "35": {
+      "card_id": "card.reward.35",
+      "display_name": "扎根打击",
+      "visual_key": "card_35",
+      "path": "res://assets/textures/cards/generated/card_35.png"
+    },
+    "36": {
+      "card_id": "card.reward.36",
+      "display_name": "攻防一体",
+      "visual_key": "card_36",
+      "path": "res://assets/textures/cards/generated/card_36.png"
+    },
+    "37": {
+      "card_id": "card.reward.37",
+      "display_name": "堆叠防守",
+      "visual_key": "card_37",
+      "path": "res://assets/textures/cards/generated/card_37.png"
+    },
+    "38": {
+      "card_id": "card.reward.38",
+      "display_name": "留一手",
+      "visual_key": "card_38",
+      "path": "res://assets/textures/cards/generated/card_38.png"
+    },
+    "39": {
+      "card_id": "card.reward.39",
+      "display_name": "防守秘术",
+      "visual_key": "card_39",
+      "path": "res://assets/textures/cards/generated/card_39.png"
+    },
+    "40": {
+      "card_id": "card.reward.40",
+      "display_name": "符甲",
+      "visual_key": "card_40",
+      "path": "res://assets/textures/cards/generated/card_40.png"
+    },
+    "41": {
+      "card_id": "card.reward.41",
+      "display_name": "恰当防守",
+      "visual_key": "card_41",
+      "path": "res://assets/textures/cards/generated/card_41.png"
+    },
+    "42": {
+      "card_id": "card.reward.42",
+      "display_name": "重影盾",
+      "visual_key": "card_42",
+      "path": "res://assets/textures/cards/generated/card_42.png"
+    },
+    "43": {
+      "card_id": "card.reward.43",
+      "display_name": "再生硬壳",
+      "visual_key": "card_43",
+      "path": "res://assets/textures/cards/generated/card_43.png"
+    },
+    "44": {
+      "card_id": "card.reward.44",
+      "display_name": "应激格挡",
+      "visual_key": "card_44",
+      "path": "res://assets/textures/cards/generated/card_44.png"
+    },
+    "45": {
+      "card_id": "card.reward.45",
+      "display_name": "困兽之甲",
+      "visual_key": "card_45",
+      "path": "res://assets/textures/cards/generated/card_45.png"
+    },
+    "46": {
+      "card_id": "card.reward.46",
+      "display_name": "疗伤",
+      "visual_key": "card_46",
+      "path": "res://assets/textures/cards/generated/card_46.png"
+    },
+    "47": {
+      "card_id": "card.reward.47",
+      "display_name": "掌控",
+      "visual_key": "card_47",
+      "path": "res://assets/textures/cards/generated/card_47.png"
+    },
+    "48": {
+      "card_id": "card.reward.48",
+      "display_name": "扎根防守",
+      "visual_key": "card_48",
+      "path": "res://assets/textures/cards/generated/card_48.png"
+    },
+    "49": {
+      "card_id": "card.reward.49",
+      "display_name": "守护之手",
+      "visual_key": "card_49",
+      "path": "res://assets/textures/cards/generated/card_49.png"
+    }
+  }
+}

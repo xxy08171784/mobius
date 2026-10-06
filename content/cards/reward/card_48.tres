@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_7prx7"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_wjyb4"]
+
+[resource]
+script = ExtResource("2_wjyb4")
+card_id = &"card.reward.48"
+card_number = 48
+card_category = 4
+visual_key = &"card_48"
+icon_key = &"icon_48"
+display_name = "扎根防守"
+description = "消耗所有移动点，每1个移动点护甲+3。"
+tags = Array[StringName]([&"defense"])

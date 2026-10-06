@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_5ay21"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_5c3u0"]
+
+[resource]
+script = ExtResource("2_5c3u0")
+card_id = &"card.reward.17"
+card_number = 17
+card_category = 2
+visual_key = &"card_17"
+icon_key = &"icon_17"
+display_name = "飞刀"
+description = "[消耗] 往直线最远3格距离扔飞刀，造成8伤害。攻击附带标着飞刀状态。"
+base_cost = 1
+tags = Array[StringName]([&"technique"])
+exhaust_on_play = true
+attack_range = 3
+content_target_kind = 1

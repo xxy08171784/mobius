@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+status_id = &"status.slow"
+display_name = "钝足"
+description = "下一次接近移动少1格。（策划未给出更细规则，当前为集中默认值）"

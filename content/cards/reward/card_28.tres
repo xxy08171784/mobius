@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_lvvoq"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_g3gvd"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_y35xd"]
+
+[sub_resource type="Resource" id="Resource_g3gvd"]
+script = ExtResource("2_y35xd")
+type_key = &"damage"
+params = {
+"amount": 8.0
+}
+
+[resource]
+script = ExtResource("2_g3gvd")
+card_id = &"card.reward.28"
+card_number = 28
+card_category = 3
+visual_key = &"card_28"
+icon_key = &"icon_28"
+display_name = "重影刀"
+description = "造成8伤害，出牌时算作出2张牌。"
+base_cost = 2
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_lvvoq")]([SubResource("Resource_g3gvd")])
+play_count_weight = 2
+content_target_kind = 1

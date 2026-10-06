@@ -7,6 +7,9 @@ var source_card_uid: int = -1
 var target: Variant = null
 var root_trigger_id: int = 0
 var depth: int = 0
+## 只读式执行元数据：组合出牌信息、来源牌分类等。
+## handler 可读取，但不应把场景节点或不可序列化对象塞进来。
+var metadata: Dictionary = {}
 
 
 func duplicate_context() -> EffectContext:
@@ -16,6 +19,7 @@ func duplicate_context() -> EffectContext:
 	copy.target = target
 	copy.root_trigger_id = root_trigger_id
 	copy.depth = depth
+	copy.metadata = metadata.duplicate(true)
 	return copy
 
 
@@ -26,4 +30,6 @@ static func from_dictionary(data: Dictionary) -> EffectContext:
 	context.target = data.get("target")
 	context.root_trigger_id = int(data.get("root_trigger_id", 0))
 	context.depth = int(data.get("depth", 0))
+	var raw_metadata: Variant = data.get("metadata", {})
+	context.metadata = (raw_metadata as Dictionary).duplicate(true) if raw_metadata is Dictionary else {}
 	return context

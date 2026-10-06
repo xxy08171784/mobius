@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_pg2mo"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_m6ji3"]
+
+[resource]
+script = ExtResource("2_m6ji3")
+card_id = &"card.reward.43"
+card_number = 43
+card_category = 4
+visual_key = &"card_43"
+icon_key = &"icon_43"
+display_name = "再生硬壳"
+description = "护甲+9。下个回合也+9护甲。"
+base_cost = 2
+tags = Array[StringName]([&"defense"])

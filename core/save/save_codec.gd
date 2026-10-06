@@ -123,6 +123,10 @@ func _encode_battle_state(state: BattleState) -> Dictionary:
 			"board": _encode_board(state.board),
 			"units": _encode_units(state.units),
 			"deck": _encode_deck(state.deck),
+			"scheduled_effects": encode_value(state.scheduled_effects),
+			"ground_items": encode_value(state.ground_items),
+			"collected_items": encode_value(state.collected_items),
+			"run_changes": encode_value(state.run_changes),
 			"enemy_intents": _encode_intents(state.enemy_intents),
 			"enemy_steps": encode_value(state.enemy_steps),
 			"enemy_charge_remaining": encode_value(state.enemy_charge_remaining),
@@ -154,6 +158,14 @@ func _decode_battle_state(data: Dictionary) -> BattleState:
 	state.board = _decode_board(payload.get("board", {}))
 	state.units = _decode_units(payload.get("units", []))
 	state.deck = _decode_deck(payload.get("deck", {}))
+	state.scheduled_effects = _to_dictionary_array(
+		decode_value(payload.get("scheduled_effects", []))
+	)
+	state.ground_items = decode_value(payload.get("ground_items", encode_value({})))
+	var collected: Array = decode_value(payload.get("collected_items", []))
+	for item: Variant in collected:
+		state.collected_items.append(StringName(String(item)))
+	state.run_changes = decode_value(payload.get("run_changes", encode_value({})))
 	state.enemy_intents = _decode_intents(payload.get("enemy_intents", []))
 	state.enemy_steps = _to_int_int_dictionary(decode_value(payload.get("enemy_steps", encode_value({}))))
 	state.enemy_charge_remaining = _to_int_int_dictionary(
@@ -303,7 +315,10 @@ func _encode_deck(deck: DeckState) -> Dictionary:
 			"card_id": encode_value(card.card_id),
 			"upgrade_level": encode_value(card.upgrade_level),
 			"cost_modifier": encode_value(card.cost_modifier),
+			"damage_modifier": encode_value(card.damage_modifier),
+			"block_modifier": encode_value(card.block_modifier),
 			"temporary_tags": encode_value(card.temporary_tags),
+			"runtime_data": encode_value(card.runtime_data),
 			"generated": card.generated,
 		})
 	return {
@@ -335,9 +350,18 @@ func _decode_deck(data: Dictionary) -> DeckState:
 		card.cost_modifier = int(
 			decode_value(card_data.get("cost_modifier", encode_value(0)))
 		)
+		card.damage_modifier = int(
+			decode_value(card_data.get("damage_modifier", encode_value(0)))
+		)
+		card.block_modifier = int(
+			decode_value(card_data.get("block_modifier", encode_value(0)))
+		)
 		var tags: Array = decode_value(card_data.get("temporary_tags", []))
 		for tag: Variant in tags:
 			card.temporary_tags.append(StringName(String(tag)))
+		card.runtime_data = decode_value(
+			card_data.get("runtime_data", encode_value({}))
+		)
 		card.generated = bool(card_data.get("generated", false))
 		deck.cards[card.battle_uid] = card
 	deck.draw = _to_int_array(decode_value(data.get("draw", [])))
@@ -558,4 +582,12 @@ func _to_int_int_dictionary(values: Dictionary) -> Dictionary[int, int]:
 	var result: Dictionary[int, int] = {}
 	for key: Variant in values:
 		result[int(key)] = int(values[key])
+	return result
+
+
+func _to_dictionary_array(values: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for value: Variant in values:
+		if value is Dictionary:
+			result.append((value as Dictionary).duplicate(true))
 	return result

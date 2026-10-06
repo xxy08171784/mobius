@@ -4,8 +4,11 @@ extends "res://tests/test_case.gd"
 func run() -> Array[String]:
 	reset()
 	_test_damage_block_hp_and_purity()
+	_test_ignore_block_damage()
 	_test_invalid_effect_has_zero_side_effects()
 	_test_block_and_status()
+	_test_resource_and_heal()
+	_test_effect_can_target_source_inside_enemy_targeted_card()
 	_test_cross_module_handler_contracts()
 	_test_trigger_overflow_rejects_snapshot()
 	_test_same_input_same_output()
@@ -45,6 +48,24 @@ func _test_damage_block_hp_and_purity() -> void:
 		var event: EffectEvent = events.events[0]
 		assert_equal(int(event.payload["absorbed"]), 3, "damage event should expose absorbed block")
 		assert_equal(int(event.payload["hp_damage"]), 2, "damage event should expose HP damage")
+
+
+func _test_ignore_block_damage() -> void:
+	var state := EffectTestState.new()
+	var result := EffectResolver.new().resolve(
+		state,
+		{
+			"context": {"source_unit_id": 1},
+			"effects": [
+				{"type_key": &"damage", "target": 2, "params": {"amount": 5, "ignore_block": true}},
+			],
+		},
+		_make_rng()
+	)
+	assert_true(bool(result["ok"]), "ignore-block damage should resolve")
+	var out: EffectTestState = result["state_out"]
+	assert_equal(int(out.units[2]["block"]), 3, "ignore-block damage must preserve block")
+	assert_equal(int(out.units[2]["hp"]), 5, "ignore-block damage must go directly to HP")
 
 
 func _test_invalid_effect_has_zero_side_effects() -> void:
@@ -90,6 +111,51 @@ func _test_block_and_status() -> void:
 		assert_equal(status.status_id, &"poison", "status id should be preserved")
 		assert_equal(status.stacks, 2, "status stacks should be preserved")
 		assert_equal(status.duration, 3, "status duration should be preserved")
+
+
+func _test_resource_and_heal() -> void:
+	var state := EffectTestState.new()
+	state.units[1]["hp"] = 12
+	var result := EffectResolver.new().resolve(
+		state,
+		{
+			"context": {"source_unit_id": 1},
+			"effects": [
+				{"type_key": &"resource", "params": {"key": &"courage", "operation": &"add", "amount": 5}},
+				{"type_key": &"resource", "params": {"key": &"move_points", "operation": &"consume_all"}},
+				{"type_key": &"heal", "params": {"amount": 20}},
+			],
+		},
+		_make_rng()
+	)
+	assert_true(bool(result["ok"]), "resource + heal plan should resolve")
+	var out: EffectTestState = result["state_out"]
+	assert_equal(int(out.units[1]["resources"]["courage"]), 8, "resource add should use generic resource dictionary")
+	assert_equal(int(out.units[1]["resources"]["move_points"]), 0, "consume_all should zero the resource")
+	assert_equal(int(out.units[1]["hp"]), 20, "heal should clamp to max_hp")
+	assert_equal(int(state.units[1]["hp"]), 12, "resource/heal resolution must preserve input state")
+
+
+func _test_effect_can_target_source_inside_enemy_targeted_card() -> void:
+	var state := EffectTestState.new()
+	var result := EffectResolver.new().resolve(
+		state,
+		{
+			"context": {"source_unit_id": 1, "target": 2},
+			"effects": [
+				{"type_key": &"damage", "params": {"amount": 2}},
+				{"type_key": &"block", "params": {"amount": 4, "target_mode": &"source"}},
+				{"type_key": &"resource", "params": {"key": &"courage", "amount": 5, "target_mode": &"source"}},
+			],
+		},
+		_make_rng()
+	)
+	assert_true(bool(result["ok"]), "mixed enemy/self effects should resolve")
+	var out: EffectTestState = result["state_out"]
+	assert_equal(int(out.units[2]["hp"]), 10, "enemy damage should still respect its existing block")
+	assert_equal(int(out.units[2]["block"]), 1, "enemy should absorb damage instead of gaining self block")
+	assert_equal(int(out.units[1]["block"]), 4, "source-targeted block must apply to the player")
+	assert_equal(int(out.units[1]["resources"]["courage"]), 8, "source-targeted resource must apply to player")
 
 
 func _test_cross_module_handler_contracts() -> void:

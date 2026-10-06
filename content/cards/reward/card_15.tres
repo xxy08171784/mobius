@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_lrii4"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_8xjr5"]
+
+[resource]
+script = ExtResource("2_8xjr5")
+card_id = &"card.reward.15"
+card_number = 15
+card_category = 2
+visual_key = &"card_15"
+icon_key = &"icon_15"
+display_name = "抓钩"
+description = "对直线最远3格的目标造成5伤害并拖回2格，每拖动1格额外造成12%的出牌伤害。"
+base_cost = 1
+tags = Array[StringName]([&"technique"])
+attack_range = 3
+content_target_kind = 1

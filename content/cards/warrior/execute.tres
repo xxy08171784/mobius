@@ -24,6 +24,7 @@ card_id = &"card.warrior.execute"
 display_name = "处决"
 description = "造成 12 点伤害"
 base_cost = 2
+reward_pool_enabled = false
 tags = Array[StringName]([&"attack"])
 effects = Array[ExtResource("1_dk18o")]([SubResource("Resource_etjmf")])
 content_target_kind = 1

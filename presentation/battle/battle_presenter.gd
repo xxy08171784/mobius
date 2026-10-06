@@ -57,8 +57,15 @@ func refresh() -> void:
 		return
 	var state := _session.state
 	_board_view.render_state(state, _target_unit_id, _busy)
+	_sync_enemy_intent_bubbles(state)
 	_board_view.set_threat_cells(_threat_cells(state))
 	_hand_view.render_hand(state, _card_defs, _selected_cards, _busy)
+	var battle_hud := _ui.get("battle_hud") as BattleHud
+	if battle_hud != null:
+		battle_hud.render_state(state, _phase_text(state.phase))
+	var battle_card_hud := _ui.get("battle_card_hud") as BattleCardHud
+	if battle_card_hud != null:
+		battle_card_hud.render_state(state)
 
 	var round_label := _ui.get("round_label") as Label
 	var player_label := _ui.get("player_label") as Label
@@ -66,10 +73,11 @@ func refresh() -> void:
 	var selection_label := _ui.get("selection_label") as Label
 	var preview_label := _ui.get("preview_label") as Label
 	var result_label := _ui.get("result_label") as Label
-	var play_button := _ui.get("play_button") as Button
-	var clear_button := _ui.get("clear_button") as Button
-	var end_turn_button := _ui.get("end_turn_button") as Button
 	var monster_label := _ui.get("monster_label") as Label
+	var play_button := _ui.get("play_button") as BaseButton
+	var clear_button := _ui.get("clear_button") as BaseButton
+	var end_turn_button := _ui.get("end_turn_button") as BaseButton
+
 
 	if round_label != null:
 		round_label.text = "回合 %d · %s" % [state.round_index, _phase_text(state.phase)]
@@ -357,6 +365,45 @@ func _intent_action(enemy_id: int, action_id: StringName) -> EnemyActionDef:
 		if action.id == action_id:
 			return action
 	return null
+
+
+## 每只敌人的意图直接投影到它自己的头顶气泡，不再占用右上角 HUD。
+func _sync_enemy_intent_bubbles(state: BattleState) -> void:
+	if state == null or _board_view == null:
+		return
+	for enemy_id: int in state.alive_enemy_ids():
+		var view := _board_view.unit_view(enemy_id)
+		if view == null:
+			continue
+		var intent: IntentState = state.enemy_intents.get(enemy_id)
+		if intent == null or intent.is_empty():
+			view.set_intent("等待", "本回合无有效行动")
+			continue
+		var action := _intent_action(enemy_id, intent.action_id)
+		if action == null:
+			view.set_intent("行动 %d" % maxi(0, intent.magnitude), String(intent.action_id))
+			continue
+		view.set_intent(_intent_badge_text(action, intent), _monster_skill_text(action))
+
+
+func _intent_badge_text(action: EnemyActionDef, intent: IntentState) -> String:
+	match action.kind:
+		EnemyActionDef.Kind.ATTACK:
+			if action.hit_count > 1:
+				return "攻击 %d×%d" % [action.damage, action.hit_count]
+			return "攻击 %d" % action.damage
+		EnemyActionDef.Kind.DEFEND:
+			return "防御 %d" % action.block
+		EnemyActionDef.Kind.DASH:
+			return "冲撞 %d+" % action.damage
+		EnemyActionDef.Kind.CHARGE:
+			return "蓄力 %d" % action.damage
+		EnemyActionDef.Kind.APPROACH:
+			return "移动 %d" % maxi(1, action.move_steps)
+		EnemyActionDef.Kind.SUMMON:
+			return "召唤 1"
+		_:
+			return "行动 %d" % maxi(0, intent.magnitude)
 
 
 func _selection_text() -> String:
