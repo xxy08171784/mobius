@@ -112,9 +112,10 @@ func remove_card(run_uid: int) -> bool:
 	return false
 
 
-## 当前地图上该节点是否可进入（委托 RouteGraph；无图时 false）。
+## 当前地图上该节点是否可进入（委托 RouteGraph，带上当前位置；无图时 false）。
+## StS 式：只能进入当前节点的直接后继，或（尚未进入任何节点时）入口。
 func can_enter(node_id: int) -> bool:
-	return map != null and map.can_enter(node_id)
+	return map != null and map.can_enter(node_id, current_node_id)
 
 
 ## 深拷贝：统一走 SaveCodec（encode -> decode），与磁盘存档同一路径，避免第二套 clone（评审 H2）。

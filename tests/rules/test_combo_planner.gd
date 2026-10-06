@@ -10,6 +10,7 @@ func run() -> Array[String]:
 	_test_resolving_cleanup_uses_discard_or_exhaust()
 	_test_range_is_recomputed_after_previous_movement()
 	_test_later_invalidated_target_can_fizzle_without_retarget()
+	_test_combo_class_rules()
 	return failures()
 
 
@@ -200,3 +201,60 @@ func _validate_or_fizzle_dead_target(
 	if not bool(unit.get("alive", true)) or int(unit.get("hp", 0)) <= 0:
 		return {"ok": false, "fizzle": true}
 	return {"ok": true}
+
+
+func _hand_of(cards: Array) -> DeckState:
+	var deck := DeckState.new()
+	for card: BattleCardState in cards:
+		deck.add_card(card, DeckState.ZONE_HAND)
+	return deck
+
+
+## 组合类别规则：攻击/招式同类可连出；防御同类；技能/能力不可连出；未标注通配。
+func _test_combo_class_rules() -> void:
+	var defs := {
+		&"card.attack": _definition(&"card.attack", 1, [TestEffectDef.make(&"damage", {"amount": 2})], false, [&"attack"]),
+		&"card.defense": _definition(&"card.defense", 1, [TestEffectDef.make(&"block", {"amount": 3})], false, [&"defense"]),
+		&"card.skill": _definition(&"card.skill", 1, [TestEffectDef.make(&"block", {"amount": 1})], false, [&"skill"]),
+	}
+
+	var attack_attack := ComboPlanner.new().build_plan(
+		EffectTestState.new(),
+		_hand_of([_card(60, &"card.attack"), _card(61, &"card.attack")]),
+		_base_command([60, 61], [2, 2]),
+		defs, 3, _rng()
+	)
+	assert_true(bool(attack_attack["ok"]), "attack+attack 应可连出")
+
+	var defense_defense := ComboPlanner.new().build_plan(
+		EffectTestState.new(),
+		_hand_of([_card(62, &"card.defense"), _card(63, &"card.defense")]),
+		_base_command([62, 63], [null, null]),
+		defs, 3, _rng()
+	)
+	assert_true(bool(defense_defense["ok"]), "defense+defense 应可连出")
+
+	var attack_defense := ComboPlanner.new().build_plan(
+		EffectTestState.new(),
+		_hand_of([_card(64, &"card.attack"), _card(65, &"card.defense")]),
+		_base_command([64, 65], [2, null]),
+		defs, 3, _rng()
+	)
+	assert_true(not bool(attack_defense["ok"]), "attack+defense 应被拒绝")
+	assert_equal(attack_defense["error_code"], ComboPlanner.ERROR_COMBO, "混类拒绝码应为 combo")
+
+	var with_skill := ComboPlanner.new().build_plan(
+		EffectTestState.new(),
+		_hand_of([_card(66, &"card.attack"), _card(67, &"card.skill")]),
+		_base_command([66, 67], [2, null]),
+		defs, 3, _rng()
+	)
+	assert_true(not bool(with_skill["ok"]), "技能牌参与连出应被拒绝")
+
+	var skill_alone := ComboPlanner.new().build_plan(
+		EffectTestState.new(),
+		_hand_of([_card(68, &"card.skill")]),
+		_base_command([68], [null]),
+		defs, 1, _rng()
+	)
+	assert_true(bool(skill_alone["ok"]), "技能牌单出应合法")

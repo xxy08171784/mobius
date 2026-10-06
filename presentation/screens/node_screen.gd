@@ -72,6 +72,7 @@ func set_options(options: Array) -> void:
 		var button := Button.new()
 		button.text = String(option.get("text", ""))
 		button.disabled = bool(option.get("disabled", false))
+		button.tooltip_text = String(option.get("tooltip", ""))
 		button.custom_minimum_size = Vector2(0, 40)
 		var data: Dictionary = option.get("data", {})
 		button.pressed.connect(func() -> void: chose.emit(data))

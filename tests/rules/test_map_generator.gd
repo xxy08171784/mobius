@@ -198,7 +198,7 @@ func _test_unlock(fails: Array[String]) -> void:
 		fails.append("已访问节点仍可进")
 	var any_next := false
 	for nid in e0.next_ids:
-		if g.can_enter(nid):
+		if g.can_enter(nid, e0.id):
 			any_next = true
 	if not any_next:
 		fails.append("进入入口后无后继可进")

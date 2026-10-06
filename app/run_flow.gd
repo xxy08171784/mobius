@@ -7,10 +7,20 @@ extends Control
 
 const ROUTE_SCENE := preload("res://presentation/route_map/route_map.tscn")
 const BATTLE_SCENE := preload("res://presentation/battle/battle_screen.tscn")
+const BOARD_VIEW_SCENE := preload("res://presentation/battle/board_view.tscn")
 
 var _session: RunSession = null
 var _status: Label = null
 var _hud: Label = null
+
+## 常驻顶部条（地图/节点/战斗各屏都显示）：遗物按钮 + 查看卡组。
+var _top_bar: HBoxContainer = null
+var _relic_box: HBoxContainer = null
+
+## 开战前选进场格的棋盘尺寸。当前所有 EncounterDef 都用默认 8×8；
+## 若未来遭遇改尺寸，选格越界由 EncounterBuilder 兜底回退。
+const DEPLOY_COLS := 8
+const DEPLOY_ROWS := 8
 
 ## 非战斗节点屏的当前模式与瞬态数据。
 var _node_mode: StringName = &""
@@ -27,12 +37,74 @@ func _ready() -> void:
 	_hud.modulate = Color(0.9, 0.9, 0.95)
 	add_child(_hud)
 
+	_build_top_bar()
+
 	_status = Label.new()
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_status.add_theme_font_size_override("font_size", 20)
 	_status.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	add_child(_status)
 	_status.visible = false
+
+	child_entered_tree.connect(_on_child_entered)
+
+
+## 常驻顶部条：遗物按钮 + 「查看卡组」。位于右上角，跨屏常驻（见 _clear_screen 豁免）。
+func _build_top_bar() -> void:
+	_top_bar = HBoxContainer.new()
+	_top_bar.add_theme_constant_override("separation", 8)
+	add_child(_top_bar)
+	_relic_box = HBoxContainer.new()
+	_relic_box.add_theme_constant_override("separation", 4)
+	_top_bar.add_child(_relic_box)
+	var deck_button := Button.new()
+	deck_button.text = "查看卡组"
+	deck_button.tooltip_text = "查看本局永久卡组与每张卡的详情。"
+	deck_button.pressed.connect(_on_view_deck)
+	_top_bar.add_child(deck_button)
+	_refresh_top_bar()
+
+
+func _refresh_top_bar() -> void:
+	if _relic_box == null:
+		return
+	for child: Node in _relic_box.get_children():
+		_relic_box.remove_child(child)
+		child.queue_free()
+	if _session != null and _session.state != null:
+		for relic: RelicState in _session.state.relics:
+			var definition: RelicDef = ContentDB.get_relic(relic.relic_id)
+			var button := Button.new()
+			button.text = CardInfo.display_name_of_relic(definition)
+			button.tooltip_text = CardInfo.relic_tooltip(definition)
+			button.focus_mode = Control.FOCUS_NONE
+			_relic_box.add_child(button)
+	_place_top_bar()
+
+
+func _place_top_bar() -> void:
+	if _top_bar == null:
+		return
+	_top_bar.size = _top_bar.get_combined_minimum_size()
+	_top_bar.position = Vector2(get_viewport_rect().size.x - _top_bar.size.x - 10, 10)
+
+
+## 各界面（主菜单/地图/节点屏/战斗屏）都是铺满全屏且 STOP 的 Control，会盖住常驻顶栏抢点击；
+## 每当有这类子节点进场，就把顶栏提到最上层。DeckPopup 是模态弹层，必须保持最上，跳过。
+func _on_child_entered(node: Node) -> void:
+	if _top_bar == null:
+		return
+	if node == _top_bar or node == _hud or node == _status:
+		return
+	if node is DeckPopup:
+		return
+	move_child(_top_bar, get_child_count() - 1)
+
+
+func _on_view_deck() -> void:
+	if _session == null or _session.state == null:
+		return
+	add_child(DeckPopup.for_run(_session.state))
 
 
 ## 开一局新 run 并进入地图。返回是否成功。
@@ -52,7 +124,73 @@ func _show_route() -> void:
 	var route: RouteMapScreen = ROUTE_SCENE.instantiate()
 	add_child(route)
 	route.bind_run_session(_session)
-	route.node_entered.connect(_on_node_entered)
+	route.activated.connect(_on_route_node_activated)
+
+
+## 地图节点被点击。战斗节点先让玩家选进场格，再进入；其余直接进入并派发。
+func _on_route_node_activated(node_id: int) -> void:
+	if _session == null:
+		return
+	if _session.is_battle_node(node_id):
+		_show_deployment(node_id)
+		return
+	var transition := _session.enter_node(node_id)
+	if not bool(transition.get("ok", false)):
+		return
+	_on_node_entered(transition)
+
+
+## 开战前选进场格：8×8 占位网格，仅外圈格可点；点选后带格子进入。
+func _show_deployment(node_id: int) -> void:
+	_clear_screen()
+	_update_hud()
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 40)
+	margin.add_theme_constant_override("margin_top", 40)
+	margin.add_theme_constant_override("margin_right", 40)
+	margin.add_theme_constant_override("margin_bottom", 40)
+	add_child(margin)
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 10)
+	margin.add_child(box)
+	var title := Label.new()
+	title.text = "选择进场位置"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 26)
+	box.add_child(title)
+	var hint := Label.new()
+	hint.text = "点击高亮的外圈格子进入战场（敌人会随机出现在内部格）。"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(hint)
+	var board := BOARD_VIEW_SCENE.instantiate() as BoardView
+	board.custom_minimum_size = Vector2(560, 420)
+	board.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	board.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(board)
+	var allowed: Array[Vector2i] = []
+	for y in range(DEPLOY_ROWS):
+		for x in range(DEPLOY_COLS):
+			if x == 0 or y == 0 or x == DEPLOY_COLS - 1 or y == DEPLOY_ROWS - 1:
+				allowed.append(Vector2i(x, y))
+	board.render_deployment(DEPLOY_COLS, DEPLOY_ROWS, allowed)
+	board.cell_pressed.connect(func(cell: Vector2i) -> void: _on_deploy_cell(node_id, cell))
+	var back := Button.new()
+	back.text = "返回地图"
+	back.custom_minimum_size = Vector2(160, 40)
+	back.pressed.connect(_show_route)
+	box.add_child(back)
+
+
+func _on_deploy_cell(node_id: int, cell: Vector2i) -> void:
+	var transition := _session.enter_node(node_id, cell)
+	if not bool(transition.get("ok", false)):
+		return
+	if StringName(String(transition.get("kind", ""))) == RunSession.KIND_BATTLE:
+		_show_battle(transition.get("battle", {}))
+	else:
+		_on_node_entered(transition)
 
 
 func _on_node_entered(transition: Dictionary) -> void:
@@ -162,13 +300,33 @@ func _show_rest() -> void:
 			"text": "休息：回复 %d 点生命" % RestSystem.heal_amount(run),
 			"data": {"action": "heal"},
 		})
-	for uid: int in RestSystem.upgradable_card_uids(run):
-		var card := run.get_card(uid)
+	if not RestSystem.upgradable_card_uids(run).is_empty():
+		options.append({"text": "升级卡牌", "data": {"action": "upgrade_menu"}})
+	options.append({"text": "什么都不做", "data": {"action": "leave"}})
+	screen.set_options(options)
+
+
+## 升级子菜单：只列未升级卡，按钮直接显示升级后效果，悬浮看完整前后对比。
+func _show_upgrade_menu() -> void:
+	_node_mode = &"rest"
+	var screen := _make_node_screen(
+		"休息 · 升级卡牌",
+		"选择一张未升级的卡升级（悬浮可查看升级效果）。"
+	)
+	var options: Array = []
+	for uid: int in RestSystem.upgradable_card_uids(_session.state):
+		var card: RunCardState = _session.state.get_card(uid)
+		if card == null:
+			continue
+		var definition: CardDef = ContentDB.get_card(card.card_id)
+		if definition == null:
+			continue
 		options.append({
-			"text": "升级：%s" % _card_name(card.card_id),
+			"text": CardInfo.upgrade_line(definition),
+			"tooltip": CardInfo.upgrade_tooltip(definition),
 			"data": {"action": "upgrade", "uid": uid},
 		})
-	options.append({"text": "什么都不做", "data": {"action": "leave"}})
+	options.append({"text": "返回", "data": {"action": "back"}})
 	screen.set_options(options)
 
 
@@ -177,12 +335,19 @@ func _on_rest_chose(data: Dictionary) -> void:
 	match StringName(String(data.get("action", ""))):
 		&"heal":
 			RestSystem.apply(run, RestSystem.OPTION_HEAL)
+			_session.save()
+			_show_route()
+		&"upgrade_menu":
+			_show_upgrade_menu()
 		&"upgrade":
 			RestSystem.apply(run, RestSystem.OPTION_UPGRADE, int(data.get("uid", -1)))
+			_session.save()
+			_show_route()
+		&"back":
+			_show_rest()
 		_:
-			pass
-	_session.save()
-	_show_route()
+			_session.save()
+			_show_route()
 
 
 # ---- 商店 ----------------------------------------------------------------
@@ -380,11 +545,12 @@ func _update_hud() -> void:
 	_hud.text = "第 %d 章 · HP %d/%d · 金币 %d · 卡组 %d 张" % [
 		run.act_index + 1, run.hp, run.max_hp, run.gold, run.deck.size()
 	]
+	_refresh_top_bar()
 
 
 func _clear_screen() -> void:
 	for child: Node in get_children():
-		if child != _status and child != _hud:
+		if child != _status and child != _hud and child != _top_bar:
 			child.queue_free()
 
 

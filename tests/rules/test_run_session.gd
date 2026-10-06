@@ -14,6 +14,7 @@ func run() -> Array[String]:
 	_test_enter_battle_node(content)
 	_test_enter_locked_zero_side_effects(content)
 	_test_reenter_visited_fails(content)
+	_test_same_row_sibling_locked(content)
 	_test_enter_determinism(content)
 	_test_battle_result_writes_hp(content)
 	_test_boss_advances_act(content)
@@ -97,6 +98,24 @@ func _test_reenter_visited_fails(content: Object) -> void:
 	assert_true(not bool(session.enter_node(target).get("ok", false)), "重复进入被拒")
 
 
+## 回归：进入一个节点后，同层兄弟节点不可再进（StS 式单路径推进）。
+func _test_same_row_sibling_locked(content: Object) -> void:
+	var session := _session(content)
+	var entries := session.state.map.get_entry_nodes()
+	assert_true(entries.size() >= 2, "默认地图应有 >=2 个入口以测试兄弟锁定")
+	if entries.size() < 2:
+		return
+	var a := entries[0].id
+	var b := entries[1].id
+	assert_true(bool(session.enter_node(a).get("ok", false)), "进入入口 a 成功")
+	var result := session.enter_node(b)
+	assert_true(not bool(result.get("ok", false)), "同层兄弟 b 不可进入")
+	assert_equal(String(result.get("error_code", "")), "node_locked", "错误码 node_locked")
+	assert_equal(session.state.current_node_id, a, "current 仍停在第 a 个入口")
+	# 只应剩下 a 的直接后继可选，b 不在其中。
+	assert_true(not session.available_node_ids().has(b), "b 不在可选集合")
+
+
 func _test_enter_determinism(content: Object) -> void:
 	var a := _session(content, "same-seed")
 	var b := _session(content, "same-seed")
@@ -159,6 +178,7 @@ func _test_treasure_node(content: Object) -> void:
 	treasure.type_key = RouteMapDef.TYPE_TREASURE
 	g.add_edge(entry.id, treasure.id)
 	session.state.map = g
+	session.state.current_node_id = entry.id
 	g.mark_visited(entry.id)
 
 	var gold_before := session.state.gold

@@ -79,13 +79,13 @@ static func create_run(
 	return run
 
 
-## 当前地图上可进入的节点 ID（升序）。
+## 当前地图上可进入的节点 ID（升序）。StS 式：初始为入口，之后为当前节点的后继。
 func available_node_ids() -> Array[int]:
 	var ids: Array[int] = []
 	if state == null or state.map == null:
 		return ids
 	for id: int in state.map.nodes:
-		if state.map.can_enter(id):
+		if state.can_enter(id):
 			ids.append(id)
 	ids.sort()
 	return ids
@@ -95,11 +95,24 @@ func can_enter(node_id: int) -> bool:
 	return state != null and state.can_enter(node_id)
 
 
+## 该节点是否战斗节点（monster/elite/boss）。纯查询，无副作用；表现层据此决定先选进场格。
+func is_battle_node(node_id: int) -> bool:
+	if state == null or state.map == null:
+		return false
+	var node: MapNodeState = state.map.get_node(node_id)
+	if node == null:
+		return false
+	return node.type_key == RouteMapDef.TYPE_MONSTER \
+		or node.type_key == RouteMapDef.TYPE_ELITE \
+		or node.type_key == RouteMapDef.TYPE_BOSS
+
+
 ## 进入节点。成功返回转移 dict：
 ##   battle        -> { kind, encounter_id, battle: <EncounterBuilder.build 结果> }
 ##   rest/shop/... -> { kind, content_id }
+## player_start：战斗节点时表现层传玩家选定的进场格；非法格由 EncounterBuilder 回退。
 ## 失败返回 { ok:false, error_code }，零副作用。
-func enter_node(node_id: int) -> Dictionary:
+func enter_node(node_id: int, player_start: Vector2i = Vector2i(-1, -1)) -> Dictionary:
 	if state == null or state.map == null:
 		return _fail(&"run_not_ready")
 	var node: MapNodeState = state.map.get_node(node_id)
@@ -111,11 +124,11 @@ func enter_node(node_id: int) -> Dictionary:
 	# 工作快照上结算，成功才提交。
 	var work := state.duplicate_state()
 	var work_rng := _rng.clone()
-	var transition := _resolve_node(work, work_rng, node)
+	var transition := _resolve_node(work, work_rng, node, player_start)
 	if not bool(transition.get("ok", false)):
 		return transition
 
-	work.map.enter(node_id)
+	work.map.enter(node_id, work.current_node_id)
 	work.current_node_id = node_id
 	work.map.get_node(node_id).content_id = StringName(String(transition.get("content_id", "")))
 	if StringName(String(transition.get("kind", ""))) == KIND_BATTLE:
@@ -181,7 +194,12 @@ func claim_reward(reward: RewardState, index: int) -> Dictionary:
 
 
 ## 只读 state，产出转移；战斗 build 用当前 next_battle_id（提交时由 enter_node 推进）。
-func _resolve_node(work: RunState, rng: RngStreams, node: MapNodeState) -> Dictionary:
+func _resolve_node(
+	work: RunState,
+	rng: RngStreams,
+	node: MapNodeState,
+	player_start: Vector2i
+) -> Dictionary:
 	match node.type_key:
 		RouteMapDef.TYPE_MONSTER, RouteMapDef.TYPE_ELITE, RouteMapDef.TYPE_BOSS:
 			var tier := _tier_of(node.type_key)
@@ -189,7 +207,7 @@ func _resolve_node(work: RunState, rng: RngStreams, node: MapNodeState) -> Dicti
 			if encounter_id.is_empty():
 				return _fail(&"no_encounter")
 			var encounter: EncounterDef = _content.get_encounter(encounter_id)
-			var battle := EncounterBuilder.build(encounter, work, rng, _content)
+			var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
 			if battle.is_empty():
 				return _fail(&"encounter_build")
 			return {

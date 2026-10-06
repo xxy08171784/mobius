@@ -19,11 +19,14 @@ const BATTLE_CARD_UID_BASE := 1000
 
 ## 产出：{ rng, state, card_defs, enemy_behaviors, enemy_actions, card_labels }。
 ## 失败（内容缺失/定义非法）返回空 dict。
+## player_start：玩家进场格（开战前由表现层让玩家从外圈选）。合法（盘内）时优先使用，
+## 否则回退 encounter.player_start。敌人落在非边缘的内部格（确定性随机，经 encounter 流）。
 static func build(
 	encounter: EncounterDef,
 	run: RunState,
 	rng: RngStreams,
-	content: Object
+	content: Object,
+	player_start: Vector2i = Vector2i(-1, -1)
 ) -> Dictionary:
 	if encounter == null or run == null or rng == null or content == null:
 		return {}
@@ -42,6 +45,7 @@ static func build(
 
 	var board := BoardState.new(encounter.board_cols, encounter.board_rows)
 	var units: Dictionary[int, UnitState] = {}
+	var start_cell := _resolve_player_start(encounter, player_start)
 
 	var player := UnitState.create(
 		PLAYER_UNIT_ID,
@@ -51,8 +55,9 @@ static func build(
 	)
 	player.hp = clampi(run.hp, 0, run.max_hp)
 	units[PLAYER_UNIT_ID] = player
-	board.place_unit(PLAYER_UNIT_ID, encounter.player_start)
+	board.place_unit(PLAYER_UNIT_ID, start_cell)
 
+	var spawns := _plan_enemy_spawns(encounter, start_cell, rng)
 	var enemy_behaviors: Dictionary = {}
 	var enemy_actions: Dictionary = {}
 	var unit_id := FIRST_ENEMY_UNIT_ID
@@ -73,7 +78,7 @@ static func build(
 			enemy_unit_def.base_stat(StatSystem.STAT_MAX_HP)
 		)
 		units[unit_id] = enemy
-		board.place_unit(unit_id, _spawn_for(encounter, index))
+		board.place_unit(unit_id, spawns[index])
 		enemy_behaviors[unit_id] = enemy_def.behavior
 		_collect_actions(enemy_actions, enemy_def.behavior)
 		unit_id += 1
@@ -113,15 +118,85 @@ static func _build_deck(run: RunState) -> DeckState:
 	return deck
 
 
-## 出生格：优先用 encounter.enemy_spawns[index]，否则用默认布局（玩家上方一行，横向铺开）。
-static func _spawn_for(encounter: EncounterDef, index: int) -> Vector2i:
-	if index < encounter.enemy_spawns.size():
-		return encounter.enemy_spawns[index]
-	var row := maxi(0, encounter.board_rows - 4)
-	var col := 2 + index * 2
-	if col >= encounter.board_cols:
-		col = 2 + (index % maxi(1, encounter.board_cols / 2)) * 2
-	return Vector2i(clampi(col, 0, encounter.board_cols - 1), row)
+## 玩家进场格：override 盘内时优先，否则用 encounter.player_start。
+static func _resolve_player_start(encounter: EncounterDef, override: Vector2i) -> Vector2i:
+	if _is_inside(override, encounter.board_cols, encounter.board_rows):
+		return override
+	return encounter.player_start
+
+
+## 敌人出生格规划（确定性）：先给显式非边缘出生格，其余从内部格洗牌依次取。
+static func _plan_enemy_spawns(
+	encounter: EncounterDef,
+	start_cell: Vector2i,
+	rng: RngStreams
+) -> Array[Vector2i]:
+	var pool := _interior_cells(encounter.board_cols, encounter.board_rows)
+	pool.erase(start_cell)
+	_shuffle_cells(pool, rng.get_stream(&"encounter"))
+	var used: Dictionary = {}
+	var result: Array[Vector2i] = []
+	for index in range(encounter.enemy_ids.size()):
+		var cell := Vector2i(-1, -1)
+		# 显式配置（设计师可覆盖随机）；必须非边缘且未被占用。
+		if index < encounter.enemy_spawns.size():
+			var explicit := encounter.enemy_spawns[index]
+			if (_is_inside(explicit, encounter.board_cols, encounter.board_rows)
+					and not _is_border(explicit, encounter.board_cols, encounter.board_rows)
+					and not used.has(explicit)):
+				cell = explicit
+		# 随机内部格。
+		if cell == Vector2i(-1, -1):
+			for candidate: Vector2i in pool:
+				if not used.has(candidate):
+					cell = candidate
+					break
+		# 兜底：任意未占用的盘内格（理论不会触发，防御性）。
+		if cell == Vector2i(-1, -1):
+			cell = _first_free_cell(encounter, used, start_cell)
+		used[cell] = true
+		result.append(cell)
+	return result
+
+
+## 内部格 = 不贴棋盘最外圈（x∈[1,cols-2]、y∈[1,rows-2]）。
+static func _interior_cells(cols: int, rows: int) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for y in range(1, rows - 1):
+		for x in range(1, cols - 1):
+			cells.append(Vector2i(x, y))
+	return cells
+
+
+static func _is_border(cell: Vector2i, cols: int, rows: int) -> bool:
+	return cell.x <= 0 or cell.y <= 0 or cell.x >= cols - 1 or cell.y >= rows - 1
+
+
+static func _is_inside(cell: Vector2i, cols: int, rows: int) -> bool:
+	return cell.x >= 0 and cell.y >= 0 and cell.x < cols and cell.y < rows
+
+
+static func _first_free_cell(
+	encounter: EncounterDef,
+	used: Dictionary,
+	start_cell: Vector2i
+) -> Vector2i:
+	for y in range(encounter.board_rows):
+		for x in range(encounter.board_cols):
+			var cell := Vector2i(x, y)
+			if cell == start_cell or used.has(cell):
+				continue
+			return cell
+	return start_cell
+
+
+## Fisher-Yates 洗牌（就地）。确定性来自 rng 的 encounter 流。
+static func _shuffle_cells(cells: Array[Vector2i], rng: RandomNumberGenerator) -> void:
+	for i in range(cells.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var tmp := cells[i]
+		cells[i] = cells[j]
+		cells[j] = tmp
 
 
 static func _collect_actions(actions: Dictionary, behavior: BehaviorDef) -> void:

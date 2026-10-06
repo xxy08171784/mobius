@@ -18,12 +18,16 @@ const ENEMY_OPTIONS: Array = [
 	[&"enemy.mobius_warden", "莫比乌斯守望者 [Boss]"],
 ]
 
+## 行走速度档位（倍率）。按钮循环切换；只加快位移，不加快动画帧率。
+const SPEED_STEPS: Array[float] = [1.0, 2.0, 3.0]
+
 var _session: BattleSession = null
 var _presenter: BattlePresenter = null
 var _battle_input: BattleInput = null
 var _board_view: BoardView = null
 var _hand_view: HandView = null
 var _enemy_selector: OptionButton = null
+var _card_defs: Dictionary = {}
 var _ui: Dictionary = {}
 
 
@@ -69,6 +73,7 @@ func _build_ui() -> void:
 	root.add_child(content)
 
 	var board_panel := PanelContainer.new()
+	board_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	board_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(board_panel)
 	_board_view = BOARD_VIEW_SCENE.instantiate() as BoardView
@@ -122,6 +127,8 @@ func _build_ui() -> void:
 	_ui["play_button"] = _button_into(controls, "打出所选")
 	_ui["clear_button"] = _button_into(controls, "清空选择")
 	_ui["end_turn_button"] = _button_into(controls, "结束回合")
+	_ui["deck_button"] = _button_into(controls, "查看卡组")
+	_ui["speed_button"] = _button_into(controls, "速度 1×")
 	_ui["restart_button"] = _button_into(controls, "重新开始")
 
 	_board_view.cell_pressed.connect(_on_cell_pressed)
@@ -129,7 +136,10 @@ func _build_ui() -> void:
 	(_ui["play_button"] as Button).pressed.connect(_on_play_pressed)
 	(_ui["clear_button"] as Button).pressed.connect(_on_clear_pressed)
 	(_ui["end_turn_button"] as Button).pressed.connect(_on_end_turn_pressed)
+	(_ui["deck_button"] as Button).pressed.connect(_on_deck_pressed)
+	(_ui["speed_button"] as Button).pressed.connect(_on_speed_pressed)
 	(_ui["restart_button"] as Button).pressed.connect(_start_demo)
+	_refresh_speed_button()
 
 
 func _start_demo() -> void:
@@ -172,6 +182,7 @@ func _start_battle(data: Dictionary) -> void:
 		data["enemy_actions"],
 		Callable(self, "_validate_card_target")
 	)
+	_card_defs = data["card_defs"]
 
 	_presenter = BattlePresenter.new()
 	add_child(_presenter)
@@ -273,6 +284,30 @@ func _on_clear_pressed() -> void:
 func _on_end_turn_pressed() -> void:
 	if _battle_input != null:
 		_battle_input.end_turn()
+
+
+func _on_deck_pressed() -> void:
+	if _session == null or _session.state == null:
+		return
+	add_child(DeckPopup.for_battle(_session.state, _card_defs))
+
+
+## 速度按钮：循环切换 1×/2×/3×。只加快玩家与敌人的行走位移，
+## 不动 AnimatedSprite2D 帧率（动画不加速）。倍率跨场次保留。
+func _on_speed_pressed() -> void:
+	if _board_view == null:
+		return
+	var idx := SPEED_STEPS.find(_board_view.speed_multiplier)
+	if idx < 0:
+		idx = 0
+	_board_view.set_speed_multiplier(SPEED_STEPS[(idx + 1) % SPEED_STEPS.size()])
+	_refresh_speed_button()
+
+
+func _refresh_speed_button() -> void:
+	var button := _ui.get("speed_button") as Button
+	if button != null:
+		button.text = "速度 %d×" % int(_board_view.speed_multiplier)
 
 
 func _label_into(parent: Control, value: String) -> Label:

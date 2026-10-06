@@ -101,22 +101,23 @@ func get_next_ids(id: int) -> Array[int]:
 	return n.next_ids
 
 
-## 解锁：未访问，且（是入口 或 任一前置已访问）。
-func can_enter(id: int) -> bool:
+## StS 式解锁：只能沿当前已选路径上行，不能回退、不能横向跳到同层兄弟。
+## current_id < 0 = 尚未进入任何节点（仅入口可选）；否则仅 current_id 的直接后继可选。
+## 位置不在本类存储（防双份状态），由 RunState.current_node_id 经调用方传入。
+## 已访问节点一律不可再进。
+func can_enter(id: int, current_id: int = -1) -> bool:
 	var n := get_node(id)
 	if n == null or n.visited:
 		return false
-	if n.is_entry:
-		return true
-	for pid in n.prev_ids:
-		if nodes[pid].visited:
-			return true
-	return false
+	if current_id < 0:
+		return n.is_entry
+	var cur := get_node(current_id)
+	return cur != null and cur.next_ids.has(id)
 
 
-## 尝试进入节点。成功则标记 visited 并返回 true。
-func enter(id: int) -> bool:
-	if not can_enter(id):
+## 尝试进入节点。成功则标记 visited 并返回 true；否则零副作用。
+func enter(id: int, current_id: int = -1) -> bool:
+	if not can_enter(id, current_id):
 		return false
 	nodes[id].visited = true
 	return true

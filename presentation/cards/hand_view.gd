@@ -44,7 +44,7 @@ func render_hand(
 		var order := selected_uids.find(uid)
 		var prefix := "[%d] " % (order + 1) if order >= 0 else ""
 		button.text = prefix + String(_labels.get(card.card_id, String(card.card_id)))
-		button.tooltip_text = "UID %d · %s" % [uid, String(card.card_id)]
+		button.tooltip_text = CardInfo.tooltip_for(definition, card.upgrade_level)
 		move_child(button, visual_index)
 		visual_index += 1
 

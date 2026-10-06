@@ -33,6 +33,10 @@ func build_plan(
 	if not bool(selected.get("ok", false)):
 		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)
 
+	# 类别约束：多张连出时攻击/招式同类、防御同类；技能/能力不可连出（零副作用拒绝）。
+	if not _combo_classes_ok(deck_in, command.card_uids, card_defs):
+		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)
+
 	var total_cost := int(selected["total_cost"])
 	if total_cost > available_resource:
 		return _failure(state_in, deck_in, rng_in, ERROR_COST)
@@ -192,6 +196,33 @@ func _collect_selected(deck: DeckState, uids: Array[int], card_defs: Dictionary)
 			return {"ok": false}
 		total_cost += card.effective_cost(definition)
 	return {"ok": true, "total_cost": total_cost}
+
+
+## 组合类别合法性：
+## - 单张恒合法；
+## - 多张时任一技能/能力（NO_COMBO）→ 非法；
+## - 其余须同类；未标注（NEUTRAL）通配。
+func _combo_classes_ok(deck: DeckState, uids: Array[int], card_defs: Dictionary) -> bool:
+	if uids.size() <= 1:
+		return true
+	var reference := CardDef.ComboClass.NEUTRAL
+	for uid: int in uids:
+		var card := deck.get_card(uid)
+		if card == null:
+			return false
+		var definition := _get_def(card_defs, card.card_id)
+		if definition == null:
+			return false
+		var combo_class := CardDef.combo_class_of(card.effective_tags(definition))
+		if combo_class == CardDef.ComboClass.NO_COMBO:
+			return false
+		if combo_class == CardDef.ComboClass.NEUTRAL:
+			continue
+		if reference == CardDef.ComboClass.NEUTRAL:
+			reference = combo_class
+		elif reference != combo_class:
+			return false
+	return true
 
 
 func _get_def(card_defs: Dictionary, card_id: StringName) -> CardDef:

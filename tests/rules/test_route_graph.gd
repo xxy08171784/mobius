@@ -6,6 +6,7 @@ func run() -> Array[String]:
 	reset()
 	_test_entry_and_initial_unlock()
 	_test_enter_progressive()
+	_test_sibling_and_backtrack_locked()
 	_test_path_queries()
 	_test_merge_same_cell()
 	_test_visited_persistence()
@@ -57,12 +58,25 @@ func _test_enter_progressive() -> void:
 	var g := _graph()
 	var n0 := g.get_nodes_at_row(0)[0]
 	var n2 := g.get_node(g.get_nodes_at_row(0)[0].next_ids[0])
-	assert_true(not g.can_enter(n2.id), "未访问前置时后继不可进")
+	assert_true(not g.can_enter(n2.id), "未进入任何节点时非入口不可进")
 	assert_true(g.enter(n0.id), "进入入口成功")
 	assert_true(g.nodes[n0.id].visited, "enter 标记 visited")
 	assert_true(not g.can_enter(n0.id), "已访问节点不可再进")
 	assert_true(not g.enter(n0.id), "重复进入被拒，零副作用")
-	assert_true(g.can_enter(n2.id), "前置已访问后后继可进")
+	assert_true(g.can_enter(n2.id, n0.id), "从当前节点可进其直接后继")
+
+
+## 回归：StS 式单路径推进 —— 进入某节点后，同层兄弟与其余入口一律锁定。
+func _test_sibling_and_backtrack_locked() -> void:
+	var g := _graph()
+	var n0 := g.get_nodes_at_row(0)[0]
+	var n1 := g.get_nodes_at_row(0)[1]
+	assert_true(g.enter(n0.id), "进入入口 n0")
+	var n2 := g.get_node(n0.next_ids[0])
+	assert_true(g.can_enter(n2.id, n0.id), "n0 的直接后继可进")
+	assert_true(not g.can_enter(n1.id, n0.id), "同层兄弟 n1 不可从 n0 进入")
+	assert_true(not g.can_enter(n0.id, n0.id), "当前节点不可再进")
+	assert_true(not g.can_enter(g.boss_id, n0.id), "boss 非 n0 后继不可进")
 
 
 func _test_path_queries() -> void:
@@ -91,4 +105,4 @@ func _test_visited_persistence() -> void:
 	g.mark_visited(n0.id)
 	assert_true(g.nodes[n0.id].visited, "mark_visited 置位")
 	var n2 := g.get_node(n0.next_ids[0])
-	assert_true(g.can_enter(n2.id), "mark_visited 后解锁后继")
+	assert_true(g.can_enter(n2.id, n0.id), "从已访问节点可进其直接后继")

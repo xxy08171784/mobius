@@ -150,12 +150,56 @@ func _present_event(event: GameEvent) -> void:
 			_append_log("事件：%s" % String(event.type_key))
 
 
-func _present_visual_event(event: GameEvent) -> void:
+## 返回 Tween 时，动画队列会等它播完（见 BattleAnimationQueue.play）。
+func _present_visual_event(event: GameEvent) -> Variant:
 	if _board_view == null:
-		return
-	var unit_id := event.target_id if event.target_id >= 0 else event.source_id
-	if unit_id >= 0:
-		_board_view.pulse_unit(unit_id)
+		return null
+	match event.type_key:
+		&"unit_moved":
+			var mover := event.source_id if event.source_id >= 0 else event.target_id
+			if mover < 0:
+				return null
+			var path := _move_path_of(event)
+			if path.size() < 2:
+				return null
+			# 逐格走：每步 0.35s；步数由 path 长度决定。
+			return _board_view.animate_unit_move(mover, path)
+		&"damage":
+			# 攻击方前冲撞击目标，目标受击脉冲。
+			var tween: Tween = null
+			if event.source_id >= 0 and event.source_id != event.target_id:
+				tween = _board_view.bump_attack(event.source_id, event.target_id)
+			if event.target_id >= 0:
+				var pulse := _board_view.pulse_unit(event.target_id)
+				if tween == null:
+					tween = pulse
+			return tween
+		_:
+			var unit_id := event.target_id if event.target_id >= 0 else event.source_id
+			if unit_id >= 0:
+				return _board_view.pulse_unit(unit_id)
+	return null
+
+
+## 取移动事件的真实路径（棋盘格序列）；缺失时回退为 [起点, 终点]。
+func _move_path_of(event: GameEvent) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	if event is EffectEvent:
+		var raw: Variant = (event as EffectEvent).payload.get("path", [])
+		if raw is Array:
+			for cell: Variant in raw:
+				if cell is Vector2i:
+					out.append(cell)
+	if out.size() >= 2:
+		return out
+	out.clear()
+	var from_cell: Variant = event.before.get("cell")
+	var to_cell: Variant = event.after.get("cell")
+	if from_cell is Vector2i:
+		out.append(from_cell)
+	if to_cell is Vector2i:
+		out.append(to_cell)
+	return out
 
 
 func _append_log(message: String) -> void:

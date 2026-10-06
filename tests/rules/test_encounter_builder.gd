@@ -14,6 +14,8 @@ func run() -> Array[String]:
 	_test_player_hp_carried(content)
 	_test_build_does_not_mutate_run(content)
 	_test_determinism(content)
+	_test_player_start_override(content)
+	_test_enemies_spawn_interior(content)
 	_test_invalid_defs(content)
 	return failures()
 
@@ -106,6 +108,45 @@ func _test_determinism(content: Object) -> void:
 		sb.board.get_unit_cell(3),
 		"同输入敌人 3 落点确定"
 	)
+
+
+func _test_player_start_override(content: Object) -> void:
+	var run := _run(content)
+	var encounter: EncounterDef = content.call("get_encounter", &"encounter.monster.ring_stalker")
+	var cell := Vector2i(7, 0)
+	var data := EncounterBuilder.build(encounter, run, _rng(), content, cell)
+	if data.is_empty():
+		assert_true(false, "override 下 build 应成功")
+		return
+	var state: BattleState = data["state"]
+	assert_equal(state.board.get_unit_cell(1), cell, "玩家落在传入进场格")
+	assert_true(state.board.is_occupied(cell), "进场格被玩家占用")
+	# 非法格回退 encounter.player_start。
+	var bad := EncounterBuilder.build(encounter, run, _rng(), content, Vector2i(-5, -5))
+	var bad_state: BattleState = bad["state"]
+	assert_equal(bad_state.board.get_unit_cell(1), encounter.player_start, "非法进场格回退默认起点")
+
+
+func _test_enemies_spawn_interior(content: Object) -> void:
+	var encounter: EncounterDef = content.call("get_encounter", &"encounter.elite.twin_guard")
+	var data := EncounterBuilder.build(encounter, _run(content), _rng("spawn"), content)
+	if data.is_empty():
+		assert_true(false, "精英 build 应成功")
+		return
+	var state: BattleState = data["state"]
+	var enemy_ids: Array = state.alive_enemy_ids()
+	assert_equal(enemy_ids.size(), 2, "精英 2 敌人")
+	assert_not_equal(
+		state.board.get_unit_cell(2),
+		state.board.get_unit_cell(3),
+		"敌人互不重叠"
+	)
+	for enemy_id: int in enemy_ids:
+		var cell := state.board.get_unit_cell(enemy_id)
+		assert_true(
+			cell.x > 0 and cell.y > 0 and cell.x < encounter.board_cols - 1 and cell.y < encounter.board_rows - 1,
+			"敌人在内部格（非边缘）"
+		)
 
 
 func _test_invalid_defs(content: Object) -> void:

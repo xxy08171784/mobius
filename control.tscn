@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://bg7yvyp6t2cx2"]
+
+[ext_resource type="Texture2D" uid="uid://ba6jsjss6rpjb" path="res://temp/1地块1.png" id="1_0fbet"]
+
+[node name="Control" type="Control" unique_id=1653130623]
+y_sort_enabled = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="1地块1" type="Sprite2D" parent="." unique_id=1352895797]
+position = Vector2(602, 261)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块2" type="Sprite2D" parent="." unique_id=1033327822]
+position = Vector2(600, 434)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块3" type="Sprite2D" parent="." unique_id=115002269]
+position = Vector2(556, 404)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块4" type="Sprite2D" parent="." unique_id=1554754305]
+position = Vector2(512, 376)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块5" type="Sprite2D" parent="." unique_id=676330061]
+position = Vector2(468, 346)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块6" type="Sprite2D" parent="." unique_id=887277500]
+position = Vector2(646, 406)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块7" type="Sprite2D" parent="." unique_id=1371210547]
+position = Vector2(691, 377)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块8" type="Sprite2D" parent="." unique_id=562008334]
+position = Vector2(735, 348)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块9" type="Sprite2D" parent="." unique_id=1114772926]
+position = Vector2(601, 377)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块10" type="Sprite2D" parent="." unique_id=1200783518]
+position = Vector2(646, 348)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块11" type="Sprite2D" parent="." unique_id=1807510240]
+position = Vector2(691, 318)
+scale = Vector2(0.19999999, 0.19999999)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块12" type="Sprite2D" parent="." unique_id=157234700]
+position = Vector2(556, 348)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块13" type="Sprite2D" parent="." unique_id=2072920536]
+position = Vector2(512, 318)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块14" type="Sprite2D" parent="." unique_id=1352775798]
+position = Vector2(602, 319)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块15" type="Sprite2D" parent="." unique_id=159245662]
+position = Vector2(557, 290)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")
+
+[node name="1地块16" type="Sprite2D" parent="." unique_id=412532000]
+position = Vector2(647, 290)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_0fbet")

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://b53bne73277am"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7vt1v"]
+animations = [{
+"frames": [],
+"loop": 1,
+"name": &"left",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"right",
+"speed": 5.0
+}]
+
+[node name="Node2D" type="CharacterBody2D" unique_id=1612912172]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1965696843]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1335447142]
+sprite_frames = SubResource("SpriteFrames_7vt1v")
+animation = &"left"

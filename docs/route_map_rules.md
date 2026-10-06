@@ -46,10 +46,13 @@ node.monster  node.elite  node.rest  node.shop  node.treasure  node.event  node.
 
 ## 4. 解锁 / 可达（`RouteGraph`）
 
-- `can_enter(id)`：未访问，且（是入口 或 任一 `prev_ids` 已访问）。
-- `enter(id)`：通过 `can_enter` 则标记 `visited` 并返回 true；否则零副作用。
+- `can_enter(id, current_id)`：未访问，且从 `current_id` 可进（StS 式**只能沿当前路径上行**，不能回退、不能跳到同层兄弟）：
+  - `current_id < 0`（尚未进入任何节点，如章首）→ 仅入口可选；
+  - 否则 → 仅 `current_id` 的**直接 `next_ids`** 可选。
+- `enter(id, current_id)`：通过 `can_enter` 则标记 `visited` 并返回 true；否则零副作用。
+- 位置不在图内存储（防双份状态）：由 `RunState.current_node_id` 传入（§2）。
 - `has_path(a, b)`：沿 `next_ids` 搜索（边只向高行，天然无环）。
-- 初始状态：仅入口 `can_enter`；非入口一律不可进。
+- 初始状态：仅入口可选；进入任一节点后，同层兄弟、其余入口与所有低行节点一律锁定。
 
 ## 5. 配置（`RouteMapDef`，Resource）
 

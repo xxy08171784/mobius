@@ -10,6 +10,9 @@ signal node_selected(node: MapNodeState)
 signal act_completed(act_index: int)
 ## RunSession 驱动模式下，节点进入成功时发出转移 dict（{kind, battle?, content_id?}）。
 signal node_entered(transition: Dictionary)
+## RunSession 驱动模式下，玩家点击可进入节点时发出 id；由 RunFlow 决定进入流程
+## （战斗节点需先选进场格）。视图自身不再调用 enter_node。
+signal activated(node_id: int)
 
 ## 三章配置。缺省时用 3 份默认 RouteMapDef。
 @export var campaign: CampaignDef = null
@@ -196,14 +199,18 @@ func _scroll_to_bottom() -> void:
 
 
 ## 派生状态：current > visited > available > locked。
+## available 必须带当前位置（StS 式）：RunSession 驱动时问规则层，原型模式用本视图 _current_id。
 func _state_for(n: MapNodeState) -> StringName:
 	if n.id == _current_id:
 		return &"current"
 	if n.visited:
 		return &"visited"
-	if graph.can_enter(n.id):
-		return &"available"
-	return &"locked"
+	var enterable := false
+	if _session != null:
+		enterable = _session.can_enter(n.id)
+	elif graph != null:
+		enterable = graph.can_enter(n.id, _current_id)
+	return &"available" if enterable else &"locked"
 
 
 func _refresh_all() -> void:
@@ -212,20 +219,13 @@ func _refresh_all() -> void:
 
 
 func _on_node_activated(id: int) -> void:
-	# RunSession 驱动模式：进入走规则入口，成功后投影新状态并发出转移。
+	# RunSession 驱动模式：视图只上报点击，进入/选进场格由 RunFlow 编排。
 	if _session != null:
-		var transition := _session.enter_node(id)
-		if not bool(transition.get("ok", false)):
-			return
-		refresh_from_session()
-		var node := _session.state.map.get_node(id)
-		if node != null:
-			node_selected.emit(node)
-		node_entered.emit(transition)
+		activated.emit(id)
 		return
 
 	# 独立原型模式（无 RunSession）：旧行为。
-	if not graph.enter(id):
+	if not graph.enter(id, _current_id):
 		return
 	_current_id = id
 	var n := graph.get_node(id)

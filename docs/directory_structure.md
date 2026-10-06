@@ -178,10 +178,10 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 
 | 子目录 | 职责 | 应有内容 | 状态 |
 |---|---|---|---|
-| `presentation/battle/` | 战斗界面 | `battle_screen.tscn`、`battle_presenter.gd`、`battle_input.gd`、`board_view.tscn/.gd`、`unit_view.tscn/.gd`、`animation_queue.gd`、`target_overlay.gd`、`intent_overlay.gd` | ⬜ 占位 |
+| `presentation/battle/` | 战斗界面 | `battle_screen.tscn`、`battle_presenter.gd`、`battle_input.gd`、`board_view.tscn/.gd`、`unit_view.gd`、`iso_grid.gd`、`iso_board_theme.gd`、`animation_queue.gd`、`demo_battle_setup.gd`（`target_overlay`/`intent_overlay` 暂并入 board_view 高亮层） | ✅ 已有（棋盘已换等轴测地块） |
 | `presentation/cards/` | 卡牌视图 | `card_view.tscn/.gd`、`hand_view.tscn/.gd`（悬停/选中/拖拽/排布） | ⬜ 占位 |
 | `presentation/screens/` | 各界面 | 每屏 `.tscn` + 同名 `.gd`：`main_menu`、`character_select`、`route_map`、`reward_screen`、`shop_screen`、`event_screen`、`rest_screen`、`run_result` | ⬜ 占位 |
-| `presentation/common/` | 通用组件 | Tooltip、弹窗、通用按钮等 | ⬜ 占位 |
+| `presentation/common/` | 通用组件 | `card_info.gd`（卡牌/遗物/状态展示文案与悬浮详情）、`deck_popup.gd`（卡组/牌堆查看弹层）（✅ 已有） |
 
 ## 7. `content/` — 设计数据（Resource）
 
