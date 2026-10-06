@@ -40,7 +40,13 @@ func begin_round(
 			continue
 		unit.clear_block()
 		unit.set_resource(ENERGY_RESOURCE, state.energy_per_round)
-		unit.set_resource(MOVE_RESOURCE, state.move_points_per_round)
+		# 移动限制状态：减速每层 -1 移动力；缠绕直接锁死（第二幕泥俑/蜘蛛，见 StatusRules）。
+		var move_budget := state.move_points_per_round
+		if StatusRules.move_locked(unit):
+			move_budget = 0
+		else:
+			move_budget = maxi(0, move_budget - StatusRules.move_penalty(unit))
+		unit.set_resource(MOVE_RESOURCE, move_budget)
 
 	var need := maxi(0, state.hand_size - state.deck.hand.size())
 	if need > 0:
@@ -181,7 +187,7 @@ func _execute_enemy_intent(
 	if action.kind == EnemyActionDef.Kind.SUMMON:
 		return _execute_summon(state, rng, enemy_id, enemy_behaviors, enemy_actions, summon_pool)
 
-	var effect_plan := _intent_to_effect_plan(state, enemy_id, intent, action)
+	var effect_plan := _intent_to_effect_plan(state, enemy_id, intent, action, rng)
 	if effect_plan.is_empty():
 		state.enemy_steps[enemy_id] = int(state.enemy_steps.get(enemy_id, 0)) + 1
 		return {"ok": true, "events": empty_events}
@@ -221,7 +227,7 @@ func _execute_charge(
 	state.enemy_charge_remaining.erase(enemy_id)
 	state.enemy_charge_intents.erase(enemy_id)
 	state.enemy_steps[enemy_id] = int(state.enemy_steps.get(enemy_id, 0)) + 1
-	var effect_plan := _attack_plan_if_valid(state, enemy_id, intent, action)
+	var effect_plan := _attack_plan_if_valid(state, enemy_id, intent, action, rng)
 	if effect_plan.is_empty():
 		return {"ok": true, "events": empty_events}
 	var resolved := _resolver.resolve(state, effect_plan, rng)
@@ -337,24 +343,31 @@ func _intent_to_effect_plan(
 	state: BattleState,
 	enemy_id: int,
 	intent: IntentState,
-	action: EnemyActionDef
+	action: EnemyActionDef,
+	rng: RngStreams
 ) -> Dictionary:
 	match action.kind:
 		EnemyActionDef.Kind.ATTACK:
-			return _attack_plan_with_advance(state, enemy_id, intent, action)
+			return _attack_plan_with_advance(state, enemy_id, intent, action, rng)
 		EnemyActionDef.Kind.DEFEND:
-			return {
-				"context": {"source_unit_id": enemy_id},
-				"effects": [{
-					"type_key": &"block",
+			var defend_effects: Array = [{
+				"type_key": &"block",
+				"target": enemy_id,
+				"params": {"amount": _roll_block(action, rng)},
+			}]
+			if action.cleanse:
+				defend_effects.append({
+					"type_key": &"cleanse",
 					"target": enemy_id,
-					"params": {"amount": action.block},
-				}],
-			}
+					"params": {},
+				})
+			return {"context": {"source_unit_id": enemy_id}, "effects": defend_effects}
 		EnemyActionDef.Kind.APPROACH:
 			return _approach_plan(state, enemy_id, action)
 		EnemyActionDef.Kind.DASH:
 			return _dash_plan(state, enemy_id, action)
+		EnemyActionDef.Kind.PULL:
+			return _pull_plan(state, enemy_id, action, rng)
 		_:
 			return {}
 
@@ -363,10 +376,11 @@ func _attack_plan_if_valid(
 	state: BattleState,
 	enemy_id: int,
 	intent: IntentState,
-	action: EnemyActionDef
+	action: EnemyActionDef,
+	rng: RngStreams
 ) -> Dictionary:
 	var from_cell := state.board.get_unit_cell(enemy_id)
-	var effects := _attack_effects(state, enemy_id, intent, action, from_cell)
+	var effects := _attack_effects(state, enemy_id, intent, action, from_cell, rng)
 	if effects.is_empty():
 		return {}
 	return {"context": {"source_unit_id": enemy_id}, "effects": effects}
@@ -378,7 +392,8 @@ func _attack_plan_with_advance(
 	state: BattleState,
 	enemy_id: int,
 	intent: IntentState,
-	action: EnemyActionDef
+	action: EnemyActionDef,
+	rng: RngStreams
 ) -> Dictionary:
 	var enemy := state.get_unit(enemy_id)
 	var from_cell := state.board.get_unit_cell(enemy_id)
@@ -395,19 +410,21 @@ func _attack_plan_with_advance(
 					"params": {"move_points": path.size() - 1},
 				})
 				attack_from = path[path.size() - 1]
-	effects.append_array(_attack_effects(state, enemy_id, intent, action, attack_from))
+	effects.append_array(_attack_effects(state, enemy_id, intent, action, attack_from, rng))
 	if effects.is_empty():
 		return {}
 	return {"context": {"source_unit_id": enemy_id}, "effects": effects}
 
 
-## 从 from_cell 判定能否命中锁定目标，产出攻击效果（damage×hit_count + 附带状态）。空 = 打不到。
+## 从 from_cell 判定能否命中锁定目标，产出攻击效果（damage×hit_count + 附带状态 + 可选贯穿）。
+## 空 = 打不到。damage/block 支持 [min,max] 区间（执行时在战斗流掷，确定性）。
 func _attack_effects(
 	state: BattleState,
 	enemy_id: int,
 	intent: IntentState,
 	action: EnemyActionDef,
-	from_cell: Vector2i
+	from_cell: Vector2i,
+	rng: RngStreams
 ) -> Array:
 	var effects: Array = []
 	if not intent.has_target():
@@ -422,12 +439,13 @@ func _attack_effects(
 		return effects
 	if action.requires_los and not BoardQuery.has_line_of_sight(state.board, from_cell, target_cell):
 		return effects
-	if action.damage > 0:
+	var damage := _roll_damage(action, rng)
+	if damage > 0:
 		for _hit in maxi(1, action.hit_count):
 			effects.append({
 				"type_key": &"damage",
 				"target": intent.locked_unit_id,
-				"params": {"amount": action.damage},
+				"params": {"amount": damage},
 			})
 	if not action.apply_status_id.is_empty() and action.apply_status_stacks > 0:
 		effects.append({
@@ -439,6 +457,22 @@ func _attack_effects(
 				"duration": maxi(1, action.apply_status_duration),
 			},
 		})
+	# 贯穿（阴兵过境）：主目标"身后一格"若还有玩家阵营单位，追加一次同额伤害。
+	if action.pierce and damage > 0:
+		var behind := target_cell + Vector2i(
+			signi(target_cell.x - from_cell.x),
+			signi(target_cell.y - from_cell.y)
+		)
+		var behind_unit := state.board.get_unit_at(behind)
+		if behind_unit >= 0 and behind_unit != intent.locked_unit_id:
+			var behind_target := state.get_unit(behind_unit)
+			if behind_target != null and behind_target.is_alive() \
+					and behind_target.team == UnitState.Team.PLAYER:
+				effects.append({
+					"type_key": &"damage",
+					"target": behind_unit,
+					"params": {"amount": damage},
+				})
 	return effects
 
 
@@ -525,6 +559,62 @@ func _dash_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -> Di
 	return {"context": {"source_unit_id": enemy_id}, "effects": effects}
 
 
+## PULL（勾魂）：把最近玩家朝自己**直线拉** move_steps 格（撞墙/单位即停），
+## 伤害 = damage + 实际移动步数 × dash_damage_per_step。目标须在射程内。
+func _pull_plan(
+	state: BattleState,
+	enemy_id: int,
+	action: EnemyActionDef,
+	rng: RngStreams
+) -> Dictionary:
+	var enemy_cell := state.board.get_unit_cell(enemy_id)
+	if enemy_cell == BoardState.INVALID_CELL:
+		return {}
+	var target_id := _nearest_player_id(state, enemy_id)
+	if target_id < 0:
+		return {}
+	var target_cell := state.board.get_unit_cell(target_id)
+	if target_cell == BoardState.INVALID_CELL:
+		return {}
+	if not BoardQuery.within_range(action.range_shape, enemy_cell, target_cell, action.range):
+		return {}
+	var path := Displacement.pull_path(state.board, target_cell, enemy_cell, action.move_steps)
+	var steps := maxi(0, path.size() - 1)
+	var effects: Array = []
+	if steps > 0:
+		effects.append({
+			"type_key": &"pull",
+			"target": target_id,
+			"params": {"toward_cell": enemy_cell, "distance": action.move_steps},
+		})
+	var amount := _roll_damage(action, rng) + steps * action.dash_damage_per_step
+	if amount > 0:
+		effects.append({
+			"type_key": &"damage",
+			"target": target_id,
+			"params": {"amount": amount},
+		})
+	if effects.is_empty():
+		return {}
+	return {"context": {"source_unit_id": enemy_id}, "effects": effects}
+
+
+## 区间掷值（伤害）：[damage_min, damage_max] 且 max>=min 且 max>0 时在战斗流掷，否则用固定 damage。
+static func _roll_damage(action: EnemyActionDef, rng: RngStreams) -> int:
+	return _roll_range(action.damage_min, action.damage_max, action.damage, rng)
+
+
+## 区间掷值（护盾）：DEFEND 用，规则同上。
+static func _roll_block(action: EnemyActionDef, rng: RngStreams) -> int:
+	return _roll_range(action.block_min, action.block_max, action.block, rng)
+
+
+static func _roll_range(low: int, high: int, fallback: int, rng: RngStreams) -> int:
+	if rng != null and high >= low and high > 0:
+		return rng.battle_rng().randi_range(low, high)
+	return fallback
+
+
 func _discard_remaining_hand(deck: DeckState) -> void:
 	var remaining := deck.hand.duplicate()
 	for uid_value: Variant in remaining:
@@ -553,7 +643,7 @@ func _finish_single_owner_turn(state: BattleState, rng: RngStreams, unit_id: int
 	for dot_id: StringName in StatusRules.DOT_STATUSES:
 		if not unit.is_alive():
 			break
-		var dot_damage := StatusRules.stacks(unit, dot_id)
+		var dot_damage := StatusRules.dot_tick_damage(dot_id, StatusRules.stacks(unit, dot_id))
 		if dot_damage <= 0:
 			continue
 		var resolved := _resolver.resolve(

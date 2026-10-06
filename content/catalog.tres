@@ -46,6 +46,53 @@
 [ext_resource type="Resource" path="res://content/shops/route_shop.tres" id="44_shop01"]
 [ext_resource type="Resource" path="res://content/events/forgotten_campfire.tres" id="45_ev01"]
 [ext_resource type="Resource" path="res://content/events/loop_temptation.tres" id="46_ev02"]
+[ext_resource type="Resource" path="res://content/events/tomb_offering.tres" id="68_ev03"]
+[ext_resource type="Resource" path="res://content/events/wounded_merchant.tres" id="69_ev04"]
+[ext_resource type="Resource" path="res://content/events/tomb_inscription.tres" id="70_ev05"]
+[ext_resource type="Resource" path="res://content/events/cursed_altar.tres" id="71_ev06"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_spider_unit.tres" id="cu_spider"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_paper_unit.tres" id="cu_paper"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_will_o_wisp_unit.tres" id="cu_wisp"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_corpse_beetle_unit.tres" id="cu_beetle"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_guard_corpse_unit.tres" id="cu_guard"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_clay_figure_unit.tres" id="cu_clay"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_stone_figure_unit.tres" id="cu_stone"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_ghost_soldier_unit.tres" id="cu_ghost"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_spider.tres" id="ce_spider"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_paper.tres" id="ce_paper"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_will_o_wisp.tres" id="ce_wisp"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_corpse_beetle.tres" id="ce_beetle"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_guard_corpse.tres" id="ce_guard"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_clay_figure.tres" id="ce_clay"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_stone_figure.tres" id="ce_stone"]
+[ext_resource type="Resource" path="res://content/enemies/catacomb_ghost_soldier.tres" id="ce_ghost"]
+[ext_resource type="Resource" path="res://content/statuses/weak.tres" id="cs_weak"]
+[ext_resource type="Resource" path="res://content/statuses/slow.tres" id="cs_slow"]
+[ext_resource type="Resource" path="res://content/statuses/entangle.tres" id="cs_entangle"]
+[ext_resource type="Resource" path="res://content/pools/act2_monsters.tres" id="cpool_mon"]
+[ext_resource type="Resource" path="res://content/pools/act2_elite.tres" id="cpool_elite"]
+[ext_resource type="Resource" path="res://content/encounters/boss_act2.tres" id="cenc_boss"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_mutated_slime_unit.tres" id="yu_slime"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_stone_lion_unit.tres" id="yu_lion"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_hell_skeleton_unit.tres" id="yu_skel"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_man_eating_flower_unit.tres" id="yu_flower"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_drought_demon_unit.tres" id="yu_drought"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_lizardman_unit.tres" id="yu_lizard"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_ghoul_unit.tres" id="yu_ghoul"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_tomb_master_unit.tres" id="yu_master"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_mutated_slime.tres" id="ye_slime"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_stone_lion.tres" id="ye_lion"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_hell_skeleton.tres" id="ye_skel"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_man_eating_flower.tres" id="ye_flower"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_drought_demon.tres" id="ye_drought"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_lizardman.tres" id="ye_lizard"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_ghoul.tres" id="ye_ghoul"]
+[ext_resource type="Resource" path="res://content/enemies/crypt_tomb_master.tres" id="ye_master"]
+[ext_resource type="Resource" path="res://content/statuses/corrode.tres" id="ys_corrode"]
+[ext_resource type="Resource" path="res://content/statuses/ignite.tres" id="ys_ignite"]
+[ext_resource type="Resource" path="res://content/pools/act3_monsters.tres" id="ypool_mon"]
+[ext_resource type="Resource" path="res://content/pools/act3_elite.tres" id="ypool_elite"]
+[ext_resource type="Resource" path="res://content/encounters/boss_act3.tres" id="yenc_boss"]
 [ext_resource type="Script" path="res://gameplay/run/monster_pool_def.gd" id="47_pooldef"]
 [ext_resource type="Resource" path="res://content/enemies/tomb_soul_lantern_unit.tres" id="48_tunit1"]
 [ext_resource type="Resource" path="res://content/enemies/tomb_bat_unit.tres" id="49_tunit2"]
@@ -71,12 +118,12 @@
 [resource]
 script = ExtResource("23_3ouml")
 cards = Array[ExtResource("1_j2f3t")]([ExtResource("2_lmid7"), ExtResource("3_pagr3"), ExtResource("4_8hid0"), ExtResource("5_3v71e"), ExtResource("6_rnkxa"), ExtResource("7_7gm4v"), ExtResource("8_8y4gr"), ExtResource("9_cna1e"), ExtResource("10_jmwsf"), ExtResource("11_4aelm"), ExtResource("12_n5ks0"), ExtResource("13_cukk1")])
-units = Array[ExtResource("28_k814x")]([ExtResource("29_wrdpo"), ExtResource("30_ox6cw"), ExtResource("31_l6qib"), ExtResource("32_von3i"), ExtResource("33_r8fvc"), ExtResource("48_tunit1"), ExtResource("49_tunit2"), ExtResource("50_tunit3"), ExtResource("51_tunit4"), ExtResource("58_tu5"), ExtResource("59_tu6"), ExtResource("60_tu7"), ExtResource("61_tu8")])
-enemies = Array[ExtResource("14_3o7yj")]([ExtResource("15_oppey"), ExtResource("16_t6r7t"), ExtResource("17_8e0yr"), ExtResource("18_7o0bq"), ExtResource("52_ten1"), ExtResource("53_ten2"), ExtResource("54_ten3"), ExtResource("55_ten4"), ExtResource("62_te5"), ExtResource("63_te6"), ExtResource("64_te7"), ExtResource("65_te8")])
-statuses = Array[ExtResource("24_traop")]([ExtResource("25_6kv2v"), ExtResource("26_dk4nj"), ExtResource("27_vyswj"), ExtResource("56_poison")])
+units = Array[ExtResource("28_k814x")]([ExtResource("29_wrdpo"), ExtResource("30_ox6cw"), ExtResource("31_l6qib"), ExtResource("32_von3i"), ExtResource("33_r8fvc"), ExtResource("48_tunit1"), ExtResource("49_tunit2"), ExtResource("50_tunit3"), ExtResource("51_tunit4"), ExtResource("58_tu5"), ExtResource("59_tu6"), ExtResource("60_tu7"), ExtResource("61_tu8"), ExtResource("cu_spider"), ExtResource("cu_paper"), ExtResource("cu_wisp"), ExtResource("cu_beetle"), ExtResource("cu_guard"), ExtResource("cu_clay"), ExtResource("cu_stone"), ExtResource("cu_ghost"), ExtResource("yu_slime"), ExtResource("yu_lion"), ExtResource("yu_skel"), ExtResource("yu_flower"), ExtResource("yu_drought"), ExtResource("yu_lizard"), ExtResource("yu_ghoul"), ExtResource("yu_master")])
+enemies = Array[ExtResource("14_3o7yj")]([ExtResource("15_oppey"), ExtResource("16_t6r7t"), ExtResource("17_8e0yr"), ExtResource("18_7o0bq"), ExtResource("52_ten1"), ExtResource("53_ten2"), ExtResource("54_ten3"), ExtResource("55_ten4"), ExtResource("62_te5"), ExtResource("63_te6"), ExtResource("64_te7"), ExtResource("65_te8"), ExtResource("ce_spider"), ExtResource("ce_paper"), ExtResource("ce_wisp"), ExtResource("ce_beetle"), ExtResource("ce_guard"), ExtResource("ce_clay"), ExtResource("ce_stone"), ExtResource("ce_ghost"), ExtResource("ye_slime"), ExtResource("ye_lion"), ExtResource("ye_skel"), ExtResource("ye_flower"), ExtResource("ye_drought"), ExtResource("ye_lizard"), ExtResource("ye_ghoul"), ExtResource("ye_master")])
+statuses = Array[ExtResource("24_traop")]([ExtResource("25_6kv2v"), ExtResource("26_dk4nj"), ExtResource("27_vyswj"), ExtResource("56_poison"), ExtResource("cs_weak"), ExtResource("cs_slow"), ExtResource("cs_entangle"), ExtResource("ys_corrode"), ExtResource("ys_ignite")])
 relics = Array[ExtResource("19_13dyc")]([ExtResource("20_4truf"), ExtResource("21_11qu4"), ExtResource("22_6dclc")])
 characters = Array[ExtResource("34_chdefs")]([ExtResource("36_hero01")])
-encounters = Array[ExtResource("35_encdef")]([ExtResource("37_encmon1"), ExtResource("38_encmon2"), ExtResource("39_encmon3"), ExtResource("40_encelite"), ExtResource("41_encboss"), ExtResource("67_encboss1")])
+encounters = Array[ExtResource("35_encdef")]([ExtResource("37_encmon1"), ExtResource("38_encmon2"), ExtResource("39_encmon3"), ExtResource("40_encelite"), ExtResource("41_encboss"), ExtResource("67_encboss1"), ExtResource("cenc_boss"), ExtResource("yenc_boss")])
 shops = Array[ExtResource("42_shopdef")]([ExtResource("44_shop01")])
-events = Array[ExtResource("43_evdef")]([ExtResource("45_ev01"), ExtResource("46_ev02")])
-monster_pools = Array[ExtResource("47_pooldef")]([ExtResource("57_pool1"), ExtResource("66_pool2")])
+events = Array[ExtResource("43_evdef")]([ExtResource("45_ev01"), ExtResource("46_ev02"), ExtResource("68_ev03"), ExtResource("69_ev04"), ExtResource("70_ev05"), ExtResource("71_ev06")])
+monster_pools = Array[ExtResource("47_pooldef")]([ExtResource("57_pool1"), ExtResource("66_pool2"), ExtResource("cpool_mon"), ExtResource("cpool_elite"), ExtResource("ypool_mon"), ExtResource("ypool_elite")])

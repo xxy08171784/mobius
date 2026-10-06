@@ -19,7 +19,7 @@ id = &"statue.smash"
 kind = 0
 target_policy = 0
 range = 2
-range_shape = 0
+range_shape = 1
 damage = 8
 advance_steps = 3
 

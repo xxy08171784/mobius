@@ -11,12 +11,28 @@ const VULNERABLE: StringName = &"status.vulnerable"
 const FOCUS: StringName = &"status.focus"
 ## 中毒：与流血同型（拥有者回合结束按层数掉血），只是稳定键不同以便区分文案/来源。
 const POISON: StringName = &"status.poison"
+## 虚弱：拥有者造成的普通伤害 -25%（来源侧百分比修饰）。
+const WEAK: StringName = &"status.weak"
+## 减速：每层令开局移动力 -1（施加给玩家，第二幕泥俑）。
+const SLOW: StringName = &"status.slow"
+## 缠绕：存在时完全不能移动（施加给玩家，第二幕蜘蛛）。
+const ENTANGLE: StringName = &"status.entangle"
+## 腐蚀：拥有者获得的护盾 -25%（施加给玩家，第三幕史莱姆/食尸鬼）。
+const CORRODE: StringName = &"status.corrode"
+## 着火：火焰 DoT，回合结束按 层数×5 掉血并减层（第三幕旱魃）。
+const IGNITE: StringName = &"status.ignite"
 
 ## 回合结束按层数结算伤害的状态（DoT）。数组顺序即结算顺序（确定性）。
-const DOT_STATUSES: Array[StringName] = [BLEED, POISON]
+const DOT_STATUSES: Array[StringName] = [BLEED, POISON, IGNITE]
 
 const VULNERABLE_DAMAGE_PERCENT := 0.5
 const FOCUS_DAMAGE_PER_STACK := 1.0
+## 虚弱：造成伤害的百分比修正。
+const WEAK_OUTGOING_PERCENT := -0.25
+## 腐蚀：获得护盾的百分比修正。
+const CORRODE_BLOCK_PERCENT := -0.25
+## 着火：每层结算的火焰伤害。
+const IGNITE_DAMAGE_PER_STACK := 5
 
 
 static func stacks(unit: UnitState, status_id: StringName) -> int:
@@ -38,11 +54,42 @@ static func incoming_damage_percent(unit: UnitState) -> float:
 	return VULNERABLE_DAMAGE_PERCENT if stacks(unit, VULNERABLE) > 0 else 0.0
 
 
+## 虚弱：拥有者造成普通伤害的百分比修饰（-25%）。作为**来源侧**修正进伤害管线。
+static func outgoing_damage_percent(unit: UnitState) -> float:
+	if unit == null:
+		return 0.0
+	return WEAK_OUTGOING_PERCENT if stacks(unit, WEAK) > 0 else 0.0
+
+
+## 腐蚀：拥有者获得护盾的百分比修饰（-25%）。作为**获得方**修正进护盾管线。
+static func outgoing_block_percent(unit: UnitState) -> float:
+	if unit == null:
+		return 0.0
+	return CORRODE_BLOCK_PERCENT if stacks(unit, CORRODE) > 0 else 0.0
+
+
+## 减速：开局移动力扣减（= 层数）。
+static func move_penalty(unit: UnitState) -> int:
+	return 0 if unit == null else stacks(unit, SLOW)
+
+
+## 缠绕：是否被锁死移动。
+static func move_locked(unit: UnitState) -> bool:
+	return unit != null and stacks(unit, ENTANGLE) > 0
+
+
 static func owner_turn_end_damage(unit: UnitState) -> int:
 	var total := 0
 	for status_id: StringName in DOT_STATUSES:
-		total += stacks(unit, status_id)
+		total += dot_tick_damage(status_id, stacks(unit, status_id))
 	return total
+
+
+## 单个 DoT 的一次结算伤害：着火 = 层数×5，其余（流血/中毒）= 层数。
+static func dot_tick_damage(status_id: StringName, stacks_count: int) -> int:
+	if status_id == IGNITE:
+		return stacks_count * IGNITE_DAMAGE_PER_STACK
+	return stacks_count
 
 
 ## 无视护甲的 DoT（伤害不吃护盾）：中毒。经伤害管线 ignore_block 参数实现（§6）。
@@ -50,10 +97,10 @@ static func is_armor_ignoring(status_id: StringName) -> bool:
 	return status_id == POISON
 
 
-## 层数驱动的 DoT（回合结束掉血后**减层数**，而非减持续）：中毒。
+## 层数驱动的 DoT（回合结束掉血后**减层数**，而非减持续）：中毒、着火。
 ## 流血则相反：吃护盾、按持续递减。
 static func is_stack_decaying(status_id: StringName) -> bool:
-	return status_id == POISON
+	return status_id == POISON or status_id == IGNITE
 
 
 ## 对拥有者身上该 id 的每个状态实例减层（最小 0）。

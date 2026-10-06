@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_ignite"]
+
+[resource]
+script = ExtResource("1_ignite")
+status_id = &"status.ignite"
+display_name = "着火"
+description = "回合结束时受到 每层×5 的火焰伤害，随后减少层数。"

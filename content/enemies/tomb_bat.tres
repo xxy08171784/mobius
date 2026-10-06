@@ -10,7 +10,7 @@ id = &"bat.bite"
 kind = 0
 target_policy = 0
 range = 1
-range_shape = 0
+range_shape = 1
 damage = 7
 advance_steps = 2
 

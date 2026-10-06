@@ -30,7 +30,7 @@
 
 ## 3. 攻击范围形状
 
-`EnemyActionDef.range_shape`（引用 `BoardQuery.RangeShape`）：`BOX`（默认，含对角）/ `DIAMOND` / `UNLIMITED`。
+`EnemyActionDef.range_shape`（引用 `BoardQuery.RangeShape`）：`DIAMOND`（**近战怪一律用此**，曼哈顿 = 正交 4 方向）/ `BOX`（方框含对角，老演示怪沿用）/ `UNLIMITED`（远程，如引魂灯/弩俑）。
 命中判定（`TurnSystem._attack_plan_if_valid`）与威胁格显示共用 `BoardQuery.within_range` / `get_target_cells_shaped`。详见 `combat_rules.md` §10。
 
 ## 4. 威胁格显示（点击怪物）
@@ -56,7 +56,7 @@
 
 ## 6. 第一幕数值表与技能边界
 
-**小怪**：HP 12 / 移动 2 / 攻击范围 3×3（`BOX` 半径 1）。行为 = `SequenceBehaviorDef([approach, attack])`，`fallback` = approach。
+**小怪**：HP 12 / 移动 2 / 攻击范围 上下左右 4 格（`DIAMOND` 半径 1）。行为 = `SequenceBehaviorDef([approach, attack])`，`fallback` = approach。
 
 | 名称 | 敌人 ID | 本轮技能 | 留待下一轮 |
 |---|---|---|---|
@@ -69,7 +69,7 @@
 - 敌人"命中附带状态"经 `EnemyActionDef.apply_status_id/stacks/duration`，由 `TurnSystem._attack_plan_if_valid` 组装 `apply_status` 效果。
 - 旧莫比乌斯怪（`echo_guard/loop_hound/ring_stalker/mobius_warden`）**保留**，仍可在战斗屏 demo 选择器使用。
 
-### 6.1 精英（HP 25~27 / 移动 3 / 攻击范围 5×5 = `BOX` 半径 2）
+### 6.1 精英（HP 25~27 / 移动 3 / 攻击范围 菱形 = `DIAMOND` 半径 2）
 
 精英战组成 = **1 精英（精英池随机）+ 2 小怪（小怪池有放回）**，共 3 个敌人。
 
@@ -81,7 +81,7 @@
 
 毒蛇的"无视护甲"即中毒本身的机制（中毒不吃护盾）；驽俑远程风筝（`kiting=true`），强射为多段（`hit_count=2`）。
 
-### 6.2 Boss（陵墓石像 HP 38 / 移动 3 / 攻击范围 5×5）
+### 6.2 Boss（陵墓石像 HP 38 / 移动 3 / 攻击范围 菱形 = `DIAMOND` 半径 2）
 
 | 敌人 ID | 行为序列（循环，4 回合） |
 |---|---|

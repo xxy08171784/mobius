@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_slow"]
+
+[resource]
+script = ExtResource("1_slow")
+status_id = &"status.slow"
+display_name = "减速"
+description = "每层令开局移动力 -1。"

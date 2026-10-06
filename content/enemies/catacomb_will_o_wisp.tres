@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+
+[sub_resource type="Resource" id="act_hellfire"]
+script = ExtResource("2_act")
+id = &"will_o_wisp.hellfire"
+kind = 0
+target_policy = 0
+range = 0
+range_shape = 2
+damage = 4
+kiting = true
+advance_steps = 2
+
+[sub_resource type="Resource" id="behavior"]
+script = ExtResource("1_seq")
+sequence = Array[ExtResource("2_act")]([SubResource("act_hellfire")])
+id = &"enemy.catacomb.will_o_wisp.behavior"
+fallback_action_id = &"will_o_wisp.hellfire"
+
+[resource]
+script = ExtResource("3_def")
+id = &"enemy.catacomb.will_o_wisp"
+unit_def_id = &"unit.enemy.catacomb.will_o_wisp"
+behavior = SubResource("behavior")
+appearance_key = &"catacomb_will_o_wisp"
+display_name = "鬼火"

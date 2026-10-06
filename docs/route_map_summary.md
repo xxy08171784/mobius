@@ -52,7 +52,7 @@ node.monster  node.elite  node.rest  node.shop  node.treasure  node.event  node.
 |---|---|
 | 无头测试 `tools/run_map_tests.gd` | **PASS**（确定性 / 固定行 / boss / 无交叉 / DAG 连通 / 相邻约束 / 下限 / 分布 / 解锁） |
 | 编辑器扫描 `--headless --editor` | 无 `SCRIPT ERROR` / `Parse Error` |
-| ASCII dump 肉眼检查 | 6 入口、row 8 全 treasure、row 14 rest、单 boss，约 60 节点 73 边 |
+| ASCII dump 肉眼检查 | 6 入口、row 0 战斗 / row 3 宝箱 / row 6 休息、其余行随机（战斗/事件/精英/休息/商店）、单 boss（2026-10-06 短章节改版） |
 | 1000 seed 压测 | **无空行**；单节点瓶颈行约 0.3%（与 StS 原版一致，已记入文档取舍） |
 | `.tres` 加载 | 默认值正确应用，可正常生成 |
 

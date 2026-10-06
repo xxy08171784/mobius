@@ -183,6 +183,16 @@ static func status_text(unit: UnitState) -> String:
 				parts.append("易伤(%d)" % status.duration)
 			StatusRules.FOCUS:
 				parts.append("专注%d(%d)" % [status.stacks, status.duration])
+			StatusRules.WEAK:
+				parts.append("虚弱(%d)" % status.duration)
+			StatusRules.SLOW:
+				parts.append("减速%d(%d)" % [status.stacks, status.duration])
+			StatusRules.ENTANGLE:
+				parts.append("缠绕(%d)" % status.duration)
+			StatusRules.CORRODE:
+				parts.append("腐蚀(%d)" % status.duration)
+			StatusRules.IGNITE:
+				parts.append("着火%d(%d)" % [status.stacks, status.duration])
 			_:
 				parts.append(String(status.status_id))
 	return " ".join(parts)

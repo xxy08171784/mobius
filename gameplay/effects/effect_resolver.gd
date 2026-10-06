@@ -20,6 +20,8 @@ func _init() -> void:
 	register_handler(MoveEffectHandler.new())
 	register_handler(PushEffectHandler.new())
 	register_handler(ApplyStatusEffectHandler.new())
+	register_handler(PullEffectHandler.new())
+	register_handler(CleanseEffectHandler.new())
 
 
 func register_handler(handler: EffectHandler) -> void:

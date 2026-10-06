@@ -19,7 +19,13 @@ func apply(
 	if target == null:
 		return _error(&"invalid_target")
 	var params: Dictionary = effect.get("params", {})
-	var amount := maxi(0, int(floor(float(params.get("amount", 0.0)))))
+	var raw_amount := maxi(0, int(floor(float(params.get("amount", 0.0)))))
+	# 腐蚀：获得方护盾 -25%（§8）。以**获得护盾的单位**（target）身上的腐蚀为准。
+	var amount := raw_amount
+	if target is UnitState:
+		amount = maxi(0, int(floor(
+			float(raw_amount) * (1.0 + StatusRules.outgoing_block_percent(target as UnitState))
+		)))
 	var before := maxi(0, int(EffectStateAccess.get_field(target, &"block", 0)))
 	var after := before + amount
 	if not EffectStateAccess.set_field(target, &"block", after):

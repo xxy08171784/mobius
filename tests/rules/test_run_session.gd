@@ -44,7 +44,7 @@ func _test_create_run(content: Object) -> void:
 	if run == null:
 		return
 	assert_equal(run.hp, run.max_hp, "初始满血")
-	assert_equal(run.max_hp, 30, "hero max_hp 来自 UnitDef")
+	assert_equal(run.max_hp, 80, "hero max_hp 来自 UnitDef（2026-10-06 调整至 80）")
 	assert_equal(run.deck.size(), 10, "初始卡组 10 张")
 	assert_equal(run.relics.size(), 1, "初始遗物 1 件")
 	assert_true(run.map != null and run.map.boss_id != -1, "生成了含 boss 的地图")
@@ -173,7 +173,7 @@ func _test_battle_result_writes_hp(content: Object) -> void:
 	var session := _session(content)
 	var target := int(session.available_node_ids()[0])
 	session.enter_node(target)
-	assert_equal(session.state.hp, 30, "战前满血")
+	assert_equal(session.state.hp, 80, "战前满血")
 	var result := BattleResult.new()
 	result.battle_id = session.state.next_battle_id - 1
 	result.victory = true

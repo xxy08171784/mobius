@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/units/unit_def.gd" id="1_unit"]
+
+[resource]
+script = ExtResource("1_unit")
+id = &"unit.enemy.catacomb.ghost_soldier"
+base_stats = Dictionary[StringName, int]({
+&"stat.attack": 10,
+&"stat.max_hp": 50,
+&"stat.move": 3,
+&"stat.range": 1
+})
+appearance_key = &"catacomb_ghost_soldier"

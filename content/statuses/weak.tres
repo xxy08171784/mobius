@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_weak"]
+
+[resource]
+script = ExtResource("1_weak")
+status_id = &"status.weak"
+display_name = "虚弱"
+description = "造成的普通伤害降低 25%。"

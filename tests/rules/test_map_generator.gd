@@ -56,12 +56,13 @@ func _test_determinism(fails: Array[String]) -> void:
 		fails.append("不同 seed 生成相同图（随机未生效）")
 
 
+## 固定行（短章节的"三处保证"）：入口全战斗、row 3 全宝箱、进 boss 前一行全休息；其余按权重随机。
 func _test_fixed_floors(fails: Array[String]) -> void:
 	var def := _default_def()
 	for s in SEEDS:
 		var g := _gen(def, s)
 		_expect_row_type(g, 0, RouteMapDef.TYPE_MONSTER, s, fails)
-		_expect_row_type(g, 8, RouteMapDef.TYPE_TREASURE, s, fails)
+		_expect_row_type(g, 3, RouteMapDef.TYPE_TREASURE, s, fails)
 		_expect_row_type(g, def.rows - 1, RouteMapDef.TYPE_REST, s, fails)
 
 

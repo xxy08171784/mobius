@@ -10,7 +10,7 @@ id = &"viper.venom"
 kind = 0
 target_policy = 0
 range = 2
-range_shape = 0
+range_shape = 1
 apply_status_id = &"status.poison"
 apply_status_stacks = 4
 apply_status_duration = 99
@@ -22,7 +22,7 @@ id = &"viper.bite"
 kind = 0
 target_policy = 0
 range = 2
-range_shape = 0
+range_shape = 1
 damage = 7
 advance_steps = 3
 
