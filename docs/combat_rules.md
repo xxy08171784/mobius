@@ -158,6 +158,11 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 - 每个 `StatusDef` 声明 `tick_timing`：`ROUND_START` / `OWNER_TURN_START` / `OWNER_TURN_END` / `ROUND_END`。
 - 【建议默认】持续时间在**拥有者的回合结束**递减；DoT（中毒等）在拥有者回合结束时按层数结算伤害。
 - **中毒（`status.poison`）**（2026-10-06）：回合结束受到等于层数的伤害（**无视护甲**，§6），随后**层数 −1**（`is_stack_decaying`，跳过持续递减）；流血（`status.bleed`）相反——吃护盾、按持续递减。
+- **虚弱（`status.weak`）**（2026-10-06，第二幕守墓尸）：存在时拥有者造成的普通伤害 **−25%**（来源侧百分比，`StatusRules.outgoing_damage_percent`）；DoT 带 `ignore_status_modifiers`，不受影响。
+- **减速（`status.slow`）**（2026-10-06，第二幕泥俑）：每层令拥有者**开局移动力 −1**（`StatusRules.move_penalty`，在 `TurnSystem.begin_round` 结算）。
+- **缠绕（`status.entangle`）**（2026-10-06，第二幕蜘蛛）：存在时拥有者**完全无法移动**（`StatusRules.move_locked`，开局移动力置 0）。
+- **腐蚀（`status.corrode`）**（2026-10-06，第三幕史莱姆/食尸鬼）：拥有者**获得的护盾 −25%**（`StatusRules.outgoing_block_percent`，`block_effect` 按获得方折算）。
+- **着火（`status.ignite`）**（2026-10-06，第三幕旱魃）：火焰 DoT，拥有者回合结束受到 **层数 × 5** 的伤害（吃护盾、**不**无视护甲），随后**层数 −1**（`dot_tick_damage` / `is_stack_decaying`）。
 - 护盾（Block）：【建议默认】在拥有者**下个回合开始时清零**；不跨战斗保留。
 
 ## 9. 位移：移动 / 击退 / 交换 / 传送
@@ -170,6 +175,7 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 |---|---|---|
 | 移动 Move | 路径全可走、占用为空、在行动预算内 | 不可达 → 命令拒绝 |
 | 击退 Push N | 逐步推进，每步须在盘内且未被阻挡单位占据 | 遇**墙/单位**即**停在其前**；【建议默认】不造成碰撞伤害（可作为后续变体） |
+| 拖拽 Pull N | 同上；方向取**目标 → 施法者** | 朝施法者**直线拉 N 格**，遇墙/单位即停在其前（第二幕阴兵"勾魂"，`Displacement.pull`） |
 | 交换 Swap | 两格各有可交换单位 | 直接交换位置，不要求路径/射程 |
 | 传送 Teleport | 目的地在盘内、占用为空（或按效果定义的占用规则） | 忽略路径与视线 |
 
@@ -181,8 +187,8 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 - **LoS 算法**【建议默认】：格子中心连线用 **supercover**；`blocks_los` 地形阻挡；**起点与终点格本身不阻挡**；连线恰穿过两个阻挡格之间的**角**时判为**阻挡**（无穿角窥视）。
 - LoS **对称**：`has_line_of_sight(a, b) == has_line_of_sight(b, a)`。
 - **射程形状**（2026-10-06 修订）：技能/行动射程带**形状**，命中判定与威胁格显示共用同一函数（`BoardQuery.within_range` / `get_target_cells_shaped`）：
-  - `BOX` **方框**（切比雪夫，**含对角**）：`range=1` → 3×3、`range=2` → 5×5。怪物攻击多用此形状。
-  - `DIAMOND` **菱形**（曼哈顿）：正交步数。玩家卡牌沿用（"前后左右各一格"）。
+  - `BOX` **方框**（切比雪夫，**含对角**）：`range=1` → 3×3、`range=2` → 5×5。老演示怪沿用。
+  - `DIAMOND` **菱形**（曼哈顿）：正交步数。**近战怪一律用此**（2026-10-06 修订：小怪=上下左右 4 格、精英/Boss=半径 2 菱形）；玩家卡牌沿用（"前后左右各一格"）。
   - `UNLIMITED` **无视距离**：全盘（如引魂灯"幽火"）。`require_los` 时按 LoS 过滤。
   - 兼容入口 `BoardQuery.get_target_cells(...)` 语义不变（默认 `DIAMOND`）。
 - 区分三件事，不得混用：**移动可达性**（可走路径）/ **技能射程**（含 LoS 与否）/ **效果覆盖**（AOE 形状）。

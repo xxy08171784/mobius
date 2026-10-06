@@ -301,26 +301,57 @@ func _monster_name(unit: UnitState) -> String:
 func _monster_skill_text(action: EnemyActionDef) -> String:
 	match action.kind:
 		EnemyActionDef.Kind.ATTACK:
-			var text := "造成 %d 伤害" % action.damage
-			if action.hit_count > 1:
-				text += "×%d" % action.hit_count
+			var parts: Array[String] = []
+			if _damage_value(action) > 0:
+				var dmg := "造成 %s 伤害" % _damage_text(action)
+				if action.hit_count > 1:
+					dmg += "×%d" % action.hit_count
+				parts.append(dmg)
 			if not action.apply_status_id.is_empty() and action.apply_status_stacks > 0:
-				text += "，附带%s%d" % [_status_label(action.apply_status_id), action.apply_status_stacks]
+				parts.append("附带%s%d" % [_status_label(action.apply_status_id), action.apply_status_stacks])
+			if action.pierce:
+				parts.append("贯穿身后一格")
 			if action.range_shape == BoardQuery.RangeShape.UNLIMITED:
-				text += "（无视距离）"
-			return text
+				parts.append("无视距离")
+			return "，".join(parts) if not parts.is_empty() else "攻击"
 		EnemyActionDef.Kind.DEFEND:
-			return "获得 %d 护盾" % action.block
+			var defend := "获得 %s 护盾" % _block_text(action)
+			if action.cleanse:
+				defend += "，清除自身负面状态"
+			return defend
 		EnemyActionDef.Kind.DASH:
 			return "冲撞（造成 %d 伤害，每步+%d）" % [action.damage, action.dash_damage_per_step]
+		EnemyActionDef.Kind.PULL:
+			return "勾魂（拉近 %d 格，每格+%d 伤害）" % [action.move_steps, action.dash_damage_per_step]
 		EnemyActionDef.Kind.SUMMON:
 			return "召唤小怪"
 		EnemyActionDef.Kind.CHARGE:
-			return "蓄力（造成 %d 伤害）" % action.damage
+			return "蓄力（造成 %s 伤害）" % _damage_text(action)
 		EnemyActionDef.Kind.APPROACH:
 			return "接近玩家"
 		_:
 			return String(action.id)
+
+
+## 伤害显示：有区间则 "9-12"，否则固定值。
+func _damage_text(action: EnemyActionDef) -> String:
+	if action.damage_max >= action.damage_min and action.damage_max > 0:
+		return "%d-%d" % [action.damage_min, action.damage_max]
+	return str(action.damage)
+
+
+## 伤害代表值（用于判断是否为纯状态攻击）：有区间取上限，否则固定值。
+func _damage_value(action: EnemyActionDef) -> int:
+	if action.damage_max >= action.damage_min and action.damage_max > 0:
+		return action.damage_max
+	return action.damage
+
+
+## 护盾显示：有区间则 "8-12"，否则固定值。
+func _block_text(action: EnemyActionDef) -> String:
+	if action.block_max >= action.block_min and action.block_max > 0:
+		return "%d-%d" % [action.block_min, action.block_max]
+	return str(action.block)
 
 
 func _status_label(status_id: StringName) -> String:
@@ -333,6 +364,16 @@ func _status_label(status_id: StringName) -> String:
 			return "易伤"
 		StatusRules.FOCUS:
 			return "专注"
+		StatusRules.WEAK:
+			return "虚弱"
+		StatusRules.SLOW:
+			return "减速"
+		StatusRules.ENTANGLE:
+			return "缠绕"
+		StatusRules.CORRODE:
+			return "腐蚀"
+		StatusRules.IGNITE:
+			return "着火"
 		_:
 			return String(status_id)
 

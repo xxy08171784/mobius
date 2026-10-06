@@ -19,6 +19,10 @@ func run() -> Array[String]:
 		return failures()
 	_test_elite_node(content)
 	_test_boss_node(content)
+	_test_act2_mob_node(content)
+	_test_act2_boss_node(content)
+	_test_act3_mob_node(content)
+	_test_act3_boss_node(content)
 	return failures()
 
 
@@ -119,3 +123,65 @@ func _test_boss_node(content: Object) -> void:
 	assert_equal(state.enemy_ids().size(), 1, "Boss 单独上场（小怪靠召唤刷新）")
 	assert_equal(state.get_unit(int(state.enemy_ids()[0])).def_id, &"unit.enemy.tomb.tomb_statue", "Boss = 陵墓石像")
 	assert_equal((battle.get("summon_pool", []) as Array).size(), 4, "召唤池含 4 只墓外小怪")
+
+
+## 第二幕（act_index=1）：小怪节点走墓道池，Boss 节点 = 阴兵 + 召唤池。
+func _test_act2_mob_node(content: Object) -> void:
+	var session := _session(content, "act2-mob")
+	session.state.act_index = 1
+	var transition := _enter(session, RouteMapDef.TYPE_MONSTER)
+	assert_true(bool(transition.get("ok", false)), "进入第二幕小怪节点成功")
+	var state: BattleState = (transition.get("battle", {}) as Dictionary).get("state", null)
+	if state == null:
+		assert_true(false, "第二幕小怪战应携带 BattleState")
+		return
+	assert_true(state.enemy_ids().size() >= 1, "第二幕小怪战有敌人")
+	for enemy_id: int in state.enemy_ids():
+		var def_id: StringName = state.get_unit(enemy_id).def_id
+		assert_true(String(def_id).begins_with("unit.enemy.catacomb."), "第二幕小怪来自墓道池（%s）" % def_id)
+
+
+func _test_act2_boss_node(content: Object) -> void:
+	var session := _session(content, "act2-boss")
+	session.state.act_index = 1
+	var transition := _enter(session, RouteMapDef.TYPE_BOSS)
+	assert_true(bool(transition.get("ok", false)), "进入第二幕 Boss 节点成功")
+	var battle: Dictionary = transition.get("battle", {})
+	var state: BattleState = battle.get("state", null)
+	if state == null:
+		assert_true(false, "第二幕 Boss 应携带 BattleState")
+		return
+	assert_equal(state.enemy_ids().size(), 1, "第二幕 Boss 单独上场")
+	assert_equal(state.get_unit(int(state.enemy_ids()[0])).def_id, &"unit.enemy.catacomb.ghost_soldier", "第二幕 Boss = 阴兵")
+	assert_equal((battle.get("summon_pool", []) as Array).size(), 4, "第二幕召唤池 4 只墓道小怪")
+
+
+## 第三幕（act_index=2）：小怪节点走内墓池，Boss 节点 = 墓主人 + 召唤池。
+func _test_act3_mob_node(content: Object) -> void:
+	var session := _session(content, "act3-mob")
+	session.state.act_index = 2
+	var transition := _enter(session, RouteMapDef.TYPE_MONSTER)
+	assert_true(bool(transition.get("ok", false)), "进入第三幕小怪节点成功")
+	var state: BattleState = (transition.get("battle", {}) as Dictionary).get("state", null)
+	if state == null:
+		assert_true(false, "第三幕小怪战应携带 BattleState")
+		return
+	assert_true(state.enemy_ids().size() >= 1, "第三幕小怪战有敌人")
+	for enemy_id: int in state.enemy_ids():
+		var def_id: StringName = state.get_unit(enemy_id).def_id
+		assert_true(String(def_id).begins_with("unit.enemy.crypt."), "第三幕小怪来自内墓池（%s）" % def_id)
+
+
+func _test_act3_boss_node(content: Object) -> void:
+	var session := _session(content, "act3-boss")
+	session.state.act_index = 2
+	var transition := _enter(session, RouteMapDef.TYPE_BOSS)
+	assert_true(bool(transition.get("ok", false)), "进入第三幕 Boss 节点成功")
+	var battle: Dictionary = transition.get("battle", {})
+	var state: BattleState = battle.get("state", null)
+	if state == null:
+		assert_true(false, "第三幕 Boss 应携带 BattleState")
+		return
+	assert_equal(state.enemy_ids().size(), 1, "第三幕 Boss 单独上场")
+	assert_equal(state.get_unit(int(state.enemy_ids()[0])).def_id, &"unit.enemy.crypt.tomb_master", "第三幕 Boss = 墓主人")
+	assert_equal((battle.get("summon_pool", []) as Array).size(), 2, "第三幕召唤池 2 只（地狱骷髅/石狮子）")

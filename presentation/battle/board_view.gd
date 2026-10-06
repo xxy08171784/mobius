@@ -171,6 +171,9 @@ func play_hit(target_id: int, attacker_id: int) -> Tween:
 ## 实际时长 = 此值 / speed_multiplier（加速按钮），动画帧率不受影响。
 const WALK_PER_STEP := 0.35
 
+## 每走一格上跳的高度（棋盘局部像素）。棋子式"一跳一跳"：正弦半波起跳再落地。调观感改这一个。
+const HOP_HEIGHT := 40.0
+
 ## 设置行走加速倍率（并跨场次保留）。下限 0.1 防止 0/负值把 tween 时长打崩。
 func set_speed_multiplier(value: float) -> void:
 	speed_multiplier = maxf(0.1, value)
@@ -178,7 +181,8 @@ func set_speed_multiplier(value: float) -> void:
 
 
 ## 移动表现：沿真实路径逐格走（不拉直线，避免"斜穿格子"的错觉），每步定朝向 + 播行走。
-## path 含起点与终点；返回 Tween 供动画队列等待。
+## 每格叠一次上跳弧（_hop_arc），落地即格中心 —— 棋子式一跳一跳。path 含起点与终点；
+## 返回 Tween 供动画队列等待。
 func animate_unit_move(unit_id: int, path: Array[Vector2i], per_step: float = WALK_PER_STEP) -> Tween:
 	var view: UnitView = _units.get(unit_id)
 	if view == null or _tile_layer == null or _tile_layer.tile_set == null or path.size() < 2:
@@ -188,11 +192,23 @@ func animate_unit_move(unit_id: int, path: Array[Vector2i], per_step: float = WA
 	var tween := create_tween()
 	for i in range(1, path.size()):
 		tween.tween_callback(view.walk_step.bind(path[i] - path[i - 1]))
-		tween.tween_property(
-			view, "position", IsoGrid.center_of(_tile_layer, path[i]), step_time
+		tween.tween_method(
+			_hop_arc.bind(view, IsoGrid.center_of(_tile_layer, path[i - 1]), IsoGrid.center_of(_tile_layer, path[i])),
+			0.0, 1.0, step_time
 		)
 	tween.tween_callback(view.play_idle)
 	return tween
+
+
+## 单步一跳的弧线（纯表现，不改规则状态）。t∈[0,1]：平面位置从 from 线性到 to，
+## 叠一个 sin 半波上跳（-y 向上）。用 tween_method 一体驱动平面位移与高度，
+## 避免平面/高度两个 tween 抢同一 position 属性。
+func _hop_arc(t: float, view: UnitView, from: Vector2, to: Vector2) -> void:
+	if view == null or not is_instance_valid(view):
+		return
+	var pos := from.lerp(to, t)
+	pos.y -= sin(PI * t) * HOP_HEIGHT
+	view.position = pos
 
 
 ## 攻击撞击：玩家棋子朝目标方向前冲一小段再回弹（纯表现，不改规则状态）。

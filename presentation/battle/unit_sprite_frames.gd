@@ -24,6 +24,7 @@ const FPS := 10.0
 const HOVER_PX := {
 	&"tomb_bat": 150.0,
 	&"tomb_soul_lantern": 120.0,
+	&"catacomb_will_o_wisp": 130.0,
 }
 
 static var _cache: Dictionary = {}

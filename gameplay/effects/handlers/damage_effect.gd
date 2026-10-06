@@ -33,6 +33,7 @@ func apply(
 	if not bool(params.get("ignore_status_modifiers", false)):
 		if source is UnitState:
 			flat_bonus += StatusRules.outgoing_damage_flat(source as UnitState)
+			percent_bonus += StatusRules.outgoing_damage_percent(source as UnitState)
 		if target is UnitState:
 			percent_bonus += StatusRules.incoming_damage_percent(target as UnitState)
 

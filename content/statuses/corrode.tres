@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_corrode"]
+
+[resource]
+script = ExtResource("1_corrode")
+status_id = &"status.corrode"
+display_name = "腐蚀"
+description = "获得的护盾降低 25%。"

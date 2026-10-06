@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EventDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/event_choice.gd" id="1_choice"]
+[ext_resource type="Script" path="res://gameplay/run/event_def.gd" id="2_event"]
+
+[sub_resource type="Resource" id="Resource_c1"]
+script = ExtResource("1_choice")
+label = "献上鲜血（失去 8 点生命，获得「处决」）"
+hp_delta = -8
+add_card_id = &"card.warrior.execute"
+
+[sub_resource type="Resource" id="Resource_c2"]
+script = ExtResource("1_choice")
+label = "献上金币（失去 40 金币，回复 12 点生命）"
+hp_delta = 12
+gold_delta = -40
+
+[sub_resource type="Resource" id="Resource_c3"]
+script = ExtResource("1_choice")
+label = "砸碎祭坛（获得 30 金币，失去 3 点生命）"
+hp_delta = -3
+gold_delta = 30
+
+[resource]
+script = ExtResource("2_event")
+id = &"event.cursed_altar"
+title = "被诅咒的祭坛"
+body = "一座沾满暗红色痕迹的石祭坛，凹槽里还凝着未干的血，坛心幽幽发亮。"
+choices = Array[ExtResource("1_choice")]([SubResource("Resource_c1"), SubResource("Resource_c2"), SubResource("Resource_c3")])

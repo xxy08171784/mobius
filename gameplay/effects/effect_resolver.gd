@@ -24,6 +24,8 @@ func _init() -> void:
 	register_handler(ApplyStatusEffectHandler.new())
 	register_handler(ResourceEffectHandlerScript.new())
 	register_handler(HealEffectHandlerScript.new())
+	register_handler(PullEffectHandler.new())
+	register_handler(CleanseEffectHandler.new())
 
 
 func register_handler(handler: EffectHandler) -> void:

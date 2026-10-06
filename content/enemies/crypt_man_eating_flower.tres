@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+
+[sub_resource type="Resource" id="act_approach"]
+script = ExtResource("2_act")
+id = &"man_eating_flower.approach"
+kind = 1
+target_policy = 0
+move_steps = 2
+
+[sub_resource type="Resource" id="act_bite"]
+script = ExtResource("2_act")
+id = &"man_eating_flower.bite"
+kind = 0
+target_policy = 0
+range = 1
+range_shape = 1
+damage = 7
+advance_steps = 2
+
+[sub_resource type="Resource" id="act_digestive"]
+script = ExtResource("2_act")
+id = &"man_eating_flower.digestive"
+kind = 0
+target_policy = 0
+range = 1
+range_shape = 1
+apply_status_id = &"status.poison"
+apply_status_stacks = 3
+apply_status_duration = 99
+advance_steps = 2
+
+[sub_resource type="Resource" id="behavior"]
+script = ExtResource("1_seq")
+sequence = Array[ExtResource("2_act")]([SubResource("act_approach"), SubResource("act_bite"), SubResource("act_digestive")])
+id = &"enemy.crypt.man_eating_flower.behavior"
+fallback_action_id = &"man_eating_flower.bite"
+
+[resource]
+script = ExtResource("3_def")
+id = &"enemy.crypt.man_eating_flower"
+unit_def_id = &"unit.enemy.crypt.man_eating_flower"
+behavior = SubResource("behavior")
+appearance_key = &"crypt_man_eating_flower"
+display_name = "食人花"

@@ -11,7 +11,7 @@
 - 边方向恒为**低行 → 高行**（向 boss）。边只存在于相邻两行之间。
 - 节点身份 = 格 `(col, row)`；同格复访即合并，不新建。
 - **不出现空行**：每行 0 .. `rows-1` 至少一个节点（6 条完整路径覆盖）。
-- 固定行默认：row 0 全 monster、row 8 全 treasure、row `rows-1` 全 rest、row `rows` 单 boss。数值见 `RouteMapDef`。
+- 固定行默认（短章节，2026-10-06 修订）：行 0 全 monster（入口）、行 3 全 treasure、行 6 全 rest（进 boss 前）；其余行（1/2/4/5）按权重随机（monster/event/elite/rest/shop）。`row = rows` 单 boss。数值见 `RouteMapDef`。
 
 ## 2. 节点类型（稳定键）
 
@@ -58,11 +58,11 @@ node.monster  node.elite  node.rest  node.shop  node.treasure  node.event  node.
 
 | 字段 | 默认 | 说明 |
 |---|---|---|
-| `rows` / `cols` | 15 / 7 | 楼层数 / 横向宽度 |
+| `rows` / `cols` | 7 / 7 | 楼层数 / 横向宽度（短章节 = 7 层，见 §1 固定行） |
 | `path_count` | 6 | 路径条数 = 入口数，须 ≤ `cols` |
-| `fixed_floors` | `{0:monster, 8:treasure, 14:rest}` | 行 → 强制类型 |
-| `min_floors` | `{rest:6, shop:6, elite:1}` | 类型最早出现的行 |
-| `weights` | `{monster:53, event:22, elite:8, rest:12, shop:5}` | 抽签权重（无需归一化） |
+| `fixed_floors` | `{0:monster, 3:treasure, 6:rest}` | 行 → 强制类型（入口战斗 / 宝箱 / 进 boss 前休息） |
+| `min_floors` | `{elite:2, rest:3, shop:3}` | 类型最早出现的行 |
+| `weights` | `{monster:53, event:22, elite:8, rest:12, shop:5}` | 抽签权重（行 1/2/4/5 参与） |
 | `special_types` | `[rest, shop, elite]` | 受相邻约束的类型 |
 | `fallback_chain` | `[event, monster]` | 抽签池空的兜底 |
 

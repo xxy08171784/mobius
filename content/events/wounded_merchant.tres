@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EventDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/event_choice.gd" id="1_choice"]
+[ext_resource type="Script" path="res://gameplay/run/event_def.gd" id="2_event"]
+
+[sub_resource type="Resource" id="Resource_c1"]
+script = ExtResource("1_choice")
+label = "替他包扎伤口（失去 20 金币，回复 10 点生命）"
+hp_delta = 10
+gold_delta = -20
+
+[sub_resource type="Resource" id="Resource_c2"]
+script = ExtResource("1_choice")
+label = "趁他虚弱搜刮一番（获得 55 金币，失去 6 点生命）"
+hp_delta = -6
+gold_delta = 55
+
+[sub_resource type="Resource" id="Resource_c3"]
+script = ExtResource("1_choice")
+label = "视而不见，继续赶路"
+
+[resource]
+script = ExtResource("2_event")
+id = &"event.wounded_merchant"
+title = "受伤的商人"
+body = "一名商人瘫坐在路旁，货箱半开，一只手死死按着渗血的肋侧，警惕地盯着你。"
+choices = Array[ExtResource("1_choice")]([SubResource("Resource_c1"), SubResource("Resource_c2"), SubResource("Resource_c3")])

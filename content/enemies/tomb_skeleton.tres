@@ -10,7 +10,7 @@ id = &"skeleton.slash"
 kind = 0
 target_policy = 0
 range = 2
-range_shape = 0
+range_shape = 1
 damage = 7
 advance_steps = 3
 
@@ -20,7 +20,7 @@ id = &"skeleton.heavy"
 kind = 0
 target_policy = 0
 range = 2
-range_shape = 0
+range_shape = 1
 damage = 11
 advance_steps = 3
 

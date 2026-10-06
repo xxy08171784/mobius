@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EncounterDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/encounter_def.gd" id="1_enc"]
+
+[resource]
+script = ExtResource("1_enc")
+id = &"encounter.boss.act2"
+enemy_ids = Array[StringName]([&"enemy.catacomb.ghost_soldier"])
+summon_enemy_ids = Array[StringName]([&"enemy.catacomb.spider", &"enemy.catacomb.paper", &"enemy.catacomb.will_o_wisp", &"enemy.catacomb.corpse_beetle"])
+tier = &"boss"

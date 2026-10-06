@@ -32,13 +32,13 @@ func _run(content: Object, hp: int = 20, gold: int = 99) -> RunState:
 
 func _test_rest(content: Object) -> void:
 	var run := _run(content, 20)
-	assert_equal(RestSystem.heal_amount(run), 9, "30 max_hp 的 30% 向下取整 = 9")
+	assert_equal(RestSystem.heal_amount(run), 24, "80 max_hp 的 30% 向下取整 = 24")
 
 	var healed := RestSystem.apply(run, RestSystem.OPTION_HEAL)
 	assert_true(bool(healed.get("ok", false)), "回血成功")
-	assert_equal(run.hp, 29, "回血 9 点")
+	assert_equal(run.hp, 44, "回血 24 点")
 	# 满血时回 0，不超上限。
-	run.hp = 30
+	run.hp = 80
 	assert_equal(int(RestSystem.apply(run, RestSystem.OPTION_HEAL).get("healed", -1)), 0, "满血回 0")
 
 	# 升级：0 -> 1，再次升级被拒。
@@ -137,8 +137,8 @@ func _test_event(content: Object) -> void:
 	var campfire: EventDef = content.call("get_event", &"event.forgotten_campfire")
 	var run2 := _run(content, 25, 0)
 	var deck_before := run2.deck.size()
-	EventSystem.resolve(run2, campfire, 0)   # +10 HP -> 钳制到 30
-	assert_equal(run2.hp, 30, "HP 钳制到 max_hp")
+	EventSystem.resolve(run2, campfire, 0)   # +10 HP -> 35（未超 80 上限）
+	assert_equal(run2.hp, 35, "HP +10 = 35")
 	EventSystem.resolve(run2, campfire, 1)   # 加卡
 	assert_equal(run2.deck.size(), deck_before + 1, "事件加卡")
 	assert_true(bool(EventSystem.resolve(run2, campfire, 0).get("ok", false)), "可重复选择（原型无一次性限制）")

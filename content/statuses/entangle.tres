@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_entangle"]
+
+[resource]
+script = ExtResource("1_entangle")
+status_id = &"status.entangle"
+display_name = "缠绕"
+description = "完全无法移动。"

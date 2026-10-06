@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EventDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/event_choice.gd" id="1_choice"]
+[ext_resource type="Script" path="res://gameplay/run/event_def.gd" id="2_event"]
+
+[sub_resource type="Resource" id="Resource_c1"]
+script = ExtResource("1_choice")
+label = "诵读铭文，参悟其中的剑意（获得「洞察」）"
+add_card_id = &"card.warrior.insight"
+
+[sub_resource type="Resource" id="Resource_c2"]
+script = ExtResource("1_choice")
+label = "拓下碑上纹路（获得「铁壁」）"
+add_card_id = &"card.warrior.iron_wall"
+
+[sub_resource type="Resource" id="Resource_c3"]
+script = ExtResource("1_choice")
+label = "懒得研究，直接走开"
+
+[resource]
+script = ExtResource("2_event")
+id = &"event.tomb_inscription"
+title = "断碑铭文"
+body = "半截石碑斜插在土里，刻满你认不全的古字，指尖触到时有微微热意。"
+choices = Array[ExtResource("1_choice")]([SubResource("Resource_c1"), SubResource("Resource_c2"), SubResource("Resource_c3")])

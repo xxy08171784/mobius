@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
+[ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+
+[sub_resource type="Resource" id="act_approach"]
+script = ExtResource("2_act")
+id = &"guard_corpse.approach"
+kind = 1
+target_policy = 0
+move_steps = 3
+
+[sub_resource type="Resource" id="act_heavy"]
+script = ExtResource("2_act")
+id = &"guard_corpse.heavy"
+kind = 0
+target_policy = 0
+range = 1
+range_shape = 1
+damage = 9
+advance_steps = 3
+
+[sub_resource type="Resource" id="act_rot_grip"]
+script = ExtResource("2_act")
+id = &"guard_corpse.rot_grip"
+kind = 0
+target_policy = 0
+range = 1
+range_shape = 1
+damage = 5
+apply_status_id = &"status.weak"
+apply_status_stacks = 1
+apply_status_duration = 2
+advance_steps = 3
+
+[sub_resource type="Resource" id="act_bulwark"]
+script = ExtResource("2_act")
+id = &"guard_corpse.bulwark"
+kind = 3
+target_policy = 1
+block = 6
+
+[sub_resource type="Resource" id="behavior"]
+script = ExtResource("1_seq")
+sequence = Array[ExtResource("2_act")]([SubResource("act_approach"), SubResource("act_heavy"), SubResource("act_rot_grip"), SubResource("act_bulwark")])
+id = &"enemy.catacomb.guard_corpse.behavior"
+fallback_action_id = &"guard_corpse.heavy"
+
+[resource]
+script = ExtResource("3_def")
+id = &"enemy.catacomb.guard_corpse"
+unit_def_id = &"unit.enemy.catacomb.guard_corpse"
+behavior = SubResource("behavior")
+appearance_key = &"catacomb_guard_corpse"
+display_name = "守墓尸"

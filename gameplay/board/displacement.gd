@@ -75,7 +75,50 @@ static func push(board: BoardState, unit_id: int, direction: Vector2i, distance:
 	return res
 
 
-## 传送：目标在盘内且空格即生效，忽略路径与视线与地形可走性（§9 字面）。
+## 拖拽：把目标朝 toward_cell（施法者）方向**直线拉** distance 格。碰撞处理同 push
+## （遇墙/单位/盘边即停在其前，不移出盘外）。方向由目标→施法者推得（8 方向之一）。
+static func pull(board: BoardState, unit_id: int, toward_cell: Vector2i, distance: int) -> DisplacementResult:
+	var res := DisplacementResult.new()
+	res.unit_id = unit_id
+	var from_cell := board.get_unit_cell(unit_id)
+	if from_cell == BoardState.INVALID_CELL:
+		res.reason = DisplacementResult.REASON_NO_UNIT
+		return res
+	res.from_cell = from_cell
+	if toward_cell == from_cell:
+		res.to_cell = from_cell
+		res.path = [from_cell]
+		res.reason = DisplacementResult.REASON_SAME_CELL
+		return res
+	if not board.is_inside(toward_cell):
+		res.to_cell = from_cell
+		res.path = [from_cell]
+		res.reason = DisplacementResult.REASON_BAD_DIRECTION
+		return res
+	var path := pull_path(board, from_cell, toward_cell, distance)
+	res.path = path
+	res.to_cell = path[path.size() - 1]
+	if res.to_cell != from_cell:
+		board.move_unit(unit_id, res.to_cell)
+		res.moved = true
+	return res
+
+
+## 拖拽路径（纯函数，含起点；不改棋盘）。供计划阶段算步数、执行阶段算落点共用。
+## 从 from_cell 朝 toward_cell 方向逐步推进至多 distance 格，遇墙/单位/盘边即停。
+static func pull_path(board: BoardState, from_cell: Vector2i, toward_cell: Vector2i, distance: int) -> Array[Vector2i]:
+	var path: Array[Vector2i] = [from_cell]
+	var dir := Vector2i(signi(toward_cell.x - from_cell.x), signi(toward_cell.y - from_cell.y))
+	if dir == Vector2i.ZERO or distance <= 0:
+		return path
+	var cur := from_cell
+	for _i in distance:
+		var nxt := cur + dir
+		if not board.is_inside(nxt) or not board.is_traversable(nxt) or board.is_occupied(nxt):
+			break
+		cur = nxt
+		path.append(cur)
+	return path
 static func teleport(board: BoardState, unit_id: int, to_cell: Vector2i) -> DisplacementResult:
 	var res := DisplacementResult.new()
 	res.unit_id = unit_id

@@ -10,6 +10,7 @@ enum Kind {
 	DEFEND,     # 防御：获得护盾
 	DASH,       # 冲撞：朝目标移动，伤害 = damage + 移动步数 × dash_damage_per_step
 	SUMMON,     # 召唤：从召唤池在玩家附近生成一只小怪
+	PULL,       # 拖拽：把最近玩家朝自己拉 move_steps 格，伤害 = damage + 移动步数 × dash_damage_per_step
 }
 
 enum TargetPolicy {
@@ -59,3 +60,17 @@ enum TargetPolicy {
 ## 行动前朝当前玩家推进的步数（近战逼近 / 远程风筝）。仅 ATTACK 用：
 ## DASH 自带移动、DEFEND/SUMMON/CHARGE 保持 0。>0 时敌人每回合"先移动再出招"。
 @export var advance_steps: int = 0
+
+## 随机伤害区间：`damage_max >= damage_min` 且 max>0 时，执行时在 [min,max] 内掷；否则用固定 `damage`。
+@export var damage_min: int = 0
+@export var damage_max: int = 0
+
+## 随机护盾区间：DEFEND 用，规则同上；否则用固定 `block`。
+@export var block_min: int = 0
+@export var block_max: int = 0
+
+## DEFEND 是否同时清除自身所有负面状态（阴气护体）。
+@export var cleanse: bool = false
+
+## ATTACK 是否贯穿：命中主目标后，主目标"身后一格"若有玩家阵营单位，则追加一次同额伤害（阴兵过境）。
+@export var pierce: bool = false
