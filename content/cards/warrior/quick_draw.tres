@@ -24,6 +24,7 @@ card_id = &"card.warrior.quick_draw"
 display_name = "迅捷思考"
 description = "抽 2 张牌"
 base_cost = 1
+reward_pool_enabled = false
 tags = Array[StringName]([&"skill"])
 effects = Array[ExtResource("1_x82su")]([SubResource("Resource_pruxw")])
 attack_range = 0

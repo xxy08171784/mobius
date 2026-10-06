@@ -51,6 +51,9 @@ func begin_round(
 	var need := maxi(0, state.hand_size - state.deck.hand.size())
 	if need > 0:
 		_card_system.draw_cards(state.deck, need, rng.battle_rng())
+	var scheduled := _run_scheduled_round_start(state, rng)
+	if not bool(scheduled.get("ok", false)):
+		return {"ok": false, "events": EventBatch.new()}
 
 	_lock_enemy_intents(state, enemy_behaviors)
 	var terminal := evaluate_outcome(state)
@@ -58,7 +61,7 @@ func begin_round(
 		state.phase = terminal
 	else:
 		state.phase = BattleState.Phase.PLAYER_INPUT
-	return {"ok": true, "events": EventBatch.new()}
+	return {"ok": true, "events": scheduled.get("events", EventBatch.new())}
 
 
 func run_end_turn(
@@ -89,6 +92,13 @@ func run_end_turn(
 		if enemy == null or not enemy.is_alive():
 			continue
 		enemy.clear_block()
+		if StatusRules.is_stunned(enemy):
+			state.enemy_steps[enemy_id] = int(state.enemy_steps.get(enemy_id, 0)) + 1
+			var stunned_finish := _finish_single_owner_turn(state, rng, enemy_id)
+			if not bool(stunned_finish.get("ok", false)):
+				return {"ok": false, "error_code": &"status_effect", "events": EventBatch.new()}
+			_append_events(events, stunned_finish.get("events"))
+			continue
 		var intent: IntentState = state.enemy_intents.get(enemy_id)
 		var action_result := _execute_enemy_intent(
 			state,
@@ -482,6 +492,9 @@ func _approach_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -
 	var enemy := state.get_unit(enemy_id)
 	if enemy == null or not enemy.is_alive():
 		return {}
+	var move_steps := maxi(0, action.move_steps - StatusRules.slow_penalty(enemy))
+	if move_steps <= 0:
+		return {}
 	var target_cell := _nearest_player_cell(state, enemy_id)
 	if target_cell == BoardState.INVALID_CELL:
 		return {}
@@ -489,7 +502,7 @@ func _approach_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -
 		state.board,
 		enemy,
 		target_cell,
-		action.move_steps,
+		move_steps,
 		action
 	)
 	if path.size() < 2:
@@ -499,7 +512,7 @@ func _approach_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -
 		"effects": [{
 			"type_key": &"move",
 			"target": {"cell": path[path.size() - 1]},
-			"params": {"move_points": action.move_steps},
+			"params": {"move_points": move_steps},
 		}],
 	}
 
@@ -621,6 +634,46 @@ func _discard_remaining_hand(deck: DeckState) -> void:
 		_card_system.discard_from_hand(deck, int(uid_value))
 
 
+func _run_scheduled_round_start(state: BattleState, rng: RngStreams) -> Dictionary:
+	var events := EventBatch.new()
+	var due: Array[Dictionary] = []
+	var pending: Array[Dictionary] = []
+	for entry: Dictionary in state.scheduled_effects:
+		if int(entry.get("round", -1)) <= state.round_index:
+			due.append(entry)
+		else:
+			pending.append(entry)
+	state.scheduled_effects = pending
+	for entry: Dictionary in due:
+		var kind := StringName(String(entry.get("kind", "")))
+		var source_id := int(entry.get("source_unit_id", -1))
+		var effects: Array = []
+		match kind:
+			&"draw":
+				effects = [{
+					"type_key": &"draw",
+					"params": {"count": maxi(0, int(entry.get("count", 0)))},
+				}]
+			&"block":
+				effects = [{
+					"type_key": &"block",
+					"params": {"amount": maxi(0, int(entry.get("amount", 0))), "target_mode": &"source"},
+				}]
+			_:
+				continue
+		var resolved := _resolver.resolve(
+			state,
+			{"context": {"source_unit_id": source_id}, "effects": effects},
+			rng
+		)
+		if not bool(resolved.get("ok", false)):
+			return {"ok": false, "events": EventBatch.new()}
+		_copy_resolved_state_into(state, resolved["state_out"])
+		_restore_rng_from_resolution(rng, resolved["rng_out"])
+		_append_events(events, resolved["events"])
+	return {"ok": true, "events": events}
+
+
 func _finish_owner_turn(state: BattleState, rng: RngStreams, team: UnitState.Team) -> Dictionary:
 	var events := EventBatch.new()
 	var ids := state.player_ids() if team == UnitState.Team.PLAYER else state.enemy_ids()
@@ -689,6 +742,10 @@ func _copy_resolved_state_into(target: BattleState, source: BattleState) -> void
 	target.board = source.board
 	target.units = source.units
 	target.deck = source.deck
+	target.scheduled_effects = source.scheduled_effects
+	target.ground_items = source.ground_items
+	target.collected_items = source.collected_items
+	target.run_changes = source.run_changes
 	target.next_uid = source.next_uid
 	target.next_event_seq = source.next_event_seq
 	target.enemy_intents = source.enemy_intents

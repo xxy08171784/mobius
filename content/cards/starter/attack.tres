@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CardDef" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="1_card"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_effect"]
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="3_base"]
+
+[sub_resource type="Resource" id="Effect_damage"]
+script = ExtResource("2_effect")
+type_key = &"damage"
+params = {
+"amount": 6
+}
+
+[resource]
+script = ExtResource("1_card")
+card_id = &"card.starter.attack"
+card_category = 3
+icon_key = &"icon_01"
+display_name = "攻击"
+description = "造成6点伤害。"
+base_cost = 1
+reward_pool_enabled = false
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("3_base")]([SubResource("Effect_damage")])
+content_target_kind = 1
+content_target_team = 2
+

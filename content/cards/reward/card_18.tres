@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_ckpk5"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_aigjs"]
+
+[resource]
+script = ExtResource("2_aigjs")
+card_id = &"card.reward.18"
+card_number = 18
+card_category = 3
+visual_key = &"card_18"
+icon_key = &"icon_18"
+display_name = "饮血剑"
+description = "[消耗] 造成9伤害，若击杀敌人则恢复3点生命值并永久增加3点生命值上限。"
+base_cost = 2
+tags = Array[StringName]([&"attack"])
+exhaust_on_play = true
+content_target_kind = 1

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_tcf7q"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_7batu"]
+
+[resource]
+script = ExtResource("2_7batu")
+card_id = &"card.reward.05"
+card_number = 5
+card_category = 1
+visual_key = &"card_05"
+icon_key = &"icon_05"
+display_name = "招式领悟"
+description = "[消耗] 选择手牌中的1张招式牌，降低其在本场战斗中的行动点消耗1点。"
+base_cost = 2
+tags = Array[StringName]([&"skill"])
+exhaust_on_play = true

@@ -223,8 +223,9 @@ func _show_battle(data: Dictionary) -> void:
 	var screen: Control = BATTLE_SCENE.instantiate()
 	screen.set("demo_autostart", false)   # 必须在 add_child 前设，避免 _ready 自动开 demo
 	add_child(screen)
-	screen.call("configure", data)
 	screen.connect("battle_finished", _on_battle_finished)
+	# 先接完成信号再注入数据，避免 configure() 将来出现同步终局路径时漏掉结果。
+	screen.call("configure", data)
 
 
 func _on_battle_finished(result: BattleResult) -> void:

@@ -45,7 +45,7 @@ func _test_create_run(content: Object) -> void:
 		return
 	assert_equal(run.hp, run.max_hp, "初始满血")
 	assert_equal(run.max_hp, 80, "hero max_hp 来自 UnitDef（2026-10-06 调整至 80）")
-	assert_equal(run.deck.size(), 10, "初始卡组 10 张")
+	assert_equal(run.deck.size(), 15, "初始卡组 15 张（cxm 重做起始卡组）")
 	assert_equal(run.relics.size(), 1, "初始遗物 1 件")
 	assert_true(run.map != null and run.map.boss_id != -1, "生成了含 boss 的地图")
 	assert_true(not run.rng_snapshot.is_empty(), "RNG 快照已写入")

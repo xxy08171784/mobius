@@ -9,6 +9,8 @@ const ERROR_INVALID_RNG: StringName = &"invalid_rng"
 const ERROR_INVALID_PLAN: StringName = &"invalid_plan"
 const ERROR_UNKNOWN_EFFECT: StringName = &"unknown_effect"
 const ERROR_TRIGGER_OVERFLOW: StringName = &"trigger_overflow"
+const ResourceEffectHandlerScript = preload("res://gameplay/effects/handlers/resource_effect.gd")
+const HealEffectHandlerScript = preload("res://gameplay/effects/handlers/heal_effect.gd")
 
 var _handlers: Dictionary = {}
 
@@ -22,6 +24,8 @@ func _init() -> void:
 	register_handler(ApplyStatusEffectHandler.new())
 	register_handler(PullEffectHandler.new())
 	register_handler(CleanseEffectHandler.new())
+	register_handler(ResourceEffectHandlerScript.new())
+	register_handler(HealEffectHandlerScript.new())
 
 
 func register_handler(handler: EffectHandler) -> void:
@@ -175,6 +179,10 @@ func _context_for_effect(base: EffectContext, effect: Dictionary) -> EffectConte
 		context.source_card_uid = int(effect["source_card_uid"])
 	if effect.has("target"):
 		context.target = effect["target"]
+	var params: Dictionary = effect.get("params", {})
+	var target_mode := StringName(String(params.get("target_mode", "")))
+	if target_mode == &"source":
+		context.target = context.source_unit_id
 	return context
 
 

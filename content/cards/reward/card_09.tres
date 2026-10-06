@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_07fjm"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_3566i"]
+
+[resource]
+script = ExtResource("2_3566i")
+card_id = &"card.reward.09"
+card_number = 9
+card_category = 1
+visual_key = &"card_09"
+icon_key = &"icon_09"
+display_name = "振奋"
+description = "如果没有勇气，则+7勇气，否则+3勇气。"
+tags = Array[StringName]([&"skill"])

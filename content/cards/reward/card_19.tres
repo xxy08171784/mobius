@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_mpnwg"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_xnl8s"]
+
+[resource]
+script = ExtResource("2_xnl8s")
+card_id = &"card.reward.19"
+card_number = 19
+card_category = 3
+visual_key = &"card_19"
+icon_key = &"icon_19"
+display_name = "妖刀"
+description = "伤害6。若造成了生命值减少，则此牌在本次战斗伤害+4。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

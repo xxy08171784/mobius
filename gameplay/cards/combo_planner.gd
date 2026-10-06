@@ -28,6 +28,10 @@ func build_plan(
 		return _failure(state_in, deck_in, rng_in, ERROR_TARGET)
 	if not bool(deck_in.validate_invariants().get("ok", false)):
 		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)
+	if state_in is BattleState and not FormalCardRules.validate_command_choices(
+		state_in as BattleState, command, card_defs
+	):
+		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)
 
 	var selected := _collect_selected(deck_in, command.card_uids, card_defs)
 	if not bool(selected.get("ok", false)):
@@ -40,6 +44,7 @@ func build_plan(
 	var total_cost := int(selected["total_cost"])
 	if total_cost > available_resource:
 		return _failure(state_in, deck_in, rng_in, ERROR_COST)
+	var combo_metadata := _build_combo_metadata(deck_in, command.card_uids, card_defs)
 
 	var work_state: Variant = _clone_state_for_combo(state_in)
 	if work_state == null:
@@ -48,6 +53,11 @@ func build_plan(
 	var moved := _card_system.move_hand_to_resolving(work_deck, command.card_uids)
 	if not bool(moved.get("ok", false)):
 		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)
+	if work_state is BattleState:
+		FormalCardRules.apply_combo_pre_modifiers(
+			work_state as BattleState, command, card_defs
+		)
+		work_deck = _deck_for_work_state(work_state, work_deck)
 
 	var work_rng: Variant = rng_in
 	var all_events := EventBatch.new()
@@ -65,6 +75,15 @@ func build_plan(
 			target
 		):
 			return _failure(state_in, deck_in, rng_in, ERROR_TARGET)
+		if work_state is BattleState:
+			var formal_target := FormalCardRules.validate_target(
+				work_state as BattleState,
+				command.actor_id,
+				definition,
+				target
+			)
+			if not bool(formal_target.get("ok", false)):
+				return _failure(state_in, deck_in, rng_in, ERROR_TARGET)
 
 		var target_check := _validate_target(
 			target_validator,
@@ -94,23 +113,55 @@ func build_plan(
 			steps.append(_make_step(uid, target, definition, false, true))
 			continue
 
-		var effect_plan := {
-			"context": {
-				"source_unit_id": command.actor_id,
-				"source_card_uid": uid,
-				"target": target,
-			},
-			"effects": definition.get_effects(card.upgrade_level),
-		}
-		var resolved := _resolver.resolve(work_state, effect_plan, work_rng)
-		if not bool(resolved.get("ok", false)):
-			return _failure(state_in, deck_in, rng_in, ERROR_EFFECT)
-
-		work_state = resolved["state_out"]
-		work_rng = resolved["rng_out"]
-		work_deck = _deck_for_work_state(work_state, work_deck)
+		var metadata := _metadata_for_card(
+			combo_metadata,
+			definition,
+			card,
+			uid,
+			index
+		)
+		var formal_result: Dictionary = {}
+		if work_state is BattleState:
+			formal_result = FormalCardRules.resolve_card(
+				work_state as BattleState,
+				work_rng,
+				command.actor_id,
+				card,
+				definition,
+				target,
+				command,
+				metadata,
+				card_defs
+			)
+		if bool(formal_result.get("handled", false)):
+			if not bool(formal_result.get("ok", false)):
+				return _failure(state_in, deck_in, rng_in, ERROR_EFFECT)
+			work_state = formal_result["state_out"]
+			work_rng = formal_result["rng_out"]
+			work_deck = _deck_for_work_state(work_state, work_deck)
+			_append_events(all_events, formal_result.get("events"))
+		else:
+			var effect_plan := {
+				"context": {
+					"source_unit_id": command.actor_id,
+					"source_card_uid": uid,
+					"target": target,
+					"metadata": metadata,
+				},
+				"effects": FormalCardRules.prepare_effects(
+					card,
+					definition,
+					(work_state as BattleState).round_index if work_state is BattleState else 0
+				),
+			}
+			var resolved := _resolver.resolve(work_state, effect_plan, work_rng)
+			if not bool(resolved.get("ok", false)):
+				return _failure(state_in, deck_in, rng_in, ERROR_EFFECT)
+			work_state = resolved["state_out"]
+			work_rng = resolved["rng_out"]
+			work_deck = _deck_for_work_state(work_state, work_deck)
+			_append_events(all_events, resolved["events"])
 		_update_terminal_if_battle_state(work_state)
-		_append_events(all_events, resolved["events"])
 		_card_system.finish_resolving(
 			work_deck,
 			uid,
@@ -231,6 +282,82 @@ func _get_def(card_defs: Dictionary, card_id: StringName) -> CardDef:
 	if card_defs.has(String(card_id)):
 		return card_defs[String(card_id)] as CardDef
 	return null
+
+
+func _build_combo_metadata(
+	deck: DeckState,
+	uids: Array[int],
+	card_defs: Dictionary
+) -> Dictionary:
+	var entries: Array[Dictionary] = []
+	var total_play_count := 0
+	var category_card_counts: Dictionary = {}
+	var category_play_counts: Dictionary = {}
+	for uid: int in uids:
+		var card := deck.get_card(uid)
+		if card == null:
+			continue
+		var definition := _get_def(card_defs, card.card_id)
+		if definition == null:
+			continue
+		var category := _category_key(definition.card_category)
+		var weight := definition.get_play_count_weight(card.upgrade_level)
+		total_play_count += weight
+		category_card_counts[category] = int(category_card_counts.get(category, 0)) + 1
+		category_play_counts[category] = int(category_play_counts.get(category, 0)) + weight
+		entries.append({
+			"uid": uid,
+			"card_id": definition.card_id,
+			"card_number": definition.card_number,
+			"category": category,
+			"play_count_weight": weight,
+		})
+	return {
+		"selected_uids": uids.duplicate(),
+		"selected_count": uids.size(),
+		"play_count_total": total_play_count,
+		"category_card_counts": category_card_counts,
+		"category_play_counts": category_play_counts,
+		"cards": entries,
+	}
+
+
+func _metadata_for_card(
+	combo: Dictionary,
+	definition: CardDef,
+	card: BattleCardState,
+	uid: int,
+	index: int
+) -> Dictionary:
+	var result := combo.duplicate(true)
+	var category := _category_key(definition.card_category)
+	var weight := definition.get_play_count_weight(card.upgrade_level)
+	result["source_index"] = index
+	result["source_card_uid"] = uid
+	result["source_card_id"] = definition.card_id
+	result["source_card_number"] = definition.card_number
+	result["source_category"] = category
+	result["source_play_count_weight"] = weight
+	result["other_selected_count"] = maxi(0, int(combo.get("selected_count", 0)) - 1)
+	result["other_play_count"] = maxi(0, int(combo.get("play_count_total", 0)) - weight)
+	var other_category_counts: Dictionary = Dictionary(combo.get("category_card_counts", {})).duplicate(true)
+	other_category_counts[category] = maxi(0, int(other_category_counts.get(category, 0)) - 1)
+	result["other_category_card_counts"] = other_category_counts
+	return result
+
+
+func _category_key(category: CardDef.CardCategory) -> StringName:
+	match category:
+		CardDef.CardCategory.SKILL:
+			return &"skill"
+		CardDef.CardCategory.TECHNIQUE:
+			return &"technique"
+		CardDef.CardCategory.ATTACK:
+			return &"attack"
+		CardDef.CardCategory.DEFENSE:
+			return &"defense"
+		_:
+			return &"unassigned"
 
 
 func _target_matches_rule(

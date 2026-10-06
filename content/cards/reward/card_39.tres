@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_g0e2m"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_0l8pl"]
+
+[resource]
+script = ExtResource("2_0l8pl")
+card_id = &"card.reward.39"
+card_number = 39
+card_category = 4
+visual_key = &"card_39"
+icon_key = &"icon_39"
+display_name = "防守秘术"
+description = "护甲+5。每有一张其他牌同出，额外+3护甲。"
+base_cost = 1
+tags = Array[StringName]([&"defense"])

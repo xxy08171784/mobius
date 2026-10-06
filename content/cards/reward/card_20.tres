@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_qo2ww"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_ksk55"]
+
+[resource]
+script = ExtResource("2_ksk55")
+card_id = &"card.reward.20"
+card_number = 20
+card_category = 3
+visual_key = &"card_20"
+icon_key = &"icon_20"
+display_name = "击晕"
+description = "[消耗] 造成12伤害，施加眩晕1回合。"
+base_cost = 2
+tags = Array[StringName]([&"attack"])
+exhaust_on_play = true
+content_target_kind = 1

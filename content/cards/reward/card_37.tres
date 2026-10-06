@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_c6ufn"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_83scj"]
+
+[resource]
+script = ExtResource("2_83scj")
+card_id = &"card.reward.37"
+card_number = 37
+card_category = 4
+visual_key = &"card_37"
+icon_key = &"icon_37"
+display_name = "堆叠防守"
+description = "每抽出1次护甲+4（当前0），打出后重置。"
+tags = Array[StringName]([&"defense"])

@@ -45,6 +45,11 @@ var command_result_snapshots: Dictionary = {}
 var board: BoardState = BoardState.new()
 var units: Dictionary[int, UnitState] = {}
 var deck: DeckState = DeckState.new()
+## 正式卡牌扩展状态：延迟效果、地面物件、战后允许写回 Run 的白名单变化。
+var scheduled_effects: Array[Dictionary] = []
+var ground_items: Dictionary = {} # Vector2i -> Array[StringName]
+var collected_items: Array[StringName] = []
+var run_changes: Dictionary = {}
 
 ## ROUND_START 锁定，ENEMY_ACT 直接执行同一 IntentState。
 var enemy_intents: Dictionary[int, IntentState] = {}
@@ -73,6 +78,16 @@ func accepts_input() -> bool:
 
 func get_unit(unit_id: int) -> UnitState:
 	return units.get(unit_id)
+
+
+## EffectResolver 的 draw handler 统一适配入口。
+## source_unit_id 当前不参与单人牌堆选择，但保留参数以符合效果服务合同。
+func draw_cards(
+	_source_unit_id: int,
+	count: int,
+	rng: RandomNumberGenerator
+) -> Dictionary:
+	return CardSystem.new().draw_cards(deck, maxi(0, count), rng)
 
 
 func player_ids() -> Array[int]:

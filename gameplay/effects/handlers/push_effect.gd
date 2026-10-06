@@ -18,8 +18,13 @@ func apply(
 	var direction: Variant = effect.get("direction", params.get("direction"))
 	if not direction is Vector2i or (direction as Vector2i) == Vector2i.ZERO:
 		direction = EffectStateAccess.target_direction(context)
-		if target_id < 0:
-			target_id = context.source_unit_id
+	if (
+		(not direction is Vector2i or (direction as Vector2i) == Vector2i.ZERO)
+		and StringName(String(params.get("direction_mode", ""))) == &"away_from_source"
+	):
+		direction = _away_from_source_direction(work_state, context.source_unit_id, target_id)
+	if target_id < 0:
+		target_id = context.source_unit_id
 	if target_id < 0:
 		return _error(&"invalid_target")
 	if not direction is Vector2i or (direction as Vector2i) == Vector2i.ZERO:
@@ -78,6 +83,20 @@ func apply(
 		{"direction": direction, "steps": steps}
 	)
 	return {"ok": true, "events": [event], "triggers": []}
+
+
+func _away_from_source_direction(work_state: Variant, source_id: int, target_id: int) -> Vector2i:
+	if source_id < 0 or target_id < 0:
+		return Vector2i.ZERO
+	var board := EffectStateAccess.get_board(work_state)
+	if board == null:
+		return Vector2i.ZERO
+	var source_cell := board.get_unit_cell(source_id)
+	var target_cell := board.get_unit_cell(target_id)
+	if source_cell == BoardState.INVALID_CELL or target_cell == BoardState.INVALID_CELL:
+		return Vector2i.ZERO
+	var delta := target_cell - source_cell
+	return Vector2i(signi(delta.x), signi(delta.y))
 
 
 func _error(code: StringName) -> Dictionary:

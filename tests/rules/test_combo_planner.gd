@@ -8,6 +8,7 @@ func run() -> Array[String]:
 	_test_cost_is_computed_once_and_original_deck_is_untouched()
 	_test_insufficient_cost_has_zero_side_effects()
 	_test_resolving_cleanup_uses_discard_or_exhaust()
+	_test_combo_metadata_uses_play_count_weight()
 	_test_range_is_recomputed_after_previous_movement()
 	_test_later_invalidated_target_can_fizzle_without_retarget()
 	_test_combo_class_rules()
@@ -119,6 +120,28 @@ func _test_resolving_cleanup_uses_discard_or_exhaust() -> void:
 	assert_equal(out.discard, [30], "normal card should finish in discard")
 	assert_equal(out.exhaust, [31], "exhaust card should finish in exhaust")
 	assert_true(bool(out.validate_invariants()["ok"]), "combo cleanup must preserve zone invariant")
+
+
+func _test_combo_metadata_uses_play_count_weight() -> void:
+	var deck := DeckState.new()
+	deck.add_card(_card(35, &"card.double"), DeckState.ZONE_HAND)
+	deck.add_card(_card(36, &"card.zero"), DeckState.ZONE_HAND)
+	var double_def := _definition(&"card.double", 0)
+	double_def.card_category = CardDef.CardCategory.ATTACK
+	double_def.play_count_weight = 2
+	var zero_def := _definition(&"card.zero", 0)
+	zero_def.card_category = CardDef.CardCategory.DEFENSE
+	zero_def.play_count_weight = 0
+	var planner := ComboPlanner.new()
+	var metadata: Dictionary = planner._build_combo_metadata(
+		deck,
+		[35, 36],
+		{&"card.double": double_def, &"card.zero": zero_def}
+	)
+	assert_equal(int(metadata["selected_count"]), 2, "physical selected-card count should remain 2")
+	assert_equal(int(metadata["play_count_total"]), 2, "play count should honor weights 2 + 0")
+	assert_equal(int(metadata["category_card_counts"][&"attack"]), 1, "category card count should count physical cards")
+	assert_equal(int(metadata["category_play_counts"][&"attack"]), 2, "category play count should honor weight")
 
 
 func _test_range_is_recomputed_after_previous_movement() -> void:

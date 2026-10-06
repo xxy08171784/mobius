@@ -1,0 +1,126 @@
+[gd_scene format=3 uid="uid://j3jlx4y5vuxn"]
+
+[ext_resource type="Script" uid="uid://cb3ha3d3vni2m" path="res://presentation/cards/battle_card_view.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_selected"]
+bg_color = Color(1, 0.78, 0.15, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.84, 0.28, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[node name="BattleCardView" type="Control" unique_id=1814890583]
+custom_minimum_size = Vector2(126, 180)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 126.0
+offset_bottom = 180.0
+mouse_filter = 1
+script = ExtResource("1_script")
+
+[node name="CardContent" type="Control" parent="." unique_id=1002613958]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="CardContent" unique_id=1068533708]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkillIcon" type="TextureRect" parent="CardContent" unique_id=967611998]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 27.0
+offset_top = 28.0
+offset_right = 99.0
+offset_bottom = 100.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardName" type="Label" parent="CardContent" unique_id=1744672115]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 103.0
+offset_right = 109.0
+offset_bottom = 123.0
+theme_override_colors/font_color = Color(0.09, 0.06, 0.04, 1)
+theme_override_colors/font_outline_color = Color(1, 0.92, 0.72, 0.85)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "卡牌名称"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="Description" type="Label" parent="CardContent" unique_id=1966071426]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 19.0
+offset_top = 117.0
+offset_right = 108.0
+offset_bottom = 169.0
+theme_override_colors/font_color = Color(0.12, 0.09, 0.07, 1)
+theme_override_font_sizes/font_size = 10
+text = "技能描述"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+text_overrun_behavior = 3
+
+[node name="CostLabel" type="Label" parent="CardContent" unique_id=493389388]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 94.0
+offset_top = 9.0
+offset_right = 120.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 0.96, 0.72, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.08, 0.1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SelectionOverlay" type="Panel" parent="CardContent" unique_id=741583652]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 124.0
+offset_bottom = 178.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Style_selected")
+
+[node name="HitButton" type="Button" parent="CardContent" unique_id=868535035]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true

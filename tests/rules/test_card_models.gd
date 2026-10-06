@@ -7,6 +7,7 @@ func run() -> Array[String]:
 	_test_run_card_becomes_battle_instance()
 	_test_upgrade_and_temporary_cost()
 	_test_definition_is_not_mutated_by_battle_state()
+	_test_numbered_card_visual_identity()
 	return failures()
 
 
@@ -76,3 +77,16 @@ func _test_definition_is_not_mutated_by_battle_state() -> void:
 	card.effective_tags(definition).append(&"should_not_leak")
 	assert_equal(definition.base_cost, 2, "battle modifiers must not edit CardDef")
 	assert_equal(definition.tags, [&"skill"], "effective tags must be a copy")
+
+
+func _test_numbered_card_visual_identity() -> void:
+	var definition := CardDef.new()
+	definition.card_id = &"card.reward.23"
+	definition.card_number = 23
+	definition.card_category = CardDef.CardCategory.ATTACK
+	definition.play_count_weight = 2
+	assert_true(definition.is_numbered_card(), "formal numbered card should be detectable")
+	assert_equal(definition.get_visual_key(), &"card_23", "numbered card should derive stable PNG key")
+	assert_equal(definition.get_play_count_weight(), 2, "play-count weight should be a generic CardDef property")
+	definition.visual_key = &"custom_visual"
+	assert_equal(definition.get_visual_key(), &"custom_visual", "explicit visual key should override derived key")

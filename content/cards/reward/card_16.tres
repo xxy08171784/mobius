@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_siwf3"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_4wcsj"]
+
+[resource]
+script = ExtResource("2_4wcsj")
+card_id = &"card.reward.16"
+card_number = 16
+card_category = 2
+visual_key = &"card_16"
+icon_key = &"icon_16"
+display_name = "旋风斩"
+description = "对周身一圈8格造成5点伤害，每击中1个敌人自己获得2护甲。"
+base_cost = 2
+tags = Array[StringName]([&"technique"])

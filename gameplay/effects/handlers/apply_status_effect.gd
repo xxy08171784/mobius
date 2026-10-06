@@ -37,7 +37,7 @@ func apply(
 	status.instance_id = EffectStateAccess.allocate_uid(work_state)
 	status.status_id = status_id
 	status.stacks = maxi(1, int(params.get("stacks", 1)))
-	status.duration = maxi(1, int(params.get("duration", 1)))
+	status.duration = -1 if bool(params.get("persistent", false)) else maxi(1, int(params.get("duration", 1)))
 	status.source_unit_id = context.source_unit_id
 	if target is UnitState:
 		(target as UnitState).set_status(status.instance_id, status)

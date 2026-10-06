@@ -24,7 +24,7 @@ func _content() -> Object:
 
 
 func _test_generate_determinism(content: Object) -> void:
-	var pool: Array = content.call("card_ids")
+	var pool: Array = content.call("reward_card_ids")
 	assert_true(pool.size() >= 12, "卡池至少 12 张")
 	var rng_a := RandomNumberGenerator.new()
 	rng_a.seed = 9
@@ -43,7 +43,7 @@ func _test_generate_determinism(content: Object) -> void:
 
 func _test_claim_and_skip(content: Object) -> void:
 	var run: RunState = RunSession.create_run(&"character.hero", "reward-claim", content)
-	var reward := RewardSystem.generate(content.call("card_ids"), RandomNumberGenerator.new())
+	var reward := RewardSystem.generate(content.call("reward_card_ids"), RandomNumberGenerator.new())
 	var deck_before := run.deck.size()
 	var first: StringName = reward.offers[0]
 
@@ -57,7 +57,7 @@ func _test_claim_and_skip(content: Object) -> void:
 	)
 
 	# 放弃也结算。
-	var reward2 := RewardSystem.generate(content.call("card_ids"), RandomNumberGenerator.new())
+	var reward2 := RewardSystem.generate(content.call("reward_card_ids"), RandomNumberGenerator.new())
 	var skipped := RewardSystem.claim(run, reward2, -1)
 	assert_true(bool(skipped.get("ok", false)), "放弃成功")
 	assert_true(not bool(RewardSystem.claim(run, reward2, 0).get("ok", false)), "放弃后不可领")

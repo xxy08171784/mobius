@@ -26,6 +26,8 @@ var _is_player: bool = false
 var _poly: Polygon2D = null
 var _sprite: AnimatedSprite2D = null
 var _label: Label = null
+var _status_row: StatusIconRow = null
+var _intent_bubble: EnemyIntentBubble = null
 var _facing: StringName = UnitSpriteFrames.ANIM_RIGHT
 
 
@@ -82,6 +84,18 @@ func setup(unit_id_value: int, is_player: bool, appearance_key: StringName = &""
 	_label.position = Vector2(-80, label_y)
 	add_child(_label)
 
+	# 玩家状态统一看左侧 HUD；敌人状态跟随单位，保证多怪时不会串状态。
+	if not is_player:
+		_status_row = StatusIconRow.new()
+		_status_row.icon_size = 30.0
+		_status_row.position = Vector2(-70.0, label_y + 43.0)
+		_status_row.custom_minimum_size = Vector2(140.0, 30.0)
+		add_child(_status_row)
+
+		_intent_bubble = EnemyIntentBubble.new()
+		_intent_bubble.position = Vector2(-71.0, label_y - 76.0)
+		add_child(_intent_bubble)
+
 
 func update(unit: UnitState) -> void:
 	if _label == null or unit == null:
@@ -89,10 +103,14 @@ func update(unit: UnitState) -> void:
 	var parts: Array[String] = ["HP %d/%d" % [unit.hp, unit.max_hp]]
 	if unit.block > 0:
 		parts.append("盾 %d" % unit.block)
-	var status := status_text(unit)
-	if not status.is_empty():
-		parts.append(status)
 	_label.text = "\n".join(parts)
+	if _status_row != null:
+		_status_row.render(unit)
+
+
+func set_intent(text_value: String, detail: String = "") -> void:
+	if _intent_bubble != null:
+		_intent_bubble.set_intent(text_value, detail)
 
 
 ## 朝向判定（纯函数，可测）：按**屏幕左右**分，不按逻辑轴。

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_e7sg8"]
+[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_ml1uc"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_svyuh"]
+
+[sub_resource type="Resource" id="Resource_svyuh"]
+script = ExtResource("2_ml1uc")
+type_key = &"damage"
+params = {
+"amount": 9.0
+}
+
+[sub_resource type="Resource" id="Resource_ml1uc"]
+script = ExtResource("2_ml1uc")
+type_key = &"resource"
+params = {
+"amount": 1.0,
+"key": "move_points",
+"operation": "add",
+"target_mode": "source"
+}
+
+[resource]
+script = ExtResource("2_svyuh")
+card_id = &"card.reward.32"
+card_number = 32
+card_category = 3
+visual_key = &"card_32"
+icon_key = &"icon_32"
+display_name = "打了就跑"
+description = "[消耗] 造成9点伤害，获得1点移动点。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+effects = Array[ExtResource("1_e7sg8")]([SubResource("Resource_svyuh"), SubResource("Resource_ml1uc")])
+exhaust_on_play = true
+content_target_kind = 1

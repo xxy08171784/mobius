@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_fh6yy"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_3h2g0"]
+
+[resource]
+script = ExtResource("2_3h2g0")
+card_id = &"card.reward.26"
+card_number = 26
+card_category = 3
+visual_key = &"card_26"
+icon_key = &"icon_26"
+display_name = "苦练"
+description = "攻击结束后，提升同出的招式牌3点攻击力。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])

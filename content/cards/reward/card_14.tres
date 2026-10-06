@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_x5di2"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_46v17"]
+
+[resource]
+script = ExtResource("2_46v17")
+card_id = &"card.reward.14"
+card_number = 14
+card_category = 2
+visual_key = &"card_14"
+icon_key = &"icon_14"
+display_name = "蹬踢后翻"
+description = "[消耗] 造成9点伤害，击退敌人1格且自己会后退1格。"
+base_cost = 2
+tags = Array[StringName]([&"technique"])
+exhaust_on_play = true
+content_target_kind = 1

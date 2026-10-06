@@ -1,12 +1,233 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bknr58aaaws5c"]
 
-[ext_resource type="Script" path="res://presentation/battle/battle_screen.gd" id="1"]
+[ext_resource type="Script" uid="uid://cbd4ixfcrekut" path="res://presentation/battle/battle_screen.gd" id="1_screen"]
+[ext_resource type="PackedScene" path="res://presentation/battle/board_view.tscn" id="2_board"]
+[ext_resource type="PackedScene" path="res://presentation/cards/hand_view.tscn" id="3_hand"]
+[ext_resource type="PackedScene" uid="uid://yn4avli3xvlf" path="res://presentation/battle/battle_hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" uid="uid://dl87rvtdlv5uk" path="res://presentation/battle/battle_card_hud.tscn" id="5_card_hud"]
 
-[node name="BattleScreen" type="Control"]
+[node name="BattleScreen" type="Control" unique_id=629808483]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1")
+script = ExtResource("1_screen")
+
+[node name="BoardZone" type="PanelContainer" parent="." unique_id=556854100]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.16
+anchor_top = 0.125
+anchor_right = 0.84
+anchor_bottom = 0.825
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BoardView" parent="BoardZone" unique_id=382694379 instance=ExtResource("2_board")]
+layout_mode = 2
+
+[node name="SelectionLabel" type="Label" parent="." unique_id=1739840863]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.74
+anchor_right = 0.78
+anchor_bottom = 0.77
+grow_horizontal = 2
+grow_vertical = 2
+text = "已选卡牌：无"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PreviewLabel" type="Label" parent="." unique_id=1014773901]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.29
+anchor_top = 0.77
+anchor_right = 0.79
+anchor_bottom = 0.805
+grow_horizontal = 2
+grow_vertical = 2
+text = "预览：选择卡牌后显示结算结果"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HandScroll" type="ScrollContainer" parent="." unique_id=415491588]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.805
+anchor_right = 0.82
+anchor_bottom = 0.985
+offset_left = 8.0
+offset_top = 2.0
+offset_right = -8.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+vertical_scroll_mode = 0
+
+[node name="HandView" parent="HandScroll" unique_id=1531284706 instance=ExtResource("3_hand")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BattleCardHud" parent="." unique_id=923165383 instance=ExtResource("5_card_hud")]
+layout_mode = 1
+
+[node name="ActionButtons" type="VBoxContainer" parent="." unique_id=1549515658]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.835
+anchor_top = 0.805
+anchor_right = 0.975
+anchor_bottom = 0.98
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="ActionButtons" unique_id=1511580843]
+custom_minimum_size = Vector2(120, 38)
+layout_mode = 2
+text = "打出所选"
+
+[node name="ClearButton" type="Button" parent="ActionButtons" unique_id=1273830182]
+custom_minimum_size = Vector2(120, 38)
+layout_mode = 2
+text = "清空选择"
+
+[node name="ResultLabel" type="Label" parent="." unique_id=673569597]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.34
+anchor_top = 0.105
+anchor_right = 0.66
+anchor_bottom = 0.16
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DebugPanel" type="PanelContainer" parent="." unique_id=2052210022]
+visible = false
+z_index = 60
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.72
+anchor_top = 0.2
+anchor_right = 0.985
+anchor_bottom = 0.73
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="DebugPanel" unique_id=287896706]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Side" type="VBoxContainer" parent="DebugPanel/Margin" unique_id=379459431]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Help" type="Label" parent="DebugPanel/Margin/Side" unique_id=25946381]
+layout_mode = 2
+text = "开发调试（F3 隐藏）
+点击空格移动；选牌后点敌人锁定目标。"
+autowrap_mode = 2
+
+[node name="EnemyRow" type="HBoxContainer" parent="DebugPanel/Margin/Side" unique_id=1837105625]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TestEnemyLabel" type="Label" parent="DebugPanel/Margin/Side/EnemyRow" unique_id=1761351342]
+layout_mode = 2
+text = "测试敌人："
+
+[node name="EnemySelector" type="OptionButton" parent="DebugPanel/Margin/Side/EnemyRow" unique_id=1797378708]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RestartButton" type="Button" parent="DebugPanel/Margin/Side" unique_id=231353460]
+custom_minimum_size = Vector2(120, 38)
+layout_mode = 2
+text = "重新开始"
+
+[node name="DeckButton" type="Button" parent="DebugPanel/Margin/Side" unique_id=1723308338]
+custom_minimum_size = Vector2(120, 38)
+layout_mode = 2
+text = "查看战斗卡组"
+
+[node name="SpeedButton" type="Button" parent="DebugPanel/Margin/Side" unique_id=1539587642]
+custom_minimum_size = Vector2(120, 38)
+layout_mode = 2
+text = "速度 1×"
+
+[node name="MonsterLabel" type="Label" parent="DebugPanel/Margin/Side" unique_id=1876351428]
+layout_mode = 2
+text = "点击一只怪物查看它的数值。"
+autowrap_mode = 2
+
+[node name="EventLog" type="RichTextLabel" parent="DebugPanel/Margin/Side" unique_id=679374127]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="BattleHud" parent="." unique_id=1585482555 instance=ExtResource("4_hud")]
+layout_mode = 1
+
+[node name="DefeatOverlay" type="ColorRect" parent="." unique_id=2099030437]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.62)
+
+[node name="Center" type="CenterContainer" parent="DefeatOverlay" unique_id=1124882170]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="DefeatOverlay/Center" unique_id=1171243910]
+custom_minimum_size = Vector2(360, 210)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="DefeatOverlay/Center/Panel" unique_id=1507958672]
+layout_mode = 2
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 28
+
+[node name="Content" type="VBoxContainer" parent="DefeatOverlay/Center/Panel/Margin" unique_id=559422209]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="DefeatOverlay/Center/Panel/Margin/Content" unique_id=487556799]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "战斗失败"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="DefeatOverlay/Center/Panel/Margin/Content" unique_id=781124532]
+layout_mode = 2
+text = "玩家生命值已归零"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="DefeatOverlay/Center/Panel/Margin/Content" unique_id=1327025813]
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+text = "重新开始"

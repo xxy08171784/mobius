@@ -10,8 +10,10 @@ var source_unit_id: int = -1
 
 
 func is_expired() -> bool:
-	return duration <= 0 or stacks <= 0
+	# duration < 0 表示持续到显式移除（飞刀标记等）。
+	return duration == 0 or stacks <= 0
 
 
 func decrease_duration(amount: int = 1) -> void:
-	duration = maxi(0, duration - maxi(0, amount))
+	if duration > 0:
+		duration = maxi(0, duration - maxi(0, amount))

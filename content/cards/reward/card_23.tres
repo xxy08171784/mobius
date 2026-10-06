@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_t7dd0"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_g2onq"]
+
+[resource]
+script = ExtResource("2_g2onq")
+card_id = &"card.reward.23"
+card_number = 23
+card_category = 3
+visual_key = &"card_23"
+icon_key = &"icon_23"
+display_name = "重击"
+description = "造成15点伤害，下回合多抽1张牌。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

@@ -4,8 +4,10 @@ extends HBoxContainer
 
 signal card_pressed(card_uid: int)
 
+const CARD_VIEW_SCENE := preload("res://presentation/cards/battle_card_view.tscn")
+
 var _labels: Dictionary = {}
-var _buttons_by_uid: Dictionary = {}
+var _views_by_uid: Dictionary = {}
 
 
 func set_card_labels(labels: Dictionary) -> void:
@@ -33,48 +35,36 @@ func render_hand(
 			continue
 
 		visible_uids[uid] = true
-		var button := _buttons_by_uid.get(uid) as Button
-		if button == null:
-			button = _create_card_button(uid)
-			_buttons_by_uid[uid] = button
-			add_child(button)
-
-		button.button_pressed = selected_uids.has(uid)
-		button.disabled = busy or not state.accepts_input()
+		var card_view := _views_by_uid.get(uid) as BattleCardView
+		if card_view == null:
+			card_view = CARD_VIEW_SCENE.instantiate() as BattleCardView
+			card_view.card_pressed.connect(_on_card_button_pressed)
+			_views_by_uid[uid] = card_view
+			add_child(card_view)
 		var order := selected_uids.find(uid)
-		var prefix := "[%d] " % (order + 1) if order >= 0 else ""
-		button.text = prefix + String(_labels.get(card.card_id, String(card.card_id)))
-		button.tooltip_text = CardInfo.tooltip_for(definition, card.upgrade_level)
-		move_child(button, visual_index)
+		card_view.setup(card, definition, order, busy or not state.accepts_input())
+		move_child(card_view, visual_index)
 		visual_index += 1
 
-	# 只清理已经真正离开手牌的卡。queue_free() 可安全用于信号调用栈中的节点。
-	for uid_value: Variant in _buttons_by_uid.keys():
+	# 只清理已经真正离开手牌的卡。
+	for uid_value: Variant in _views_by_uid.keys():
 		var uid := int(uid_value)
 		if visible_uids.has(uid):
 			continue
-		var stale := _buttons_by_uid[uid] as Button
-		_buttons_by_uid.erase(uid)
+		var stale := _views_by_uid[uid] as BattleCardView
+		_views_by_uid.erase(uid)
 		if stale != null:
 			stale.visible = false
 			stale.queue_free()
 
 
-func _create_card_button(uid: int) -> Button:
-	var button := Button.new()
-	button.custom_minimum_size = Vector2(150, 88)
-	button.toggle_mode = true
-	button.pressed.connect(_on_card_button_pressed.bind(uid))
-	return button
-
-
 func _clear_buttons() -> void:
-	for button_value: Variant in _buttons_by_uid.values():
-		var button := button_value as Button
-		if button != null:
-			button.visible = false
-			button.queue_free()
-	_buttons_by_uid.clear()
+	for view_value: Variant in _views_by_uid.values():
+		var card_view := view_value as BattleCardView
+		if card_view != null:
+			card_view.visible = false
+			card_view.queue_free()
+	_views_by_uid.clear()
 
 
 func _on_card_button_pressed(uid: int) -> void:

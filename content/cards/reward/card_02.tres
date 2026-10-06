@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_xk1ag"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_enr66"]
+
+[resource]
+script = ExtResource("2_enr66")
+card_id = &"card.reward.02"
+card_number = 2
+card_category = 1
+visual_key = &"card_02"
+icon_key = &"icon_02"
+display_name = "立刻征用"
+description = "从抽牌堆中挑选1张攻击类的牌放入手牌，本回合提升其6点攻击力。"
+base_cost = 1
+tags = Array[StringName]([&"skill"])

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_m7ctu"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_07nwa"]
+
+[resource]
+script = ExtResource("2_07nwa")
+card_id = &"card.reward.27"
+card_number = 27
+card_category = 3
+visual_key = &"card_27"
+icon_key = &"icon_27"
+display_name = "妙用招式"
+description = "若同“招式牌”一起出牌，则提供该招式牌150%的伤害值。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

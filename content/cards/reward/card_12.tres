@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_lwgke"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_358ho"]
+
+[resource]
+script = ExtResource("2_358ho")
+card_id = &"card.reward.12"
+card_number = 12
+card_category = 1
+visual_key = &"card_12"
+icon_key = &"icon_12"
+display_name = "复制"
+description = "[消耗] 复制1张手牌（能力类除外）。"
+base_cost = 2
+tags = Array[StringName]([&"skill"])
+exhaust_on_play = true

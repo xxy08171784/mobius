@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_4sby4"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_24t7k"]
+
+[resource]
+script = ExtResource("2_24t7k")
+card_id = &"card.reward.30"
+card_number = 30
+card_category = 3
+visual_key = &"card_30"
+icon_key = &"icon_30"
+display_name = "困兽之力"
+description = "攻击力为【2格距离内敌人个数x5】。"
+base_cost = 1
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

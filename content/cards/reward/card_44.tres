@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_ucpgo"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_lnfcw"]
+
+[resource]
+script = ExtResource("2_lnfcw")
+card_id = &"card.reward.44"
+card_number = 44
+card_category = 4
+visual_key = &"card_44"
+icon_key = &"icon_44"
+display_name = "应激格挡"
+description = "护甲+10，选择1张手牌放入弃牌堆。"
+base_cost = 1
+tags = Array[StringName]([&"defense"])

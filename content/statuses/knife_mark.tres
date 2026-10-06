@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+status_id = &"status.knife_mark"
+display_name = "标着飞刀"
+description = "目标身上的飞刀标记；持续到被套索取回。"

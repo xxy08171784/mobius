@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_bt1er"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_kaxjk"]
+
+[resource]
+script = ExtResource("2_kaxjk")
+card_id = &"card.reward.35"
+card_number = 35
+card_category = 3
+visual_key = &"card_35"
+icon_key = &"icon_35"
+display_name = "扎根打击"
+description = "消耗所有移动点，每点移动能造成4点攻击。"
+tags = Array[StringName]([&"attack"])
+content_target_kind = 1

@@ -172,6 +172,9 @@ func on_battle_finished(result: BattleResult) -> Dictionary:
 	if state == null or result == null:
 		return _fail(&"run_not_ready")
 
+	var max_hp_delta := int(result.persistent_changes.get("max_hp_delta", 0))
+	if max_hp_delta != 0:
+		state.max_hp = maxi(1, state.max_hp + max_hp_delta)
 	var hp_map: Dictionary = result.persistent_changes.get("player_hp", {})
 	if hp_map.has(EncounterBuilder.PLAYER_UNIT_ID):
 		state.hp = clampi(int(hp_map[EncounterBuilder.PLAYER_UNIT_ID]), 0, state.max_hp)
@@ -208,7 +211,7 @@ func save() -> void:
 func generate_reward() -> RewardState:
 	if state == null or _rng == null:
 		return null
-	return RewardSystem.generate(_content.card_ids(), _rng.get_stream(&"reward"))
+	return RewardSystem.generate(_content.reward_card_ids(), _rng.get_stream(&"reward"))
 
 
 ## 领取（index>=0）或放弃（index<0）。成功后自动存档。

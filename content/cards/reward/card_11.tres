@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_wmlrs"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_7gnti"]
+
+[resource]
+script = ExtResource("2_7gnti")
+card_id = &"card.reward.11"
+card_number = 11
+card_category = 1
+visual_key = &"card_11"
+icon_key = &"icon_11"
+display_name = "勇气迸发"
+description = "[消耗] 对2格距离内所有敌人造成12点伤害。"
+tags = Array[StringName]([&"skill"])
+exhaust_on_play = true

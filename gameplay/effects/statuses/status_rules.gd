@@ -21,9 +21,14 @@ const ENTANGLE: StringName = &"status.entangle"
 const CORRODE: StringName = &"status.corrode"
 ## 着火：火焰 DoT，回合结束按 层数×5 掉血并减层（第三幕旱魃）。
 const IGNITE: StringName = &"status.ignite"
+## 眩晕（cxm 卡牌系统）。
+const STUN: StringName = &"status.stun"
+## 刀痕（cxm 卡牌系统）。
+const KNIFE_MARK: StringName = &"status.knife_mark"
 
 ## 回合结束按层数结算伤害的状态（DoT）。数组顺序即结算顺序（确定性）。
 const DOT_STATUSES: Array[StringName] = [BLEED, POISON, IGNITE]
+
 
 const VULNERABLE_DAMAGE_PERCENT := 0.5
 const FOCUS_DAMAGE_PER_STACK := 1.0
@@ -111,3 +116,25 @@ static func decay_stacks(unit: UnitState, status_id: StringName, amount: int = 1
 		var status := unit.get_status(instance_id)
 		if status != null and status.status_id == status_id:
 			status.stacks = maxi(0, status.stacks - maxi(0, amount))
+
+
+static func is_stunned(unit: UnitState) -> bool:
+	return stacks(unit, STUN) > 0
+
+
+static func slow_penalty(unit: UnitState) -> int:
+	return 1 if stacks(unit, SLOW) > 0 else 0
+
+
+static func is_negative(status_id: StringName) -> bool:
+	return status_id in [BLEED, POISON, VULNERABLE, STUN, SLOW, KNIFE_MARK]
+
+
+static func has_negative_status(unit: UnitState) -> bool:
+	if unit == null:
+		return false
+	for instance_id: int in unit.status_ids():
+		var status := unit.get_status(instance_id)
+		if status != null and not status.is_expired() and is_negative(status.status_id):
+			return true
+	return false

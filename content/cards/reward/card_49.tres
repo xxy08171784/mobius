@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_q7no2"]
+[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="2_fsago"]
+
+[resource]
+script = ExtResource("2_fsago")
+card_id = &"card.reward.49"
+card_number = 49
+card_category = 4
+visual_key = &"card_49"
+icon_key = &"icon_49"
+display_name = "守护之手"
+description = "[消耗] 打出时：若同时打出其他牌，使其他牌获得+3护甲（持续至战斗结束）。"
+base_cost = 1
+tags = Array[StringName]([&"defense"])
+exhaust_on_play = true

@@ -9,6 +9,9 @@ func create_battle_card(run_card: RunCardState, battle_uid: int) -> BattleCardSt
 	card.source_run_uid = run_card.run_uid
 	card.card_id = run_card.card_id
 	card.upgrade_level = run_card.upgrade_level
+	card.cost_modifier = int(run_card.permanent_modifiers.get("cost_modifier", 0))
+	card.damage_modifier = int(run_card.permanent_modifiers.get("damage_modifier", 0))
+	card.block_modifier = int(run_card.permanent_modifiers.get("block_modifier", 0))
 	card.generated = false
 	return card
 
@@ -36,6 +39,7 @@ func draw_cards(deck: DeckState, count: int, rng: RandomNumberGenerator) -> Dict
 			break
 		var uid: int = deck.draw.pop_back()
 		deck.hand.append(uid)
+		FormalCardRules.on_card_drawn(deck.get_card(uid))
 		drawn.append(uid)
 	return {"ok": true, "cards": drawn}
 
