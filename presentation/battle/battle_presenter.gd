@@ -62,7 +62,7 @@ func refresh() -> void:
 	_hand_view.render_hand(state, _card_defs, _selected_cards, _busy)
 	var battle_hud := _ui.get("battle_hud") as BattleHud
 	if battle_hud != null:
-		battle_hud.render_state(state, _phase_text(state.phase))
+		battle_hud.render_state(state, _phase_text(state.phase), _target_unit_id)
 	var battle_card_hud := _ui.get("battle_card_hud") as BattleCardHud
 	if battle_card_hud != null:
 		battle_card_hud.render_state(state)
@@ -127,6 +127,12 @@ func present_result(result: CommandResult) -> void:
 		return
 	if result.events == null or result.events.size() == 0:
 		_append_log("动作已执行。")
+		return
+	var settings := get_node_or_null("/root/SettingsService")
+	if settings != null and settings.reduced_motion:
+		for event: GameEvent in result.events.events:
+			_present_event(event)
+		refresh()
 		return
 	await _animation_queue.play(
 		result.events,

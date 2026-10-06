@@ -43,6 +43,30 @@ var next_battle_id: int = 1
 ## 正式 RNG 的可持久化快照。
 var rng_snapshot: Dictionary = {}
 
+## 磁盘恢复的流程真相；visited 表示已经进入，pending 表示尚未完成。
+var flow_phase: StringName = &"route"
+var pending_node_id: int = -1
+var pending_content_id: StringName = &""
+var pending_battle_id: int = -1
+var pending_payload: Dictionary = {}
+var settled_battle_ids: Array[int] = []
+var outcome: StringName = &""
+## App 分配的局实例键；相同种子的多次游戏仍是不同的历史记录。
+var instance_id: String = ""
+var difficulty: int = 0
+
+
+func is_active() -> bool:
+	return is_alive() and flow_phase != &"run_over"
+
+
+func clear_pending() -> void:
+	flow_phase = &"route"
+	pending_node_id = -1
+	pending_content_id = &""
+	pending_battle_id = -1
+	pending_payload = {}
+
 
 func is_alive() -> bool:
 	return hp > 0
@@ -115,7 +139,7 @@ func remove_card(run_uid: int) -> bool:
 ## 当前地图上该节点是否可进入（委托 RouteGraph，带上当前位置；无图时 false）。
 ## StS 式：只能进入当前节点的直接后继，或（尚未进入任何节点时）入口。
 func can_enter(node_id: int) -> bool:
-	return map != null and map.can_enter(node_id, current_node_id)
+	return is_active() and flow_phase == &"route" and map != null and map.can_enter(node_id, current_node_id)
 
 
 ## 深拷贝：统一走 SaveCodec（encode -> decode），与磁盘存档同一路径，避免第二套 clone（评审 H2）。

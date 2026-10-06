@@ -1,3 +1,5 @@
+> 历史设计记录（2026-10-05），保留原文供追溯；其中脚手架/占位/旧路径描述不代表当前工程。请以 [current_status.md](current_status.md)、[editor_and_api_guide.md](editor_and_api_guide.md) 为准。
+
 # GAMEGAM 开发分工计划（双人并行）
 
 日期：2026-10-05。目标：把可并行的实现工作拆成 **两条串行线**，两人各领一条，线内按序、线间并行，最后汇合到集成阶段。

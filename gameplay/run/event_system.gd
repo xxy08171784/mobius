@@ -14,6 +14,8 @@ static func resolve(run: RunState, def: EventDef, choice_index: int) -> Dictiona
 	var choice: EventChoice = def.choices[choice_index]
 	if choice == null or not choice.is_valid():
 		return {"ok": false, "error_code": &"invalid_choice"}
+	if run.gold + choice.gold_delta < 0:
+		return {"ok": false, "error_code": &"not_enough_gold"}
 
 	run.hp = clampi(run.hp + choice.hp_delta, 0, run.max_hp)
 	run.gold = maxi(0, run.gold + choice.gold_delta)

@@ -6,6 +6,7 @@ extends Resource
 
 ## 卡池：可出售的卡牌定义 ID。ShopSystem 从中无重复抽 offer_count 张。
 @export var card_pool: Array[StringName] = []
+@export var pool: CardPoolDef = null
 
 ## 每次光顾展示的卡牌商品数（<= 卡池大小）。
 @export var offer_count: int = 4
@@ -17,4 +18,4 @@ extends Resource
 
 
 func is_valid() -> bool:
-	return not id.is_empty() and not card_pool.is_empty()
+	return not id.is_empty() and (pool != null or not card_pool.is_empty()) and card_price >= 0 and remove_price >= 0 and heal_price >= 0 and offer_count > 0

@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/mobius_workbench/workbench.gd" id="1"]
+
+[node name="Mobius工作台" type="VBoxContainer"]
+custom_minimum_size = Vector2(270, 0)
+script = ExtResource("1")
+
+[node name="Heading" type="Label" parent="."]
+layout_mode = 2
+text = "内容与界面编辑入口"
+
+[node name="Category" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Filter" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "搜索稳定 ID / 文件名"
+
+[node name="Items" type="ItemList" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 240)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Edit" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "编辑选中资源"
+
+[node name="Refresh" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "刷新列表"
+
+[node name="Catalog" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "内容目录（新增注册）"
+
+[node name="Scene" type="OptionButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OpenScene" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "打开界面场景"
+
+[node name="Audio" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "音乐与音效槽位"
+
+[node name="Campaign" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "战役与地图配置"
+
+[node name="Validate" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "校验内容引用"
+
+[node name="Status" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3

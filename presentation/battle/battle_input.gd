@@ -4,6 +4,7 @@ extends Node
 
 ## 一场战斗进入终态时发出（携带 BattleResult）。B 线 RunFlow 据此回写 RunState。
 signal battle_finished(result: BattleResult)
+signal checkpoint_requested(state: BattleState)
 
 var _session: BattleSession = null
 var _card_defs: Dictionary = {}
@@ -17,6 +18,8 @@ var _busy: bool = false
 
 func bind(session: BattleSession, card_defs: Dictionary, presenter: BattlePresenter) -> void:
 	_session = session
+	for id: int in session.state.seen_command_ids:
+		_next_command_id = maxi(_next_command_id, id + 1)
 	_card_defs = card_defs
 	_presenter = presenter
 	_sync_selection()
@@ -52,6 +55,8 @@ func on_cell_pressed(cell: Vector2i) -> void:
 func play_selected() -> void:
 	if _busy or _session == null or _selected_cards.is_empty():
 		return
+	_busy = true
+	_presenter.set_busy(true)
 	var choices: Dictionary = {}
 	for uid: int in _selected_cards:
 		var request := FormalCardRules.choice_request(
@@ -60,6 +65,8 @@ func play_selected() -> void:
 		if request.is_empty():
 			continue
 		if Array(request.get("candidates", [])).size() < int(request.get("min_count", 0)):
+			_busy = false
+			_presenter.set_busy(false)
 			return
 		var popup := CardChoicePopup.new()
 		get_parent().add_child(popup)
@@ -67,6 +74,8 @@ func play_selected() -> void:
 		popup.show_centered()
 		var response: Dictionary = await popup.choice_finished
 		if bool(response.get("cancelled", true)):
+			_busy = false
+			_presenter.set_busy(false)
 			return
 		choices[uid] = response.get("selected", [])
 	var command := _build_play_command(_allocate_command_id())
@@ -142,6 +151,8 @@ func _submit(command: GameCommand) -> void:
 	_busy = true
 	_presenter.set_busy(true)
 	var result := _session.submit(command)
+	if result != null and result.accepted:
+		checkpoint_requested.emit(_session.state)
 	await _presenter.present_result(result)
 	if result != null and result.accepted:
 		_session.finish_presentation()

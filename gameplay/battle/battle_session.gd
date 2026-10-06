@@ -85,6 +85,8 @@ func battle_result() -> BattleResult:
 		return null
 	var result := BattleResult.new()
 	result.battle_id = state.battle_id
+	result.run_instance_id = state.run_instance_id
+	result.rng_snapshot = state.rng_snapshot.duplicate(true)
 	result.victory = state.phase == BattleState.Phase.VICTORY
 	var player_hp: Dictionary = {}
 	for player_id: int in state.player_ids():
@@ -155,6 +157,14 @@ func _evaluate(command: GameCommand, commit: bool) -> CommandResult:
 	var work_state: BattleState = resolution["state_out"]
 	var work_rng: RngStreams = resolution["rng_out"]
 	var events: EventBatch = resolution.get("events", EventBatch.new())
+	if command is PlayCardsCommand:
+		RelicSystem.trigger(work_state, &"card_played")
+	var took_damage := false
+	for id: int in state.player_ids():
+		if work_state.get_unit(id) != null and work_state.get_unit(id).hp < state.get_unit(id).hp:
+			took_damage = true
+	if took_damage:
+		RelicSystem.trigger(work_state, &"damage_taken")
 
 	var terminal := _turn_system.evaluate_outcome(work_state)
 	if terminal != BattleState.Phase.SETUP:

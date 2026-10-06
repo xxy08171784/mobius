@@ -4,11 +4,13 @@ extends RefCounted
 
 
 ## 从 ShopDef.card_pool 无重复抽 offer_count 张（用传入 rng，确定性）。
-static func generate(def: ShopDef, rng: RandomNumberGenerator) -> ShopState:
+static func generate(def: ShopDef, rng: RandomNumberGenerator, content: Object = null) -> ShopState:
 	var state := ShopState.new()
 	if def == null:
 		return state
 	var pool: Array[StringName] = def.card_pool.duplicate()
+	if def.pool != null and content != null:
+		pool = def.pool.resolve(content)
 	_shuffle(pool, rng)
 	var count := mini(def.offer_count, pool.size())
 	for i in count:

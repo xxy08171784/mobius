@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[node name="RunToolbar" type="HBoxContainer"]
+theme_override_constants/separation = 8
+
+[node name="Relics" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Deck" type="Button" parent="."]
+layout_mode = 2
+text = "查看卡组"
+tooltip_text = "查看本局永久卡组与卡牌详情。"
+
+[node name="Pause" type="Button" parent="."]
+layout_mode = 2
+text = "暂停 / 菜单"

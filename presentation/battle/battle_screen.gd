@@ -1,7 +1,11 @@
+class_name BattleScreen
 extends Control
 ## 可视化编辑的战斗屏；既可独立 demo，也可由 RunFlow 注入正式遭遇。
 
 signal battle_finished(result: BattleResult)
+signal checkpoint_requested(state: BattleState)
+signal deployment_cell_chosen(cell: Vector2i)
+signal deployment_cancelled
 
 ## false 时由 RunFlow 在 add_child 前关闭 demo，并随后调用 configure()。
 @export var demo_autostart: bool = true
@@ -13,6 +17,8 @@ const ENEMY_OPTIONS: Array = [
 	[&"enemy.mobius_warden", "莫比乌斯守望者 [Boss]"],
 ]
 const SPEED_STEPS: Array[float] = [1.0, 2.0, 3.0]
+const DEFAULT_BOARD_COLS := 8
+const DEFAULT_BOARD_ROWS := 8
 
 ## 左右文字栏宽度（同宽 -> 中间棋盘居中）。
 const SIDE_WIDTH := 300
@@ -22,10 +28,13 @@ var _presenter: BattlePresenter = null
 var _battle_input: BattleInput = null
 var _card_defs: Dictionary = {}
 var _initial_battle_data: Dictionary = {}
+var _deployment_mode: bool = false
 @onready var _board_view: BoardView = $BoardZone/BoardView
 @onready var _hand_view: HandView = $HandScroll/HandView
 @onready var _battle_hud: BattleHud = $BattleHud
 @onready var _battle_card_hud: BattleCardHud = $BattleCardHud
+@onready var _deployment_ui: Control = $DeploymentUI
+@onready var _deployment_back_button: Button = $DeploymentUI/BackButton
 @onready var _enemy_selector: OptionButton = $DebugPanel/Margin/Side/EnemyRow/EnemySelector
 @onready var _debug_panel: PanelContainer = $DebugPanel
 @onready var _defeat_overlay: Control = $DefeatOverlay
@@ -70,11 +79,26 @@ func _connect_ui() -> void:
 	(_ui["deck_button"] as Button).pressed.connect(_on_deck_pressed)
 	(_ui["speed_button"] as Button).pressed.connect(_on_speed_pressed)
 	_defeat_restart_button.pressed.connect(_on_defeat_restart_pressed)
+	_deployment_back_button.pressed.connect(_on_deployment_back_pressed)
 	_enemy_selector.item_selected.connect(_on_enemy_selected)
 	_refresh_speed_button()
 
 
-func _unhandled_key_input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
+	if not _deployment_mode and _battle_input != null:
+		if event.is_action_pressed("battle_play"):
+			_battle_input.play_selected()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("battle_end_turn"):
+			_battle_input.end_turn()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("battle_clear"):
+			_battle_input.clear_selection()
+			get_viewport().set_input_as_handled()
+		if event is InputEventKey and event.pressed and not event.echo:
+			var index: int = event.physical_keycode - KEY_1
+			if index >= 0 and index < mini(9, _session.state.deck.hand.size()):
+				_battle_input.on_card_pressed(_session.state.deck.hand[index])
 	if not event is InputEventKey:
 		return
 	var key_event := event as InputEventKey
@@ -102,7 +126,39 @@ func configure(data: Dictionary) -> void:
 	var restart := _ui.get("restart_button") as Button
 	if restart != null:
 		restart.visible = false
+	_set_deployment_mode(false)
 	_start_battle(data, true)
+
+
+## RunFlow 的开战前部署接缝。部署标题/提示/返回按钮都在 BattleScreen.tscn 里，
+## 与正式战斗复用同一个 BoardZone，因此编辑器中拖动 BoardZone 后两种模式天然一致。
+func configure_deployment(preview: Dictionary) -> void:
+	_set_deployment_mode(true)
+	var cols := int(preview.get("cols", DEFAULT_BOARD_COLS))
+	var rows := int(preview.get("rows", DEFAULT_BOARD_ROWS))
+	var enemy_cells: Array[Vector2i] = []
+	for cell_value: Variant in preview.get("enemy_cells", []):
+		enemy_cells.append(cell_value as Vector2i)
+	var allowed: Array[Vector2i] = []
+	for y in range(rows):
+		for x in range(cols):
+			if x == 0 or y == 0 or x == cols - 1 or y == rows - 1:
+				allowed.append(Vector2i(x, y))
+	_board_view.render_deployment(cols, rows, allowed, enemy_cells)
+
+
+func _set_deployment_mode(enabled: bool) -> void:
+	_deployment_mode = enabled
+	_deployment_ui.visible = enabled
+	_battle_hud.visible = not enabled
+	_battle_card_hud.visible = not enabled
+	$HandScroll.visible = not enabled
+	$ActionButtons.visible = not enabled
+	$PreviewLabel.visible = not enabled
+	$ResultLabel.visible = not enabled
+	$SelectionLabel.visible = false
+	$DebugPanel.visible = false
+	_defeat_overlay.visible = false
 
 
 func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
@@ -145,16 +201,22 @@ func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
 	add_child(_battle_input)
 	_battle_input.bind(_session, data["card_defs"], _presenter)
 	_battle_input.battle_finished.connect(_on_battle_input_finished)
+	_battle_input.checkpoint_requested.connect(func(state: BattleState) -> void: checkpoint_requested.emit(state))
+	checkpoint_requested.emit(_session.state)
+	if _session.state.is_terminal():
+		_on_battle_input_finished.call_deferred(_session.battle_result())
 
 
 func _on_battle_input_finished(result: BattleResult) -> void:
-	if result != null and not result.victory:
+	if demo_autostart and result != null and not result.victory:
 		_defeat_overlay.visible = true
 		return
 	battle_finished.emit(result)
 
 
 func _on_defeat_restart_pressed() -> void:
+	if not demo_autostart:
+		return
 	if _initial_battle_data.is_empty():
 		_start_demo()
 		return
@@ -240,8 +302,16 @@ func _on_card_pressed(uid: int) -> void:
 
 
 func _on_cell_pressed(cell: Vector2i) -> void:
+	if _deployment_mode:
+		deployment_cell_chosen.emit(cell)
+		return
 	if _battle_input != null:
 		_battle_input.on_cell_pressed(cell)
+
+
+func _on_deployment_back_pressed() -> void:
+	if _deployment_mode:
+		deployment_cancelled.emit()
 
 
 func _on_play_pressed() -> void:

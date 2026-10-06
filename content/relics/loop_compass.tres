@@ -6,7 +6,7 @@
 script = ExtResource("1_3mspt")
 relic_id = &"relic.loop_compass"
 display_name = "回环罗盘"
-description = "预留：战斗开始时提供额外移动资源。"
+description = "战斗开始时提供额外移动资源。"
 trigger_key = &"battle_start"
 trigger_params = {
 "move_points": 1

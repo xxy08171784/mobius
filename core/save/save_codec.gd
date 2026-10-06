@@ -113,6 +113,7 @@ func _encode_battle_state(state: BattleState) -> Dictionary:
 			"phase": int(state.phase),
 			"resume_phase": int(state.resume_phase),
 			"battle_id": encode_value(state.battle_id),
+			"run_instance_id": state.run_instance_id,
 			"round_index": encode_value(state.round_index),
 			"version": encode_value(state.version),
 			"next_uid": encode_value(state.next_uid),
@@ -127,6 +128,7 @@ func _encode_battle_state(state: BattleState) -> Dictionary:
 			"ground_items": encode_value(state.ground_items),
 			"collected_items": encode_value(state.collected_items),
 			"run_changes": encode_value(state.run_changes),
+			"relic_hooks": encode_value(state.relic_hooks),
 			"enemy_intents": _encode_intents(state.enemy_intents),
 			"enemy_steps": encode_value(state.enemy_steps),
 			"enemy_charge_remaining": encode_value(state.enemy_charge_remaining),
@@ -144,6 +146,7 @@ func _decode_battle_state(data: Dictionary) -> BattleState:
 	var state := BattleState.new()
 	state.phase = int(payload.get("phase", BattleState.Phase.SETUP))
 	state.resume_phase = int(payload.get("resume_phase", BattleState.Phase.PLAYER_INPUT))
+	state.run_instance_id = String(payload.get("run_instance_id", ""))
 	state.battle_id = int(decode_value(payload.get("battle_id", encode_value(-1))))
 	state.round_index = int(decode_value(payload.get("round_index", encode_value(0))))
 	state.version = int(decode_value(payload.get("version", encode_value(0))))
@@ -178,6 +181,8 @@ func _decode_battle_state(data: Dictionary) -> BattleState:
 	state.move_points_per_round = int(
 		decode_value(payload.get("move_points_per_round", encode_value(0)))
 	)
+	for hook: Dictionary in decode_value(payload.get("relic_hooks", [])):
+		state.relic_hooks.append(hook)
 	return state
 
 
@@ -440,6 +445,15 @@ func _encode_run_state(state: RunState) -> Dictionary:
 			"map": _encode_route_graph(state.map),
 			"deck": _encode_run_cards(state.deck),
 			"relics": _encode_relics(state.relics),
+			"flow_phase": String(state.flow_phase),
+			"pending_node_id": encode_value(state.pending_node_id),
+			"pending_content_id": encode_value(state.pending_content_id),
+			"pending_battle_id": encode_value(state.pending_battle_id),
+			"pending_payload": encode_value(state.pending_payload),
+			"settled_battle_ids": encode_value(state.settled_battle_ids),
+			"outcome": String(state.outcome),
+			"instance_id": state.instance_id,
+			"difficulty": state.difficulty,
 		},
 	}
 
@@ -462,6 +476,15 @@ func _decode_run_state(data: Dictionary) -> RunState:
 	state.map = _decode_route_graph(payload.get("map", {}))
 	state.deck = _decode_run_cards(payload.get("deck", []))
 	state.relics = _decode_relics(payload.get("relics", []))
+	state.flow_phase = StringName(payload.get("flow_phase", "route"))
+	state.pending_node_id = int(decode_value(payload.get("pending_node_id", encode_value(-1))))
+	state.pending_content_id = decode_value(payload.get("pending_content_id", encode_value(&"")))
+	state.pending_battle_id = int(decode_value(payload.get("pending_battle_id", encode_value(-1))))
+	state.pending_payload = decode_value(payload.get("pending_payload", encode_value({})))
+	state.settled_battle_ids = _to_int_array(decode_value(payload.get("settled_battle_ids", [])))
+	state.outcome = StringName(payload.get("outcome", ""))
+	state.instance_id = String(payload.get("instance_id", "legacy-%s-%s" % [state.run_id, state.seed]))
+	state.difficulty = int(payload.get("difficulty", 0))
 	return state
 
 

@@ -99,6 +99,13 @@ static func build(
 		encounter.move_points_per_round
 	)
 
+	RelicSystem.equip(state, run, content)
+	state.run_instance_id = run.instance_id
+	# 难度只影响本场实例，不修改共享的 EnemyDef / UnitDef。
+	for enemy_id: int in state.enemy_ids():
+		var enemy := state.get_unit(enemy_id)
+		enemy.max_hp = maxi(1, ceili(enemy.max_hp * (1.0 + 0.1 * run.difficulty)))
+		enemy.hp = enemy.max_hp
 	return {
 		"rng": rng,
 		"state": state,

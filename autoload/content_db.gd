@@ -113,13 +113,8 @@ func card_ids() -> Array:
 
 ## 仅返回当前真正可玩的奖励卡；设计已入库但规则未实现的卡不会污染可玩闭环。
 func reward_card_ids() -> Array:
-	var ids: Array = []
-	for id_value: Variant in _cards.keys():
-		var definition := _cards[id_value] as CardDef
-		if definition != null and definition.reward_pool_enabled:
-			ids.append(id_value)
-	ids.sort_custom(func(a: Variant, b: Variant) -> bool: return String(a) < String(b))
-	return ids
+	var pool := load("res://content/pools/formal_cards.tres") as CardPoolDef
+	return pool.resolve(self)
 
 
 func enemy_ids() -> Array:

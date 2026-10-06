@@ -13,12 +13,17 @@ const KIND_DEFEAT := &"defeat"
 
 const CAMPAIGN_PATH := "res://content/maps/campaign_default.tres"
 
+signal state_changed(run: RunState)
+signal save_failed(message: String)
+
+var last_save_ok: bool = true
 var state: RunState = null
 
 var _rng: RngStreams = null
 var _content: Object = null
 var _save_service: Object = null
 var _campaign: CampaignDef = null
+var _encounters := EncounterSelector.new()
 
 
 ## 装配一局：恢复 RNG、绑定内容与存档门面。campaign 缺省从 CAMPAIGN_PATH 读取。
@@ -30,6 +35,7 @@ func setup(
 ) -> void:
 	state = run_state
 	_content = content
+	_encounters.setup(content)
 	_save_service = save_service
 	_campaign = campaign if campaign != null else _default_campaign()
 	_rng = RngStreams.new()
@@ -58,7 +64,7 @@ static func create_run(
 		push_error("RunSession.create_run: unknown unit: %s" % String(character.unit_def_id))
 		return null
 
-	var camp := campaign if campaign != null else CampaignDef.new()
+	var camp := campaign if campaign != null else load(CAMPAIGN_PATH) as CampaignDef
 	var rng := RngStreams.new()
 	rng.derive_streams(seed_text)
 
@@ -144,7 +150,9 @@ func enter_node(node_id: int, player_start: Vector2i = Vector2i(-1, -1)) -> Dict
 	var node: MapNodeState = state.map.get_node(node_id)
 	if node == null:
 		return _fail(&"unknown_node")
-	if not state.can_enter(node_id):
+	if state.flow_phase == &"deployment" and state.pending_node_id == node_id:
+		pass
+	elif not state.can_enter(node_id):
 		return _fail(&"node_locked")
 
 	# 工作快照上结算，成功才提交。
@@ -159,11 +167,20 @@ func enter_node(node_id: int, player_start: Vector2i = Vector2i(-1, -1)) -> Dict
 	work.map.get_node(node_id).content_id = StringName(String(transition.get("content_id", "")))
 	if StringName(String(transition.get("kind", ""))) == KIND_BATTLE:
 		work.next_battle_id += 1
-	work.rng_snapshot = work_rng.snapshot()
-
-	state = work
-	_rng = work_rng
-	_autosave()
+	work.flow_phase = StringName(transition.get("kind", "route"))
+	work.pending_node_id = node_id
+	work.pending_content_id = StringName(transition.get("content_id", ""))
+	work.pending_payload = {}
+	if work.flow_phase == KIND_BATTLE:
+		var battle: Dictionary = transition["battle"]
+		work.pending_battle_id = (battle["state"] as BattleState).battle_id
+		work.pending_payload = BattleCheckpoint.capture(battle)
+	elif work.flow_phase == &"shop":
+		work.pending_payload["shop"] = (transition["shop"] as ShopState).to_dict()
+	elif work.flow_phase == &"treasure":
+		work.pending_payload = {"relic_id": transition["relic_id"], "gold": transition["gold"]}
+	_commit(work, work_rng)
+	transition["saved"] = last_save_ok
 	return transition
 
 
@@ -171,29 +188,44 @@ func enter_node(node_id: int, player_start: Vector2i = Vector2i(-1, -1)) -> Dict
 func on_battle_finished(result: BattleResult) -> Dictionary:
 	if state == null or result == null:
 		return _fail(&"run_not_ready")
-
-	var max_hp_delta := int(result.persistent_changes.get("max_hp_delta", 0))
-	if max_hp_delta != 0:
-		state.max_hp = maxi(1, state.max_hp + max_hp_delta)
+	if result.run_instance_id != state.instance_id:
+		return _fail(&"run_id_mismatch")
+	if state.settled_battle_ids.has(result.battle_id):
+		return _fail(&"battle_already_settled")
+	if state.flow_phase != KIND_BATTLE or result.battle_id != state.pending_battle_id:
+		return _fail(&"battle_id_mismatch")
+	var work := state.duplicate_state()
+	var rng := _rng.clone()
+	if not result.rng_snapshot.is_empty():
+		rng.restore(result.rng_snapshot)
+	work.max_hp = maxi(1, work.max_hp + int(result.persistent_changes.get("max_hp_delta", 0)))
 	var hp_map: Dictionary = result.persistent_changes.get("player_hp", {})
-	if hp_map.has(EncounterBuilder.PLAYER_UNIT_ID):
-		state.hp = clampi(int(hp_map[EncounterBuilder.PLAYER_UNIT_ID]), 0, state.max_hp)
-
-	if not result.victory or state.hp <= 0:
-		state.hp = maxi(0, state.hp)
-		_autosave()
-		return {"ok": true, "error_code": &"ok", "kind": KIND_DEFEAT}
-
-	state.gold += RewardSystem.GOLD_REWARD
-
-	var node := state.map.get_node(state.current_node_id) if state.current_node_id >= 0 else null
-	if node != null and node.type_key == RouteMapDef.TYPE_BOSS:
-		var advanced := _advance_act(state, _rng)
-		_autosave()
-		return advanced
-
-	_autosave()
-	return {"ok": true, "error_code": &"ok", "kind": &"victory"}
+	work.hp = clampi(int(hp_map.get(EncounterBuilder.PLAYER_UNIT_ID, work.hp)), 0, work.max_hp)
+	work.settled_battle_ids.append(result.battle_id)
+	var kind: StringName = &"victory"
+	if not result.victory or work.hp <= 0:
+		work.hp = 0
+		work.clear_pending()
+		work.flow_phase = &"run_over"
+		work.outcome = KIND_DEFEAT
+		kind = KIND_DEFEAT
+	else:
+		work.gold += RewardSystem.GOLD_REWARD
+		RelicSystem.on_victory(work, _content)
+		var node := work.map.get_node(work.current_node_id)
+		if node != null and node.type_key == RouteMapDef.TYPE_BOSS:
+			kind = _advance_act(work, rng)["kind"]
+		if kind == KIND_RUN_COMPLETE:
+			work.clear_pending()
+			work.flow_phase = &"run_over"
+			work.outcome = KIND_RUN_COMPLETE
+		else:
+			var reward := RewardSystem.generate(_content.reward_card_ids(), rng.get_stream(&"reward"))
+			reward.battle_id = result.battle_id
+			work.flow_phase = &"reward"
+			work.pending_payload = {"reward": reward.to_dict()}
+	_commit(work, rng)
+	return {"ok": true, "kind": kind, "saved": last_save_ok}
 
 
 func current_node() -> MapNodeState:
@@ -203,23 +235,105 @@ func current_node() -> MapNodeState:
 
 
 ## 节点内变更（休息/商店/事件）后手动存档。
-func save() -> void:
-	_autosave()
+func save() -> bool:
+	return _autosave()
 
 
-## 战败/通关后生成三选一奖励（用 reward 流，确定性；推进正式 RNG）。
+## 奖励只在胜利事务中抽取。显示或重新读档不消费 RNG。
 func generate_reward() -> RewardState:
-	if state == null or _rng == null:
+	if state == null or state.flow_phase != &"reward":
 		return null
-	return RewardSystem.generate(_content.reward_card_ids(), _rng.get_stream(&"reward"))
+	return RewardState.from_dict(state.pending_payload.get("reward", {}))
 
 
-## 领取（index>=0）或放弃（index<0）。成功后自动存档。
 func claim_reward(reward: RewardState, index: int) -> Dictionary:
-	var result := RewardSystem.claim(state, reward, index)
+	var pending := generate_reward()
+	if pending == null or reward == null or reward.battle_id != pending.battle_id or reward.offers != pending.offers:
+		return _fail(&"reward_not_pending")
+	var work := state.duplicate_state()
+	var result := RewardSystem.claim(work, pending, index)
 	if bool(result.get("ok", false)):
-		_autosave()
+		work.clear_pending()
+		_commit(work, _rng.clone())
+		reward.claimed = true
 	return result
+
+
+func begin_deployment(node_id: int) -> Dictionary:
+	if not can_enter(node_id) or not is_battle_node(node_id):
+		return _fail(&"node_locked")
+	var preview := preview_battle(node_id)
+	if preview.is_empty():
+		return _fail(&"encounter_build")
+	var work := state.duplicate_state()
+	work.flow_phase = &"deployment"
+	work.pending_node_id = node_id
+	work.pending_payload = {"preview": preview}
+	_commit(work, _rng.clone())
+	return {"ok": true, "kind": &"deployment", "preview": preview}
+
+
+func cancel_deployment() -> bool:
+	if state == null or state.flow_phase != &"deployment":
+		return false
+	var work := state.duplicate_state()
+	work.clear_pending()
+	_commit(work, _rng.clone())
+	return true
+
+
+func checkpoint_battle(battle: BattleState) -> bool:
+	if state == null or state.flow_phase != KIND_BATTLE or battle == null or battle.battle_id != state.pending_battle_id:
+		return false
+	if battle.run_instance_id != state.instance_id:
+		return false
+	var previous := SaveCodec.new().decode_state(state.pending_payload.get("battle", {})) as BattleState
+	if previous != null and previous.version > battle.version:
+		return false
+	var work := state.duplicate_state()
+	work.pending_payload["battle"] = SaveCodec.new().encode_state(battle)
+	var rng := RngStreams.new()
+	rng.restore(battle.rng_snapshot)
+	_commit(work, rng)
+	return last_save_ok
+
+
+func resolve_node_action(action: StringName, data: Dictionary = {}) -> Dictionary:
+	if state == null:
+		return _fail(&"run_not_ready")
+	var work := state.duplicate_state()
+	var result := RunNodeTransaction.apply(work, _content, action, data)
+	if bool(result.get("ok", false)):
+		_commit(work, _rng.clone())
+	return result
+
+
+func resume_pending_flow() -> Dictionary:
+	if state == null:
+		return _fail(&"run_not_ready")
+	var out := {"ok": true, "kind": state.flow_phase, "content_id": state.pending_content_id}
+	match state.flow_phase:
+		&"battle":
+			out["battle"] = BattleCheckpoint.restore(state.pending_payload, _content)
+			if (out["battle"] as Dictionary).is_empty():
+				return _fail(&"battle_content_missing")
+		&"deployment":
+			out["preview"] = state.pending_payload.get("preview", {})
+		&"shop":
+			out["shop"] = ShopState.from_dict(state.pending_payload.get("shop", {}))
+		&"treasure":
+			out.merge(state.pending_payload)
+		&"run_over":
+			out["kind"] = state.outcome
+	return out
+
+
+func _commit(work: RunState, rng: RngStreams) -> void:
+	work.rng_snapshot = rng.snapshot()
+	state = work
+	_rng = rng
+	state_changed.emit(state)
+	_autosave()
 
 
 ## 只读 state，产出转移；战斗 build 用当前 next_battle_id（提交时由 enter_node 推进）。
@@ -230,21 +344,8 @@ func _resolve_node(
 	player_start: Vector2i
 ) -> Dictionary:
 	match node.type_key:
-		RouteMapDef.TYPE_MONSTER:
-			var pooled := _resolve_monster_pool(work, rng, player_start)
-			if not pooled.is_empty():
-				return pooled
-			return _resolve_fixed_encounter(work, rng, player_start, &"monster")
-		RouteMapDef.TYPE_ELITE:
-			var elite := _resolve_elite_encounter(work, rng, player_start)
-			if not elite.is_empty():
-				return elite
-			return _resolve_fixed_encounter(work, rng, player_start, &"elite")
-		RouteMapDef.TYPE_BOSS:
-			var boss := _resolve_boss_encounter(work, rng, player_start)
-			if not boss.is_empty():
-				return boss
-			return _resolve_fixed_encounter(work, rng, player_start, &"boss")
+		RouteMapDef.TYPE_MONSTER, RouteMapDef.TYPE_ELITE, RouteMapDef.TYPE_BOSS:
+			return _encounters.resolve(work, rng, node.type_key, player_start)
 		RouteMapDef.TYPE_REST:
 			return {"ok": true, "error_code": &"ok", "kind": &"rest", "content_id": &""}
 		RouteMapDef.TYPE_SHOP:
@@ -254,7 +355,7 @@ func _resolve_node(
 			var shop_def: ShopDef = _content.get_shop(shop_id)
 			if shop_def == null:
 				return _fail(&"no_shop")
-			var shop_state := ShopSystem.generate(shop_def, rng.get_stream(&"encounter"))
+			var shop_state := ShopSystem.generate(shop_def, rng.get_stream(&"encounter"), _content)
 			return {
 				"ok": true,
 				"error_code": &"ok",
@@ -291,105 +392,6 @@ func _resolve_node(
 			}
 
 
-## 本幕怪物池：按 battle_index（= next_battle_id，当前战斗的 1 起序号）抽 2~4 只（前 2 战固定 2）。
-## 无池 / content 不支持池时返回空 dict，调用方回退到固定 EncounterDef。
-func _resolve_monster_pool(work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
-	if _content == null or not _content.has_method("get_monster_pool"):
-		return {}
-	var pool: MonsterPoolDef = _content.get_monster_pool(StringName("monster_pool.act%d" % (work.act_index + 1)))
-	if pool == null:
-		return {}
-	var encounter := MonsterPool.build_encounter(pool, work.next_battle_id, rng.get_stream(&"encounter"))
-	if encounter == null:
-		return _fail(&"monster_pool_empty")
-	var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
-	if battle.is_empty():
-		return _fail(&"encounter_build")
-	return {
-		"ok": true,
-		"error_code": &"ok",
-		"kind": KIND_BATTLE,
-		"content_id": encounter.id,
-		"encounter_id": encounter.id,
-		"battle": battle,
-	}
-
-
-## 固定遭遇：按 tier 抽一个 EncounterDef（elite/boss 与 monster 回退共用）。
-func _resolve_fixed_encounter(work: RunState, rng: RngStreams, player_start: Vector2i, tier: StringName) -> Dictionary:
-	var encounter_id := _pick_encounter(rng, tier)
-	if encounter_id.is_empty():
-		return _fail(&"no_encounter")
-	var encounter: EncounterDef = _content.get_encounter(encounter_id)
-	var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
-	if battle.is_empty():
-		return _fail(&"encounter_build")
-	return {
-		"ok": true,
-		"error_code": &"ok",
-		"kind": KIND_BATTLE,
-		"content_id": encounter_id,
-		"encounter_id": encounter_id,
-		"battle": battle,
-	}
-
-
-## 本幕精英战：1 精英（精英池随机）+ 2 小怪（小怪池有放回）。无池返回空 dict 以回退。
-func _resolve_elite_encounter(work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
-	if _content == null or not _content.has_method("get_monster_pool"):
-		return {}
-	var act := work.act_index + 1
-	var elite_pool: MonsterPoolDef = _content.get_monster_pool(StringName("monster_pool.act%d_elite" % act))
-	var mob_pool: MonsterPoolDef = _content.get_monster_pool(StringName("monster_pool.act%d" % act))
-	if elite_pool == null or mob_pool == null:
-		return {}
-	var encounter := MonsterPool.build_elite_encounter(
-		elite_pool, mob_pool, work.next_battle_id, rng.get_stream(&"encounter")
-	)
-	if encounter == null:
-		return _fail(&"monster_pool_empty")
-	return _battle_transition(encounter, work, rng, player_start)
-
-
-## 本幕 Boss：直接取墓外 Boss 遭遇。无则返回空 dict（回退固定遭遇）。
-func _resolve_boss_encounter(work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
-	if _content == null or not _content.has_method("get_encounter"):
-		return {}
-	var encounter: EncounterDef = _content.get_encounter(StringName("encounter.boss.act%d" % (work.act_index + 1)))
-	if encounter == null:
-		return {}
-	return _battle_transition(encounter, work, rng, player_start)
-
-
-## 装配一场战斗的转移 dict（供池/精英/Boss 共用）。
-func _battle_transition(encounter: EncounterDef, work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
-	var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
-	if battle.is_empty():
-		return _fail(&"encounter_build")
-	return {
-		"ok": true,
-		"error_code": &"ok",
-		"kind": KIND_BATTLE,
-		"content_id": encounter.id,
-		"encounter_id": encounter.id,
-		"battle": battle,
-	}
-
-
-## 按 tier 确定性抽一个遭遇（encounter 流）。空 = 无可用遭遇。
-func _pick_encounter(rng: RngStreams, tier: StringName) -> StringName:
-	var candidates: Array[StringName] = []
-	for id_value: Variant in _content.encounter_ids():
-		var id := StringName(String(id_value))
-		var encounter: EncounterDef = _content.get_encounter(id)
-		if encounter != null and encounter.tier == tier:
-			candidates.append(id)
-	if candidates.is_empty():
-		return &""
-	var stream: RandomNumberGenerator = rng.get_stream(&"encounter")
-	return candidates[stream.randi_range(0, candidates.size() - 1)]
-
-
 ## 按 kind 从 ContentDB 确定性抽一个内容 ID（shop / event / relic）。单一候选不抽签（不推进）。
 func _pick_content(kind: StringName, rng: RngStreams) -> StringName:
 	var ids: Array
@@ -422,9 +424,13 @@ func _advance_act(work: RunState, rng: RngStreams) -> Dictionary:
 	return {"ok": true, "error_code": &"ok", "kind": KIND_ACT_COMPLETE, "act_index": next_index}
 
 
-func _autosave() -> void:
+func _autosave() -> bool:
+	last_save_ok = true
 	if _save_service != null and _save_service.has_method("save_run"):
-		_save_service.call("save_run", state)
+		last_save_ok = bool(_save_service.call("save_run", state))
+	if not last_save_ok:
+		save_failed.emit("保存失败；当前进度仍在内存中。请释放磁盘空间后点击重试，成功前不要退出。")
+	return last_save_ok
 
 
 func _default_campaign() -> CampaignDef:

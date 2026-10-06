@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" path="res://gameplay/run/shop_def.gd" id="1_shop"]
 
+[ext_resource type="Resource" path="res://content/pools/formal_cards.tres" id="2_pool"]
+
 [resource]
 script = ExtResource("1_shop")
 id = &"shop.route"
-card_pool = Array[StringName]([&"card.warrior.strike", &"card.warrior.heavy_strike", &"card.warrior.guard", &"card.warrior.brace", &"card.warrior.quick_draw", &"card.warrior.pommel", &"card.warrior.lunge", &"card.warrior.execute", &"card.warrior.fortify", &"card.warrior.insight", &"card.warrior.jab", &"card.warrior.iron_wall"])
+pool = ExtResource("2_pool")
 offer_count = 4
 card_price = 50
 remove_price = 75

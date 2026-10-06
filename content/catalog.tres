@@ -99,7 +99,6 @@
 [ext_resource type="Resource" path="res://content/enemies/catacomb_stone_figure.tres" id="ce_stone"]
 [ext_resource type="Resource" path="res://content/enemies/catacomb_ghost_soldier.tres" id="ce_ghost"]
 [ext_resource type="Resource" path="res://content/statuses/weak.tres" id="cs_weak"]
-[ext_resource type="Resource" path="res://content/statuses/slow.tres" id="cs_slow"]
 [ext_resource type="Resource" path="res://content/statuses/entangle.tres" id="cs_entangle"]
 [ext_resource type="Resource" path="res://content/pools/act2_monsters.tres" id="cpool_mon"]
 [ext_resource type="Resource" path="res://content/pools/act2_elite.tres" id="cpool_elite"]

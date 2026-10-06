@@ -52,6 +52,7 @@ var speed_multiplier: float = 1.0
 
 
 func _ready() -> void:
+	focus_mode = Control.FOCUS_ALL
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = true
 	custom_minimum_size = Vector2(560, 380)
@@ -233,6 +234,25 @@ func bump_attack(attacker_id: int, target_id: int) -> Tween:
 # ---- 输入 ----------------------------------------------------------------
 
 func _gui_input(event: InputEvent) -> void:
+	var delta := Vector2i.ZERO
+	if event.is_action_pressed("ui_left"):
+		delta.x = -1
+	elif event.is_action_pressed("ui_right"):
+		delta.x = 1
+	elif event.is_action_pressed("ui_up"):
+		delta.y = -1
+	elif event.is_action_pressed("ui_down"):
+		delta.y = 1
+	if delta != Vector2i.ZERO and _cols > 0 and _rows > 0:
+		_hover = Vector2i(clampi(_hover.x + delta.x, 0, _cols - 1), clampi(_hover.y + delta.y, 0, _rows - 1))
+		_highlight_layer.queue_redraw()
+		accept_event()
+		return
+	if event.is_action_pressed("ui_accept") and _hover.x >= 0:
+		if _allowed_cells.is_empty() or _allowed_cells.has(_hover):
+			cell_pressed.emit(_hover)
+		accept_event()
+		return
 	if event is InputEventMouseMotion:
 		var cell := _cell_at(get_global_mouse_position())
 		var next := cell if _clickable(cell) else Vector2i(-1, -1)
@@ -241,6 +261,7 @@ func _gui_input(event: InputEvent) -> void:
 			if _highlight_layer != null:
 				_highlight_layer.queue_redraw()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		grab_focus()
 		var cell := _cell_at(get_global_mouse_position())
 		if _clickable(cell):
 			cell_pressed.emit(cell)

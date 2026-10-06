@@ -69,10 +69,10 @@ expand_mode = 1
 
 [node name="DeckPile" type="TextureRect" parent="." unique_id=1853276194]
 layout_mode = 0
-offset_left = 222.0
-offset_top = 783.0
-offset_right = 382.0
-offset_bottom = 951.0
+offset_left = 226.0
+offset_top = 820.0
+offset_right = 386.0
+offset_bottom = 988.0
 tooltip_text = "牌库"
 mouse_filter = 2
 texture = SubResource("Atlas_deck_count")
@@ -95,10 +95,10 @@ vertical_alignment = 1
 
 [node name="DiscardPile" type="TextureRect" parent="." unique_id=1626077406]
 layout_mode = 0
-offset_left = 1488.0
-offset_top = 782.0
-offset_right = 1648.0
-offset_bottom = 934.0
+offset_left = 1566.0
+offset_top = 813.0
+offset_right = 1726.0
+offset_bottom = 965.0
 tooltip_text = "弃牌堆"
 mouse_filter = 2
 texture = SubResource("Atlas_discard_count")
@@ -121,10 +121,10 @@ vertical_alignment = 1
 
 [node name="EnergyBadge" type="TextureRect" parent="." unique_id=1754290153]
 layout_mode = 0
-offset_left = 240.0
-offset_top = 955.0
-offset_right = 360.0
-offset_bottom = 1075.0
+offset_left = 21.0
+offset_top = 941.0
+offset_right = 141.0
+offset_bottom = 1061.0
 tooltip_text = "当前能量 / 卡牌费用"
 mouse_filter = 2
 texture = SubResource("Atlas_energy_badge")
@@ -151,10 +151,10 @@ vertical_alignment = 1
 [node name="EndTurnButton" type="TextureButton" parent="." unique_id=469403461]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1671.0
-offset_top = 699.0
-offset_right = 1841.0
-offset_bottom = 869.0
+offset_left = 1720.0
+offset_top = 689.0
+offset_right = 1890.0
+offset_bottom = 859.0
 tooltip_text = "结束回合"
 texture_normal = SubResource("Atlas_turn_normal")
 texture_pressed = SubResource("Atlas_turn_pressed")

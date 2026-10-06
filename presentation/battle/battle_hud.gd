@@ -27,14 +27,14 @@ const R_ENERGY_BADGE_EMPTY := Rect2(650, 652, 259, 262)
 @onready var _energy_text: Label = %EnergyText
 
 
-func render_state(state: BattleState, phase_text: String) -> void:
+func render_state(state: BattleState, phase_text: String, selected_enemy_id: int = -1) -> void:
 	if state == null:
 		return
 
 	_round_label.text = phase_text
 	_round_count.text = str(state.round_index)
 
-	var players := state.alive_player_ids()
+	var players := state.player_ids()
 	if not players.is_empty():
 		var player := state.get_unit(int(players[0]))
 		if player != null:
@@ -59,15 +59,18 @@ func render_state(state: BattleState, phase_text: String) -> void:
 				move,
 				state.move_points_per_round,
 			]
+			%ResourceSummary.text = "能量 %d / %d\n移动 %d / %d" % [energy, state.energy_per_round, move, state.move_points_per_round]
 			_status_icons.render(player)
 
+	$EnemyHUD.visible = true
 	var enemies := state.alive_enemy_ids()
+	%EnemyCount.text = "存活敌人 %d · 点击棋子查看" % enemies.size()
 	if enemies.is_empty():
 		_enemy_name.text = "敌人"
 		_set_bar(_enemy_hp_bar, _enemy_hp_text, 0, 1, "已击败")
 		_set_bar(_enemy_shield_bar, _enemy_shield_text, 0, 1, "护盾 0")
 	else:
-		var enemy := state.get_unit(int(enemies[0]))
+		var enemy := state.get_unit(selected_enemy_id if enemies.has(selected_enemy_id) else int(enemies[0]))
 		if enemy != null:
 			_enemy_name.text = _unit_name(enemy)
 			_set_bar(
@@ -108,16 +111,11 @@ func _set_bar(
 
 
 func _unit_name(unit: UnitState) -> String:
-	match unit.def_id:
-		&"unit.hero.prototype":
-			return "玩家"
-		&"unit.enemy.ring_stalker":
-			return "环影猎手"
-		&"unit.enemy.echo_guard":
-			return "回声守卫"
-		&"unit.enemy.loop_hound":
-			return "循环猎犬"
-		&"unit.enemy.mobius_warden":
-			return "莫比乌斯守望者"
-		_:
-			return String(unit.def_id)
+	if unit.is_player():
+		return "玩家"
+	var content := get_node_or_null("/root/ContentDB")
+	if content != null:
+		var definition: EnemyDef = content.get_enemy(unit.enemy_id)
+		if definition != null and not definition.display_name.is_empty():
+			return definition.display_name
+	return String(unit.def_id)

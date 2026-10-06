@@ -1,3 +1,5 @@
+> 历史设计记录（2026-10-05），保留原文供追溯；其中脚手架/占位/旧路径描述不代表当前工程。请以 [current_status.md](current_status.md)、[editor_and_api_guide.md](editor_and_api_guide.md) 为准。
+
 # GAMEGAM 架构评审
 
 日期：2026-10-05。评审对象：`godot_architecture.md`（只读，未修改）。
