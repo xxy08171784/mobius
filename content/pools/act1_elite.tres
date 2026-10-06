@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MonsterPoolDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/run/monster_pool_def.gd" id="1_pool"]
+
+[resource]
+script = ExtResource("1_pool")
+id = &"monster_pool.act1_elite"
+tier = &"elite"
+enemy_ids = Array[StringName]([&"enemy.tomb.viper", &"enemy.tomb.skeleton", &"enemy.tomb.crossbow"])
+board_cols = 8
+board_rows = 8
+player_start = Vector2i(2, 5)
+hand_size = 5
+energy_per_round = 3
+move_points_per_round = 2

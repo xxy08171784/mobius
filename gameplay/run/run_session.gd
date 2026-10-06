@@ -107,6 +107,32 @@ func is_battle_node(node_id: int) -> bool:
 		or node.type_key == RouteMapDef.TYPE_BOSS
 
 
+## 部署预览：在 RNG 克隆上解析该战斗节点，返回棋盘尺寸与敌人落点（**不提交、不推进正式 RNG**）。
+## 敌人落点不依赖玩家起点（见 EncounterBuilder._plan_enemy_spawns），故与随后 enter_node 同 seed 同结果。
+func preview_battle(node_id: int) -> Dictionary:
+	if state == null or state.map == null:
+		return {}
+	var node: MapNodeState = state.map.get_node(node_id)
+	if node == null:
+		return {}
+	var work := state.duplicate_state()
+	var work_rng := _rng.clone()
+	var transition := _resolve_node(work, work_rng, node, Vector2i(-1, -1))
+	if not bool(transition.get("ok", false)):
+		return {}
+	var battle_state: BattleState = (transition.get("battle", {}) as Dictionary).get("state", null)
+	if battle_state == null:
+		return {}
+	var cells: Array[Vector2i] = []
+	for enemy_id: int in battle_state.enemy_ids():
+		cells.append(battle_state.board.get_unit_cell(enemy_id))
+	return {
+		"cols": battle_state.board.cols,
+		"rows": battle_state.board.rows,
+		"enemy_cells": cells,
+	}
+
+
 ## 进入节点。成功返回转移 dict：
 ##   battle        -> { kind, encounter_id, battle: <EncounterBuilder.build 结果> }
 ##   rest/shop/... -> { kind, content_id }
@@ -201,23 +227,21 @@ func _resolve_node(
 	player_start: Vector2i
 ) -> Dictionary:
 	match node.type_key:
-		RouteMapDef.TYPE_MONSTER, RouteMapDef.TYPE_ELITE, RouteMapDef.TYPE_BOSS:
-			var tier := _tier_of(node.type_key)
-			var encounter_id := _pick_encounter(rng, tier)
-			if encounter_id.is_empty():
-				return _fail(&"no_encounter")
-			var encounter: EncounterDef = _content.get_encounter(encounter_id)
-			var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
-			if battle.is_empty():
-				return _fail(&"encounter_build")
-			return {
-				"ok": true,
-				"error_code": &"ok",
-				"kind": KIND_BATTLE,
-				"content_id": encounter_id,
-				"encounter_id": encounter_id,
-				"battle": battle,
-			}
+		RouteMapDef.TYPE_MONSTER:
+			var pooled := _resolve_monster_pool(work, rng, player_start)
+			if not pooled.is_empty():
+				return pooled
+			return _resolve_fixed_encounter(work, rng, player_start, &"monster")
+		RouteMapDef.TYPE_ELITE:
+			var elite := _resolve_elite_encounter(work, rng, player_start)
+			if not elite.is_empty():
+				return elite
+			return _resolve_fixed_encounter(work, rng, player_start, &"elite")
+		RouteMapDef.TYPE_BOSS:
+			var boss := _resolve_boss_encounter(work, rng, player_start)
+			if not boss.is_empty():
+				return boss
+			return _resolve_fixed_encounter(work, rng, player_start, &"boss")
 		RouteMapDef.TYPE_REST:
 			return {"ok": true, "error_code": &"ok", "kind": &"rest", "content_id": &""}
 		RouteMapDef.TYPE_SHOP:
@@ -262,6 +286,91 @@ func _resolve_node(
 				"kind": _kind_of(node.type_key),
 				"content_id": node.content_id,
 			}
+
+
+## 本幕怪物池：按 battle_index（= next_battle_id，当前战斗的 1 起序号）抽 2~4 只（前 2 战固定 2）。
+## 无池 / content 不支持池时返回空 dict，调用方回退到固定 EncounterDef。
+func _resolve_monster_pool(work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
+	if _content == null or not _content.has_method("get_monster_pool"):
+		return {}
+	var pool: MonsterPoolDef = _content.get_monster_pool(StringName("monster_pool.act%d" % (work.act_index + 1)))
+	if pool == null:
+		return {}
+	var encounter := MonsterPool.build_encounter(pool, work.next_battle_id, rng.get_stream(&"encounter"))
+	if encounter == null:
+		return _fail(&"monster_pool_empty")
+	var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
+	if battle.is_empty():
+		return _fail(&"encounter_build")
+	return {
+		"ok": true,
+		"error_code": &"ok",
+		"kind": KIND_BATTLE,
+		"content_id": encounter.id,
+		"encounter_id": encounter.id,
+		"battle": battle,
+	}
+
+
+## 固定遭遇：按 tier 抽一个 EncounterDef（elite/boss 与 monster 回退共用）。
+func _resolve_fixed_encounter(work: RunState, rng: RngStreams, player_start: Vector2i, tier: StringName) -> Dictionary:
+	var encounter_id := _pick_encounter(rng, tier)
+	if encounter_id.is_empty():
+		return _fail(&"no_encounter")
+	var encounter: EncounterDef = _content.get_encounter(encounter_id)
+	var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
+	if battle.is_empty():
+		return _fail(&"encounter_build")
+	return {
+		"ok": true,
+		"error_code": &"ok",
+		"kind": KIND_BATTLE,
+		"content_id": encounter_id,
+		"encounter_id": encounter_id,
+		"battle": battle,
+	}
+
+
+## 本幕精英战：1 精英（精英池随机）+ 2 小怪（小怪池有放回）。无池返回空 dict 以回退。
+func _resolve_elite_encounter(work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
+	if _content == null or not _content.has_method("get_monster_pool"):
+		return {}
+	var act := work.act_index + 1
+	var elite_pool: MonsterPoolDef = _content.get_monster_pool(StringName("monster_pool.act%d_elite" % act))
+	var mob_pool: MonsterPoolDef = _content.get_monster_pool(StringName("monster_pool.act%d" % act))
+	if elite_pool == null or mob_pool == null:
+		return {}
+	var encounter := MonsterPool.build_elite_encounter(
+		elite_pool, mob_pool, work.next_battle_id, rng.get_stream(&"encounter")
+	)
+	if encounter == null:
+		return _fail(&"monster_pool_empty")
+	return _battle_transition(encounter, work, rng, player_start)
+
+
+## 本幕 Boss：直接取墓外 Boss 遭遇。无则返回空 dict（回退固定遭遇）。
+func _resolve_boss_encounter(work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
+	if _content == null or not _content.has_method("get_encounter"):
+		return {}
+	var encounter: EncounterDef = _content.get_encounter(StringName("encounter.boss.act%d" % (work.act_index + 1)))
+	if encounter == null:
+		return {}
+	return _battle_transition(encounter, work, rng, player_start)
+
+
+## 装配一场战斗的转移 dict（供池/精英/Boss 共用）。
+func _battle_transition(encounter: EncounterDef, work: RunState, rng: RngStreams, player_start: Vector2i) -> Dictionary:
+	var battle := EncounterBuilder.build(encounter, work, rng, _content, player_start)
+	if battle.is_empty():
+		return _fail(&"encounter_build")
+	return {
+		"ok": true,
+		"error_code": &"ok",
+		"kind": KIND_BATTLE,
+		"content_id": encounter.id,
+		"encounter_id": encounter.id,
+		"battle": battle,
+	}
 
 
 ## 按 tier 确定性抽一个遭遇（encounter 流）。空 = 无可用遭遇。
@@ -321,16 +430,6 @@ func _default_campaign() -> CampaignDef:
 		if loaded is CampaignDef:
 			return loaded as CampaignDef
 	return CampaignDef.new()
-
-
-static func _tier_of(type_key: StringName) -> StringName:
-	match type_key:
-		RouteMapDef.TYPE_ELITE:
-			return &"elite"
-		RouteMapDef.TYPE_BOSS:
-			return &"boss"
-		_:
-			return &"monster"
 
 
 static func _kind_of(type_key: StringName) -> StringName:

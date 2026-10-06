@@ -25,6 +25,9 @@ extends Resource
 ## 战后奖励池 ID（第二轮 RewardSystem 使用；本轮留空）。
 @export var reward_pool_id: StringName = &""
 
+## 本遭遇可召唤的小怪内容 ID 池（Boss 每隔几回合刷新用；EncounterBuilder 解析成召唤池）。
+@export var summon_enemy_ids: Array[StringName] = []
+
 
 func is_valid() -> bool:
 	return not id.is_empty() and not enemy_ids.is_empty()

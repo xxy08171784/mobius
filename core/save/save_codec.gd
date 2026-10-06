@@ -244,6 +244,7 @@ func _encode_units(units: Dictionary[int, UnitState]) -> Array:
 		result.append({
 			"unit_id": encode_value(unit.unit_id),
 			"def_id": encode_value(unit.def_id),
+			"enemy_id": encode_value(unit.enemy_id),
 			"team": int(unit.team),
 			"hp": encode_value(unit.hp),
 			"max_hp": encode_value(unit.max_hp),
@@ -265,6 +266,7 @@ func _decode_units(data: Array) -> Dictionary[int, UnitState]:
 			int(decode_value(entry.get("max_hp", encode_value(1))))
 		)
 		unit.hp = int(decode_value(entry.get("hp", encode_value(unit.max_hp))))
+		unit.enemy_id = decode_value(entry.get("enemy_id", encode_value(&"")))
 		unit.block = int(decode_value(entry.get("block", encode_value(0))))
 		var resources: Dictionary = decode_value(entry.get("resources", encode_value({})))
 		for key: Variant in resources:

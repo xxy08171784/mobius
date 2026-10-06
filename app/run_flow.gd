@@ -161,7 +161,7 @@ func _show_deployment(node_id: int) -> void:
 	title.add_theme_font_size_override("font_size", 26)
 	box.add_child(title)
 	var hint := Label.new()
-	hint.text = "点击高亮的外圈格子进入战场（敌人会随机出现在内部格）。"
+	hint.text = "红格是怪物位置，绿格是可选进场格（点击绿格进入战场）。"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(hint)
 	var board := BOARD_VIEW_SCENE.instantiate() as BoardView
@@ -169,12 +169,19 @@ func _show_deployment(node_id: int) -> void:
 	board.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	board.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(board)
+	# 预览敌方布阵（与随后开战同 seed 同结果），让玩家选格前就看到怪在哪。
+	var preview := _session.preview_battle(node_id)
+	var cols := int(preview.get("cols", DEPLOY_COLS))
+	var rows := int(preview.get("rows", DEPLOY_ROWS))
+	var enemy_cells: Array[Vector2i] = []
+	for cell_value: Variant in preview.get("enemy_cells", []):
+		enemy_cells.append(cell_value as Vector2i)
 	var allowed: Array[Vector2i] = []
-	for y in range(DEPLOY_ROWS):
-		for x in range(DEPLOY_COLS):
-			if x == 0 or y == 0 or x == DEPLOY_COLS - 1 or y == DEPLOY_ROWS - 1:
+	for y in range(rows):
+		for x in range(cols):
+			if x == 0 or y == 0 or x == cols - 1 or y == rows - 1:
 				allowed.append(Vector2i(x, y))
-	board.render_deployment(DEPLOY_COLS, DEPLOY_ROWS, allowed)
+	board.render_deployment(cols, rows, allowed, enemy_cells)
 	board.cell_pressed.connect(func(cell: Vector2i) -> void: _on_deploy_cell(node_id, cell))
 	var back := Button.new()
 	back.text = "返回地图"

@@ -39,7 +39,8 @@ func apply(
 	var final_damage := maxi(0, StatSystem.compute(raw_amount, flat_bonus, percent_bonus, 0.0, INF))
 	var hp_before := int(EffectStateAccess.get_field(target, &"hp", 0))
 	var block_before := maxi(0, int(EffectStateAccess.get_field(target, &"block", 0)))
-	var absorbed := mini(block_before, final_damage)
+	# ignore_block=true：无视护甲（中毒等 DoT 不吃护盾，§8）。
+	var absorbed := 0 if bool(params.get("ignore_block", false)) else mini(block_before, final_damage)
 	var hp_damage := final_damage - absorbed
 	var block_after := block_before - absorbed
 	var hp_after := maxi(0, hp_before - hp_damage)
@@ -77,6 +78,10 @@ func apply(
 		triggers.append(_make_trigger(10, context.source_unit_id, &"on_deal_damage", context))
 	if hp_after == 0:
 		triggers.append(_make_trigger(20, target_id, &"on_death", context))
+		# 死亡即离场：尸体不占格（combat_rules §9）。胜利判定按存活过滤（units），不受影响。
+		var board: Variant = EffectStateAccess.get_board(work_state)
+		if board != null:
+			board.remove_unit(target_id)
 
 	return {"ok": true, "events": [event], "triggers": triggers}
 

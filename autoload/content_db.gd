@@ -15,6 +15,7 @@ var _characters: Dictionary = {}
 var _encounters: Dictionary = {}
 var _shops: Dictionary = {}
 var _events: Dictionary = {}
+var _monster_pools: Dictionary = {}
 
 
 func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
@@ -43,6 +44,8 @@ func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
 		ok = _register(_shops, definition.id if definition != null else &"", definition, "shop") and ok
 	for definition: EventDef in catalog.events:
 		ok = _register(_events, definition.id if definition != null else &"", definition, "event") and ok
+	for definition: MonsterPoolDef in catalog.monster_pools:
+		ok = _register(_monster_pools, definition.id if definition != null else &"", definition, "monster_pool") and ok
 	if not ok:
 		_clear_indexes()
 		return false
@@ -96,6 +99,10 @@ func get_event(id: StringName) -> EventDef:
 	return _events.get(id) as EventDef
 
 
+func get_monster_pool(id: StringName) -> MonsterPoolDef:
+	return _monster_pools.get(id) as MonsterPoolDef
+
+
 func all_cards() -> Dictionary:
 	return _cards.duplicate()
 
@@ -132,6 +139,10 @@ func event_ids() -> Array:
 	return _sorted_ids(_events)
 
 
+func monster_pool_ids() -> Array:
+	return _sorted_ids(_monster_pools)
+
+
 func _register(index: Dictionary, id: StringName, definition: Variant, kind: String) -> bool:
 	if definition == null or id.is_empty():
 		push_error("ContentDB: invalid %s definition" % kind)
@@ -157,6 +168,7 @@ func _clear_indexes() -> void:
 	_encounters.clear()
 	_shops.clear()
 	_events.clear()
+	_monster_pools.clear()
 
 
 func _sorted_ids(index: Dictionary) -> Array:

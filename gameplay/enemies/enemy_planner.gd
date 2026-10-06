@@ -32,7 +32,7 @@ static func plan(board: BoardState, enemy: UnitState, behavior: BehaviorDef, ste
 		intent.locked_cell = board.get_unit_cell(target.unit_id)
 
 	match action.kind:
-		EnemyActionDef.Kind.ATTACK, EnemyActionDef.Kind.CHARGE:
+		EnemyActionDef.Kind.ATTACK, EnemyActionDef.Kind.CHARGE, EnemyActionDef.Kind.DASH:
 			intent.affected_cells = [intent.locked_cell]
 			intent.magnitude = action.damage
 		EnemyActionDef.Kind.DEFEND:
@@ -43,11 +43,12 @@ static func plan(board: BoardState, enemy: UnitState, behavior: BehaviorDef, ste
 		EnemyActionDef.Kind.APPROACH:
 			if target == null:
 				return _degrade(board, enemy, behavior, players, intent)
-			var dest := _approach_dest(board, enemy_cell, board.get_unit_cell(target.unit_id), action.move_steps)
-			if dest == BoardState.INVALID_CELL:
+			var target_cell := board.get_unit_cell(target.unit_id)
+			var path := plan_move(board, enemy, target_cell, action.move_steps, action)
+			if path.size() < 2:
 				return _degrade(board, enemy, behavior, players, intent)
-			intent.locked_cell = dest  # 锁定格子优先
-			intent.affected_cells = [dest]
+			intent.locked_cell = path[path.size() - 1]  # 锁定格子优先（预告；执行时按当前目标重算）
+			intent.affected_cells = [intent.locked_cell]
 	return intent
 
 
@@ -79,21 +80,107 @@ static func _nearest_player(board: BoardState, from_cell: Vector2i, players: Arr
 	return best
 
 
-## 接近落点：在 move_steps 内可达（含原地）的格中，取离目标格最近者；平手按 (y,x)。
-## 若最佳仍是原地（已贴脸/无可推进）返回 INVALID_CELL，交由调用方降级。
-static func _approach_dest(board: BoardState, from_cell: Vector2i, target_cell: Vector2i, move_steps: int) -> Vector2i:
-	var candidates := Pathfinder.reachable_cells(board, from_cell, move_steps)
-	candidates.append(from_cell)
+## 移动规划（纯函数）：返回 from->dest 的**真实路径**（含起点；长度 ≤ move_budget+1）。
+## 空数组 = 原地不动。近战/远程由 action.kiting 决定：
+##   近战(kiting=false)：优先"能打到目标"的落点（离目标最近）；都打不到则尽量接近；已能攻击即原地。
+##   远程(kiting=true)：能打到目标时取**离目标最远**的落点（风筝）；都打不到则接近以进入射程。
+## 平手按 (dist, y, x) 确定性裁决。执行层按**当前**目标格调用本函数即得到"持续接近/拉开"。
+static func plan_move(
+	board: BoardState,
+	enemy: UnitState,
+	target_cell: Vector2i,
+	move_budget: int,
+	action: EnemyActionDef
+) -> Array[Vector2i]:
+	if enemy == null or action == null or move_budget <= 0:
+		return []
+	var from_cell := board.get_unit_cell(enemy.unit_id)
+	if from_cell == BoardState.INVALID_CELL or not board.is_inside(target_cell):
+		return []
+	var kiting := action.kiting
+
 	var best := from_cell
-	var best_dist := absi(target_cell.x - from_cell.x) + absi(target_cell.y - from_cell.y)
-	for cell: Vector2i in candidates:
-		var dist := absi(target_cell.x - cell.x) + absi(target_cell.y - cell.y)
+	var best_hit := _can_hit(board, from_cell, target_cell, action)
+	var best_dist := _metric(from_cell, target_cell)
+
+	# 近战已能攻击 -> 停手，不为了"更近"做无意义的横向挪动。
+	if not kiting and best_hit:
+		return []
+
+	for cell: Vector2i in Pathfinder.reachable_cells(board, from_cell, move_budget):
+		var hit := _can_hit(board, cell, target_cell, action)
+		var dist := _metric(cell, target_cell)
+		if hit != best_hit:
+			# 能打到的一律优于打不到的；同态下再比距离。
+			if hit:
+				best = cell
+				best_hit = true
+				best_dist = dist
+			continue
+		var better := (dist > best_dist) if (kiting and hit) else (dist < best_dist)
+		if better or (dist == best_dist and _precedes(cell, best)):
+			best = cell
+			best_dist = dist
+
+	if best == from_cell:
+		return []
+	return Pathfinder.find_path(board, from_cell, best)
+
+
+## 纯接近（不看能否命中）：朝 target_cell 走 up to move_budget，返回真实路径（含起点）；无推进返回 []。
+## DASH（横冲直撞）用——它总是想冲过去，不像 plan_move 近战那样"已能攻击就停手"。
+static func plan_approach(board: BoardState, enemy_id: int, target_cell: Vector2i, move_budget: int) -> Array[Vector2i]:
+	var from_cell := board.get_unit_cell(enemy_id)
+	if move_budget <= 0 or from_cell == BoardState.INVALID_CELL or not board.is_inside(target_cell):
+		return []
+	var best := from_cell
+	var best_dist := _metric(from_cell, target_cell)
+	for cell: Vector2i in Pathfinder.reachable_cells(board, from_cell, move_budget):
+		var dist := _metric(cell, target_cell)
 		if dist < best_dist or (dist == best_dist and _precedes(cell, best)):
 			best = cell
 			best_dist = dist
 	if best == from_cell:
-		return BoardState.INVALID_CELL
-	return best
+		return []
+	return Pathfinder.find_path(board, from_cell, best)
+
+
+## 走位评分格距（曼哈顿）——与射程形状无关：形状只管"能否命中"，距离只管"更近/更远"。
+## 用固定度量，UNLIMITED 射程的远程怪才能正确"拉开距离"。
+static func _metric(a: Vector2i, b: Vector2i) -> int:
+	return absi(a.x - b.x) + absi(a.y - b.y)
+
+
+## cell 处能否命中 target_cell（射程形状 + 可选 LoS）。纯查询。
+static func _can_hit(board: BoardState, cell: Vector2i, target_cell: Vector2i, action: EnemyActionDef) -> bool:
+	if not BoardQuery.within_range(action.range_shape, cell, target_cell, action.range):
+		return false
+	if action.requires_los and not BoardQuery.has_line_of_sight(board, cell, target_cell):
+		return false
+	return true
+
+
+## 该敌人在**当前格**上"所有攻击类行动射程的并集"（威胁格显示；纯查询，无副作用）。
+## UNLIMITED 行动即全盘可见格。结果按 (y,x) 排序；无攻击行动或无该敌人时为空。
+static func threat_cells(board: BoardState, enemy_id: int, actions: Array[EnemyActionDef]) -> Array[Vector2i]:
+	var enemy_cell := board.get_unit_cell(enemy_id)
+	if enemy_cell == BoardState.INVALID_CELL:
+		return []
+	var seen: Dictionary[Vector2i, bool] = {}
+	for action: EnemyActionDef in actions:
+		if action == null:
+			continue
+		if action.kind != EnemyActionDef.Kind.ATTACK \
+			and action.kind != EnemyActionDef.Kind.CHARGE \
+			and action.kind != EnemyActionDef.Kind.DASH:
+			continue
+		for cell: Vector2i in BoardQuery.get_target_cells_shaped(
+			board, enemy_cell, action.range, action.range_shape, action.requires_los
+		):
+			seen[cell] = true
+	var out := seen.keys()
+	out.sort_custom(Pathfinder._by_y_then_x)
+	return out
 
 
 static func _precedes(a: Vector2i, b: Vector2i) -> bool:

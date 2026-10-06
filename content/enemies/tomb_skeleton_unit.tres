@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/units/unit_def.gd" id="1_unit"]
+
+[resource]
+script = ExtResource("1_unit")
+id = &"unit.enemy.tomb.skeleton"
+base_stats = Dictionary[StringName, int]({
+&"stat.attack": 11,
+&"stat.max_hp": 27,
+&"stat.move": 3,
+&"stat.range": 2
+})
+appearance_key = &"tomb_skeleton"

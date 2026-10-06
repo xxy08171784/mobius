@@ -9,6 +9,11 @@ extends RefCounted
 const BLEED: StringName = &"status.bleed"
 const VULNERABLE: StringName = &"status.vulnerable"
 const FOCUS: StringName = &"status.focus"
+## 中毒：与流血同型（拥有者回合结束按层数掉血），只是稳定键不同以便区分文案/来源。
+const POISON: StringName = &"status.poison"
+
+## 回合结束按层数结算伤害的状态（DoT）。数组顺序即结算顺序（确定性）。
+const DOT_STATUSES: Array[StringName] = [BLEED, POISON]
 
 const VULNERABLE_DAMAGE_PERCENT := 0.5
 const FOCUS_DAMAGE_PER_STACK := 1.0
@@ -34,4 +39,28 @@ static func incoming_damage_percent(unit: UnitState) -> float:
 
 
 static func owner_turn_end_damage(unit: UnitState) -> int:
-	return stacks(unit, BLEED)
+	var total := 0
+	for status_id: StringName in DOT_STATUSES:
+		total += stacks(unit, status_id)
+	return total
+
+
+## 无视护甲的 DoT（伤害不吃护盾）：中毒。经伤害管线 ignore_block 参数实现（§6）。
+static func is_armor_ignoring(status_id: StringName) -> bool:
+	return status_id == POISON
+
+
+## 层数驱动的 DoT（回合结束掉血后**减层数**，而非减持续）：中毒。
+## 流血则相反：吃护盾、按持续递减。
+static func is_stack_decaying(status_id: StringName) -> bool:
+	return status_id == POISON
+
+
+## 对拥有者身上该 id 的每个状态实例减层（最小 0）。
+static func decay_stacks(unit: UnitState, status_id: StringName, amount: int = 1) -> void:
+	if unit == null:
+		return
+	for instance_id: int in unit.status_ids():
+		var status := unit.get_status(instance_id)
+		if status != null and status.status_id == status_id:
+			status.stacks = maxi(0, status.stacks - maxi(0, amount))

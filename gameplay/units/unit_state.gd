@@ -11,6 +11,9 @@ var unit_id: int = -1
 ## 指向 UnitDef 的稳定 ID（Def 只读，此处只存引用键）。
 var def_id: StringName = &""
 
+## 敌人内容 ID（EnemyDef.id）；玩家为空。表现层用它查显示名（ContentDB.get_enemy）。
+var enemy_id: StringName = &""
+
 var team: Team = Team.ENEMY
 
 var hp: int = 1

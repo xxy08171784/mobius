@@ -97,7 +97,7 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 | `board_state.gd` | 地形 + cell→unit 占用 | ⬜ 占位 |
 | `cell_state.gd` | 单格地形/标志 | ⬜ 占位 |
 | `board_query.gd` | 射程、视线、合法格子（`reachable_cells` / `get_target_cells` / `has_line_of_sight`） | ⬜ 占位 |
-| `pathfinder.gd` | 可达/寻路（可包 `AStarGrid2D`） | ⬜ 占位 |
+| `pathfinder.gd` | 可达（BFS 洪泛）/ 寻路（**A\***，4 邻，曼哈顿启发式 + 取直裁决） | ✅ 已有 |
 | `target_spec.gd` | 单位/格子/方向三类目标 | ⬜ 占位 |
 
 ### `gameplay/cards/` — 卡牌与组合
@@ -161,6 +161,7 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 | `route_graph.gd` | 地图 DAG 数据 + 解锁/可达查询 | ✅ 已有 |
 | `map_node_state.gd` | 节点状态（类型键/访问/邻居） | ✅ 已有 |
 | `encounter_def.gd` / `encounter_builder.gd` | 遭遇配置 / 生成具体战斗 | ⬜ 占位 |
+| `monster_pool_def.gd` / `monster_pool.gd` | 怪物池定义 / 抽取（按 battle_index 抽 2~4 只，见 `monster_system.md`） | ✅ 已有 |
 | `reward_system.gd` / `shop_system.gd` / `event_system.gd` / `rest_system.gd` | 奖励/商店/事件/休息规则 | ⬜ 占位 |
 
 ### `gameplay/meta/` — 局外成长
@@ -201,6 +202,7 @@ tools/ 调试  │  tests/ 测试  │  docs/ 文档
 | `rewards/` | 奖励池 | ⬜ 占位 |
 | `difficulty/` | 难度配置 | ⬜ 占位 |
 | `maps/` | 选关地图生成配置（`route_map_default.tres`） | ✅ 已有 |
+| `pools/` | 按幕怪物池（小怪 `act1_monsters.tres` + 精英 `act1_elite.tres`，`MonsterPoolDef`） | ✅ 已有 |
 
 命名规范：每条内容配稳定 ID（如 `card.warrior.slash`），显示名走 `localization/` 文本键；effect 定义建议**独立 `.tres` 外链**，别内联进卡牌（避免共享子资源被改动）。
 

@@ -13,3 +13,6 @@ extends Resource
 
 ## 外观引用键（表现层槽位/场景键，不是节点路径）。
 @export var appearance_key: StringName = &""
+
+## 显示名（UI 数值面板用；空则由表现层回退到外观键）。
+@export var display_name: String = ""

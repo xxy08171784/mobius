@@ -23,6 +23,8 @@ const INTENT_COLOR := Color(1.0, 0.35, 0.35, 0.40)
 const TARGET_COLOR := Color(1.0, 0.85, 0.25, 0.50)
 const WALL_COLOR := Color(0.0, 0.0, 0.0, 0.45)
 const HOVER_COLOR := Color(1.0, 0.9, 0.2, 0.95)
+const THREAT_COLOR := Color(0.75, 0.25, 0.85, 0.45)   # 紫：怪物能打到的格子
+const ENEMY_DEPLOY_COLOR := Color(1.0, 0.3, 0.3, 0.55)  # 红：进场选格屏上的敌人位置
 const MARGIN := 8.0
 
 var _world: Node2D = null
@@ -32,6 +34,7 @@ var _unit_root: Node2D = null
 
 var _units: Dictionary[int, UnitView] = {}
 var _highlights: Dictionary[Vector2i, Color] = {}
+var _threat_cells: Array[Vector2i] = []
 var _hover: Vector2i = Vector2i(-1, -1)
 var _cols: int = 0
 var _rows: int = 0
@@ -105,13 +108,15 @@ func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool
 		_highlight_layer.queue_redraw()
 
 
-## 进场选格盘：只铺地板并高亮可选格，无单位。
-func render_deployment(cols: int, rows: int, allowed_cells: Array[Vector2i] = [], busy: bool = false) -> void:
+## 进场选格盘：只铺地板并高亮可选格（绿）与敌人所在格（红），无单位。
+func render_deployment(cols: int, rows: int, allowed_cells: Array[Vector2i] = [], enemy_cells: Array[Vector2i] = [], busy: bool = false) -> void:
 	_ensure_world()
 	_rebuild_tiles(cols, rows)
 	var highlights: Dictionary[Vector2i, Color] = {}
 	for cell: Vector2i in allowed_cells:
 		highlights[cell] = REACHABLE_COLOR
+	for cell: Vector2i in enemy_cells:
+		highlights[cell] = ENEMY_DEPLOY_COLOR
 	_highlights = highlights
 	_allowed_cells = allowed_cells.duplicate()
 	_clear_units()
@@ -124,6 +129,42 @@ func pulse_unit(unit_id: int) -> Tween:
 	if view == null:
 		return null
 	return view.pulse()
+
+
+## 威胁格显示：某怪物"能打到的格子"（表现层查询，只画不改规则状态）。空数组 = 清除。
+func set_threat_cells(cells: Array[Vector2i]) -> void:
+	_threat_cells = cells.duplicate()
+	if _highlight_layer != null:
+		_highlight_layer.queue_redraw()
+
+
+## 取单位视图（死亡动画等表现层用；无则 null）。
+func unit_view(unit_id: int) -> UnitView:
+	return _units.get(unit_id)
+
+
+## 死亡动画：缓缓上升 + 虚化。返回 Tween 供动画队列等待；视图随后由 _sync_units 释放（按棋盘占用）。
+func animate_death(unit_id: int) -> Tween:
+	var view: UnitView = _units.get(unit_id)
+	if view == null:
+		return null
+	var tween := create_tween()
+	tween.tween_property(view, "position:y", view.position.y - 70.0, 0.6) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(view, "modulate:a", 0.0, 0.7)
+	return tween
+
+
+## 受击反馈：目标闪红并朝远离攻击方的方向轻弹（玩家/怪物共用）。返回 Tween 供队列等待。
+func play_hit(target_id: int, attacker_id: int) -> Tween:
+	var target: UnitView = _units.get(target_id)
+	if target == null:
+		return null
+	var away := Vector2.ZERO
+	var attacker: UnitView = _units.get(attacker_id)
+	if attacker != null and attacker != target:
+		away = target.position - attacker.position
+	return target.play_hit(away)
 
 
 ## 每格行走时长（秒）。移动按步数乘它，保证走路循环可读、朝向翻转看得见。
@@ -276,7 +317,7 @@ func _sync_units(state: BattleState) -> void:
 		if view == null:
 			view = UnitView.new()
 			_unit_root.add_child(view)
-			view.setup(unit_id, unit.is_player())
+			view.setup(unit_id, unit.is_player(), _appearance_key_for(unit))
 			_units[unit_id] = view
 		view.position = IsoGrid.center_of(_tile_layer, cell)
 		view.update(unit)
@@ -292,6 +333,15 @@ func _clear_units() -> void:
 		var view: UnitView = _units[unit_id]
 		view.queue_free()
 	_units.clear()
+
+
+## 外观键：敌人经 ContentDB 从单位定义解析（表现层只读 Def）。玩家走 UnitSpriteFrames
+## 内置目录，无需键。内容未加载/无定义时返回空 -> UnitView 退回色块。
+func _appearance_key_for(unit: UnitState) -> StringName:
+	if unit == null or unit.is_player() or not ContentDB.is_loaded():
+		return &""
+	var definition: UnitDef = ContentDB.get_unit(unit.def_id)
+	return &"" if definition == null else definition.appearance_key
 
 
 # ---- 内部：高亮绘制 ------------------------------------------------------
@@ -314,6 +364,12 @@ func _draw_highlights_on(layer: Node2D) -> void:
 		layer.draw_colored_polygon(
 			IsoGrid.diamond_points(IsoGrid.center_of(_tile_layer, cell), hw, hh),
 			_highlights[cell]
+		)
+	# 威胁格（点选怪物时显示它能打到的格子）叠在常规高亮之上。
+	for cell: Vector2i in _threat_cells:
+		layer.draw_colored_polygon(
+			IsoGrid.diamond_points(IsoGrid.center_of(_tile_layer, cell), hw, hh),
+			THREAT_COLOR
 		)
 	if _inside(_hover):
 		layer.draw_polyline(

@@ -37,6 +37,8 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 要点：
 
 - 敌人意图在**玩家行动前**锁定并给 UI 预告；执行前若因玩家行动而失效，按 §5 的降级规则处理，**不重算**整轮意图（除非该敌人被明确重新规划）。
+- **移动在执行时重算**（2026-10-06 修订，怪物系统）：`APPROACH` 的落点在敌人行动那一刻，按**当前**最近玩家格用真实路径重算（`EnemyPlanner.plan_move`）；**攻击/防御仍用回合开始锁定的意图**。即"仅移动重算，攻击保持预告"。远程怪（`EnemyActionDef.kiting=true`）在此步"能打到目标时尽量远离、打不到则接近"。
+- **敌人每回合"先移动再行动"**（2026-10-06 修订）：`ATTACK` 行动若 `advance_steps>0`，先按当前最近玩家用 `plan_move`（`range/shape/kiting` 决定近战逼近/远程风筝）推进，**命中从移动后的格子判定**；因此敌人与玩家同构——每回合都逼近一次再出手，而非隔回合移动。`DASH` 自带移动；`DEFEND/SUMMON/CHARGE` 的 `advance_steps` 为 0。
 - 玩家与敌人复用同一套效果结算服务；差异只在输入来源（UI vs EnemyPlanner）。
 
 ## 3. 命令合同
@@ -109,6 +111,7 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 ## 5. 效果与结算管线
 
 - 效果拆为基础操作：`Damage`、`GainBlock`、`DrawCards`、`Move`、`Push`、`ApplyStatus`、`Heal`、`Summon`、`CreateCard`。新机制才加 handler；普通数值用 `.tres`。
+- **敌人行动种类**（`EnemyActionDef.Kind`，2026-10-06）：`ATTACK`（`hit_count` 多段）、`APPROACH`（执行时按当前目标重算，§2）、`CHARGE`、`DEFEND`、`DASH`（冲撞，伤害 = `damage + 移动步数 × dash_damage_per_step`）、`SUMMON`（召唤池生成；规则层直接在 `TurnSystem` 生成、不经 `EffectResolver`，因解析器内容无关）。
 - `EffectResolver.resolve(state_in, plan, rng_in) -> Resolution{ state_out, rng_out, events }` 为**纯函数**：不改入参、不读 UI/SceneTree、不用全局 RNG。
 - `preview` = 在 clone 上调用同一 `resolve`，只读 `events`，丢弃 `state_out`。**预览与提交共享唯一代码路径。**
 
@@ -123,9 +126,13 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 6. 生成事件与入队触发：OnDamaged(受伤方)、OnDealDamage(攻击方)、反伤(Thorns) 等
 7. 死亡检查：hp == 0 → 标记死亡并入队 OnDeath
 8. 队列处理 OnDeath 触发（遗物、爆炸等）
+
+- **死亡即离场**（2026-10-06）：`hp == 0` 时单位立即从 `BoardState` 移除（**尸体不占格**，该格可再走）；`BattleState.units` 仍保留记录（hp 0），胜负按 `alive_*_ids()` 的存活过滤判定。DoT 致死走同一伤害管线，同样离场。
 ```
 
 - **取整**：百分比修正以浮点累乘，**仅在最终 damage 上向下取整一次**，最小 0。避免逐步取整累积误差。
+- **无视护甲**（2026-10-06）：伤害参数 `ignore_block=true` 时第 4 步不吸收（`absorbed=0`，护盾不减），用于中毒等 DoT（§8）。
+- **多段**（2026-10-06）：敌人 `ATTACK` 行动按 `hit_count` 生成多个独立伤害（如强射 4×2 = 两次 4 点，各自走完整管线）。
 - **顺序**：2→3→4 的顺序是硬约束；反伤等不作为第 6 步内联执行，而是**入队**（§7），保证确定性与可中断。
 - 事件携带 before/after 值，供表现层投影。
 
@@ -150,12 +157,14 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 - 每个 `StatusState` 记录：层数（stacks）、剩余回合（duration）、来源单位 ID。
 - 每个 `StatusDef` 声明 `tick_timing`：`ROUND_START` / `OWNER_TURN_START` / `OWNER_TURN_END` / `ROUND_END`。
 - 【建议默认】持续时间在**拥有者的回合结束**递减；DoT（中毒等）在拥有者回合结束时按层数结算伤害。
+- **中毒（`status.poison`）**（2026-10-06）：回合结束受到等于层数的伤害（**无视护甲**，§6），随后**层数 −1**（`is_stack_decaying`，跳过持续递减）；流血（`status.bleed`）相反——吃护盾、按持续递减。
 - 护盾（Block）：【建议默认】在拥有者**下个回合开始时清零**；不跨战斗保留。
 
 ## 9. 位移：移动 / 击退 / 交换 / 传送
 
 - **权威占用**：`BoardState`（一格一单位，MVP）。位置查询只走 BoardState，禁止另存位置副本。
 - 所有位移走**同一规则入口**，产生 `UnitMoved`、`CellExited`、`CellEntered` 事件。
+- **寻路**（2026-10-06）：`Pathfinder.find_path` 用 **A\***（4 邻、曼哈顿启发式、等成本步）；平局"取直"（同 f 取 g 更大者 → 尽量沿目标线、少拐弯），结果仍是最短路。可达集合 `reachable_cells` 仍为 BFS 洪泛。
 
 | 位移 | 目的地合法性 | 落点冲突处理 |
 |---|---|---|
@@ -171,6 +180,11 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 
 - **LoS 算法**【建议默认】：格子中心连线用 **supercover**；`blocks_los` 地形阻挡；**起点与终点格本身不阻挡**；连线恰穿过两个阻挡格之间的**角**时判为**阻挡**（无穿角窥视）。
 - LoS **对称**：`has_line_of_sight(a, b) == has_line_of_sight(b, a)`。
+- **射程形状**（2026-10-06 修订）：技能/行动射程带**形状**，命中判定与威胁格显示共用同一函数（`BoardQuery.within_range` / `get_target_cells_shaped`）：
+  - `BOX` **方框**（切比雪夫，**含对角**）：`range=1` → 3×3、`range=2` → 5×5。怪物攻击多用此形状。
+  - `DIAMOND` **菱形**（曼哈顿）：正交步数。玩家卡牌沿用（"前后左右各一格"）。
+  - `UNLIMITED` **无视距离**：全盘（如引魂灯"幽火"）。`require_los` 时按 LoS 过滤。
+  - 兼容入口 `BoardQuery.get_target_cells(...)` 语义不变（默认 `DIAMOND`）。
 - 区分三件事，不得混用：**移动可达性**（可走路径）/ **技能射程**（含 LoS 与否）/ **效果覆盖**（AOE 形状）。
 - 陷阱可允许进入但产生效果；远程技能不要求存在可步行路径。
 

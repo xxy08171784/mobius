@@ -13,3 +13,5 @@ extends Resource
 ## B 线第二轮：商店与事件。
 @export var shops: Array[ShopDef] = []
 @export var events: Array[EventDef] = []
+## 墓外主题：按幕的怪物池（进入战斗时抽 2~4 只）。
+@export var monster_pools: Array[MonsterPoolDef] = []

@@ -17,6 +17,8 @@ func run() -> Array[String]:
 	_test_same_row_sibling_locked(content)
 	_test_enter_determinism(content)
 	_test_battle_result_writes_hp(content)
+	_test_first_battle_uses_monster_pool(content)
+	_test_preview_matches_actual_enemies(content)
 	_test_boss_advances_act(content)
 	_test_treasure_node(content)
 	return failures()
@@ -68,6 +70,45 @@ func _test_enter_battle_node(content: Object) -> void:
 	assert_true(run.map.get_node(target).visited, "节点标记 visited")
 	assert_equal(run.next_battle_id, before_battle_id + 1, "battle 计数器推进")
 	assert_true(not run.map.get_node(target).content_id.is_empty(), "content_id 已解析")
+
+
+## 第 1 个战斗节点走"怪物池"：固定 2 只，且都来自墓外池（enemy.tomb.*）。
+func _test_first_battle_uses_monster_pool(content: Object) -> void:
+	var session := _session(content, "pool-seed")
+	var entries := session.available_node_ids()
+	var transition := session.enter_node(int(entries[0]))
+	assert_true(bool(transition.get("ok", false)), "进入第一场战斗成功")
+	var state: BattleState = (transition.get("battle", {}) as Dictionary).get("state", null)
+	assert_true(state != null, "携带 BattleState")
+	if state == null:
+		return
+	assert_equal(state.enemy_ids().size(), 2, "第 1 个战斗节点固定 2 只（怪物池）")
+	for enemy_id: int in state.enemy_ids():
+		var unit := state.get_unit(enemy_id)
+		assert_true(
+			unit.def_id.begins_with("unit.enemy.tomb."),
+			"敌人来自墓外怪物池（%s）" % String(unit.def_id)
+		)
+
+
+## 部署预览的敌人落点 = 玩家选外圈格进场后的实际落点（同 seed 一致）。
+func _test_preview_matches_actual_enemies(content: Object) -> void:
+	var session := _session(content, "preview-seed")
+	var node_id := int(session.available_node_ids()[0])
+	var preview := session.preview_battle(node_id)
+	assert_true(preview.has("enemy_cells"), "预览返回敌人落点")
+	var preview_cells := preview["enemy_cells"] as Array
+	assert_equal(preview_cells.size(), 2, "第 1 战预览 2 只怪")
+
+	var transition := session.enter_node(node_id, Vector2i(0, 0))
+	var state: BattleState = (transition.get("battle", {}) as Dictionary).get("state", null)
+	assert_true(state != null, "开战携带状态")
+	if state == null:
+		return
+	var actual: Array[Vector2i] = []
+	for enemy_id: int in state.enemy_ids():
+		actual.append(state.board.get_unit_cell(enemy_id))
+	assert_equal(actual, preview_cells, "开战敌人落点 = 部署预览")
 
 
 func _test_enter_locked_zero_side_effects(content: Object) -> void:

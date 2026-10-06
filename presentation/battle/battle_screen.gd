@@ -21,6 +21,9 @@ const ENEMY_OPTIONS: Array = [
 ## 行走速度档位（倍率）。按钮循环切换；只加快位移，不加快动画帧率。
 const SPEED_STEPS: Array[float] = [1.0, 2.0, 3.0]
 
+## 左右文字栏宽度（同宽 -> 中间棋盘居中）。
+const SIDE_WIDTH := 300
+
 var _session: BattleSession = null
 var _presenter: BattlePresenter = null
 var _battle_input: BattleInput = null
@@ -57,20 +60,16 @@ func _build_ui() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	root.add_child(title)
 
-	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 18)
-	root.add_child(top)
-	_ui["round_label"] = _label_into(top, "回合")
-	_ui["player_label"] = _label_into(top, "玩家")
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(spacer)
-	_ui["intent_label"] = _label_into(top, "敌人意图")
-
+	# 三栏：左文字 | 中间棋盘 | 右文字（左右同宽 -> 棋盘水平居中）。
 	var content := HBoxContainer.new()
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 12)
 	root.add_child(content)
+
+	var left := VBoxContainer.new()
+	left.custom_minimum_size = Vector2(SIDE_WIDTH, 0)
+	left.add_theme_constant_override("separation", 8)
+	content.add_child(left)
 
 	var board_panel := PanelContainer.new()
 	board_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -79,31 +78,45 @@ func _build_ui() -> void:
 	_board_view = BOARD_VIEW_SCENE.instantiate() as BoardView
 	board_panel.add_child(_board_view)
 
-	var side := VBoxContainer.new()
-	side.custom_minimum_size = Vector2(330, 0)
-	side.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_child(side)
+	var right := VBoxContainer.new()
+	right.custom_minimum_size = Vector2(SIDE_WIDTH, 0)
+	right.add_theme_constant_override("separation", 8)
+	content.add_child(right)
 
+	# 左栏：回合 / 玩家 / 敌人意图 / 操作说明。
+	_ui["round_label"] = _label_into(left, "回合")
+	_ui["player_label"] = _label_into(left, "玩家")
+	_ui["intent_label"] = _label_into(left, "敌人意图")
 	var help := Label.new()
-	help.text = "操作：\n1. 不选牌时点击空格 = 移动\n2. 点击卡牌选择组合顺序\n3. 点击敌人锁定目标\n4. 点击“打出所选”\n5. 点击“结束回合”看敌人行动\n6. 下方可切换敌人/Boss测试"
+	help.text = "操作：\n1. 不选牌时点击空格 = 移动\n2. 点击卡牌选择组合顺序\n3. 点击敌人锁定目标（看数值）\n4. 点击“打出所选”\n5. 点击“结束回合”看敌人行动\n6. 右栏可切换敌人/Boss测试"
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	side.add_child(help)
+	left.add_child(help)
+
+	# 右栏：怪物数值 / 测试选择 / 战斗结果与记录。
+	var monster_title := Label.new()
+	monster_title.text = "怪物"
+	right.add_child(monster_title)
+	var monster_label := Label.new()
+	monster_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	monster_label.text = "点击一只怪物查看它的数值。"
+	right.add_child(monster_label)
+	_ui["monster_label"] = monster_label
 
 	var enemy_row := HBoxContainer.new()
 	enemy_row.add_theme_constant_override("separation", 8)
-	side.add_child(enemy_row)
+	right.add_child(enemy_row)
 	_label_into(enemy_row, "测试敌人：")
 	_enemy_selector = OptionButton.new()
 	_enemy_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	enemy_row.add_child(_enemy_selector)
 	_enemy_selector.item_selected.connect(_on_enemy_selected)
 
-	_ui["result_label"] = _label_into(side, "")
+	_ui["result_label"] = _label_into(right, "")
 	var event_log := RichTextLabel.new()
 	event_log.bbcode_enabled = true
-	event_log.custom_minimum_size = Vector2(320, 250)
+	event_log.custom_minimum_size = Vector2(0, 200)
 	event_log.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	side.add_child(event_log)
+	right.add_child(event_log)
 	_ui["event_log"] = event_log
 
 	var hand_title := Label.new()
@@ -180,7 +193,8 @@ func _start_battle(data: Dictionary) -> void:
 		data["card_defs"],
 		data["enemy_behaviors"],
 		data["enemy_actions"],
-		Callable(self, "_validate_card_target")
+		Callable(self, "_validate_card_target"),
+		data.get("summon_pool", [])
 	)
 	_card_defs = data["card_defs"]
 

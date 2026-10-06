@@ -46,15 +46,37 @@
 [ext_resource type="Resource" path="res://content/shops/route_shop.tres" id="44_shop01"]
 [ext_resource type="Resource" path="res://content/events/forgotten_campfire.tres" id="45_ev01"]
 [ext_resource type="Resource" path="res://content/events/loop_temptation.tres" id="46_ev02"]
+[ext_resource type="Script" path="res://gameplay/run/monster_pool_def.gd" id="47_pooldef"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_soul_lantern_unit.tres" id="48_tunit1"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_bat_unit.tres" id="49_tunit2"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_scorpion_unit.tres" id="50_tunit3"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_slime_unit.tres" id="51_tunit4"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_soul_lantern.tres" id="52_ten1"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_bat.tres" id="53_ten2"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_scorpion.tres" id="54_ten3"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_slime.tres" id="55_ten4"]
+[ext_resource type="Resource" path="res://content/statuses/poison.tres" id="56_poison"]
+[ext_resource type="Resource" path="res://content/pools/act1_monsters.tres" id="57_pool1"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_viper_unit.tres" id="58_tu5"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_skeleton_unit.tres" id="59_tu6"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_crossbow_unit.tres" id="60_tu7"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_tomb_statue_unit.tres" id="61_tu8"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_viper.tres" id="62_te5"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_skeleton.tres" id="63_te6"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_crossbow.tres" id="64_te7"]
+[ext_resource type="Resource" path="res://content/enemies/tomb_tomb_statue.tres" id="65_te8"]
+[ext_resource type="Resource" path="res://content/pools/act1_elite.tres" id="66_pool2"]
+[ext_resource type="Resource" path="res://content/encounters/boss_act1.tres" id="67_encboss1"]
 
 [resource]
 script = ExtResource("23_3ouml")
 cards = Array[ExtResource("1_j2f3t")]([ExtResource("2_lmid7"), ExtResource("3_pagr3"), ExtResource("4_8hid0"), ExtResource("5_3v71e"), ExtResource("6_rnkxa"), ExtResource("7_7gm4v"), ExtResource("8_8y4gr"), ExtResource("9_cna1e"), ExtResource("10_jmwsf"), ExtResource("11_4aelm"), ExtResource("12_n5ks0"), ExtResource("13_cukk1")])
-units = Array[ExtResource("28_k814x")]([ExtResource("29_wrdpo"), ExtResource("30_ox6cw"), ExtResource("31_l6qib"), ExtResource("32_von3i"), ExtResource("33_r8fvc")])
-enemies = Array[ExtResource("14_3o7yj")]([ExtResource("15_oppey"), ExtResource("16_t6r7t"), ExtResource("17_8e0yr"), ExtResource("18_7o0bq")])
-statuses = Array[ExtResource("24_traop")]([ExtResource("25_6kv2v"), ExtResource("26_dk4nj"), ExtResource("27_vyswj")])
+units = Array[ExtResource("28_k814x")]([ExtResource("29_wrdpo"), ExtResource("30_ox6cw"), ExtResource("31_l6qib"), ExtResource("32_von3i"), ExtResource("33_r8fvc"), ExtResource("48_tunit1"), ExtResource("49_tunit2"), ExtResource("50_tunit3"), ExtResource("51_tunit4"), ExtResource("58_tu5"), ExtResource("59_tu6"), ExtResource("60_tu7"), ExtResource("61_tu8")])
+enemies = Array[ExtResource("14_3o7yj")]([ExtResource("15_oppey"), ExtResource("16_t6r7t"), ExtResource("17_8e0yr"), ExtResource("18_7o0bq"), ExtResource("52_ten1"), ExtResource("53_ten2"), ExtResource("54_ten3"), ExtResource("55_ten4"), ExtResource("62_te5"), ExtResource("63_te6"), ExtResource("64_te7"), ExtResource("65_te8")])
+statuses = Array[ExtResource("24_traop")]([ExtResource("25_6kv2v"), ExtResource("26_dk4nj"), ExtResource("27_vyswj"), ExtResource("56_poison")])
 relics = Array[ExtResource("19_13dyc")]([ExtResource("20_4truf"), ExtResource("21_11qu4"), ExtResource("22_6dclc")])
 characters = Array[ExtResource("34_chdefs")]([ExtResource("36_hero01")])
-encounters = Array[ExtResource("35_encdef")]([ExtResource("37_encmon1"), ExtResource("38_encmon2"), ExtResource("39_encmon3"), ExtResource("40_encelite"), ExtResource("41_encboss")])
+encounters = Array[ExtResource("35_encdef")]([ExtResource("37_encmon1"), ExtResource("38_encmon2"), ExtResource("39_encmon3"), ExtResource("40_encelite"), ExtResource("41_encboss"), ExtResource("67_encboss1")])
 shops = Array[ExtResource("42_shopdef")]([ExtResource("44_shop01")])
 events = Array[ExtResource("43_evdef")]([ExtResource("45_ev01"), ExtResource("46_ev02")])
+monster_pools = Array[ExtResource("47_pooldef")]([ExtResource("57_pool1"), ExtResource("66_pool2")])

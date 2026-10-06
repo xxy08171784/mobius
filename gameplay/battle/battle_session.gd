@@ -10,6 +10,7 @@ var _rng: RngStreams = null
 var _card_defs: Dictionary = {}
 var _enemy_behaviors: Dictionary = {}
 var _enemy_actions: Dictionary = {}
+var _summon_pool: Array = []
 var _target_validator: Callable = Callable()
 var _result_cache: Dictionary = {}
 var _result_cache_order: Array[int] = []
@@ -26,12 +27,14 @@ func setup(
 	card_defs: Dictionary = {},
 	enemy_behaviors: Dictionary = {},
 	enemy_actions: Dictionary = {},
-	target_validator: Callable = Callable()
+	target_validator: Callable = Callable(),
+	summon_pool: Array = []
 ) -> EventBatch:
 	state = initial_state if initial_state != null else BattleState.new()
 	_card_defs = card_defs.duplicate()
 	_enemy_behaviors = enemy_behaviors.duplicate()
 	_enemy_actions = enemy_actions.duplicate()
+	_summon_pool = summon_pool.duplicate()
 	_target_validator = target_validator
 	_collect_actions_from_behaviors()
 	_result_cache.clear()
@@ -85,6 +88,17 @@ func battle_result() -> BattleResult:
 		player_hp[player_id] = state.get_unit(player_id).hp
 	result.persistent_changes = {"player_hp": player_hp}
 	return result
+
+
+## 某敌人行为表中的全部行动（威胁格显示用；非 SequenceBehavior 返回空）。
+func enemy_actions_for(unit_id: int) -> Array[EnemyActionDef]:
+	var out: Array[EnemyActionDef] = []
+	var behavior: Variant = _enemy_behaviors.get(unit_id)
+	if behavior is SequenceBehaviorDef:
+		for action: EnemyActionDef in (behavior as SequenceBehaviorDef).sequence:
+			if action != null:
+				out.append(action)
+	return out
 
 
 func _evaluate(command: GameCommand, commit: bool) -> CommandResult:
@@ -240,7 +254,8 @@ func _resolve_command(command: GameCommand) -> Dictionary:
 			work_state,
 			work_rng,
 			_enemy_behaviors,
-			_enemy_actions
+			_enemy_actions,
+			_summon_pool
 		)
 		if not bool(ended.get("ok", false)):
 			return {

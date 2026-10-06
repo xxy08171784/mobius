@@ -77,6 +77,7 @@ static func build(
 			UnitState.Team.ENEMY,
 			enemy_unit_def.base_stat(StatSystem.STAT_MAX_HP)
 		)
+		enemy.enemy_id = enemy_content_id
 		units[unit_id] = enemy
 		board.place_unit(unit_id, spawns[index])
 		enemy_behaviors[unit_id] = enemy_def.behavior
@@ -102,6 +103,7 @@ static func build(
 		"card_defs": card_defs,
 		"enemy_behaviors": enemy_behaviors,
 		"enemy_actions": enemy_actions,
+		"summon_pool": _build_summon_pool(encounter, content),
 		"card_labels": _card_labels(card_defs),
 	}
 
@@ -126,13 +128,14 @@ static func _resolve_player_start(encounter: EncounterDef, override: Vector2i) -
 
 
 ## 敌人出生格规划（确定性）：先给显式非边缘出生格，其余从内部格洗牌依次取。
+## 落点**不依赖玩家起点**（起点只用于跳过，不参与洗牌），所以可在"选进场格前"预览，
+## 且预览与实际开战同 seed 同结果。
 static func _plan_enemy_spawns(
 	encounter: EncounterDef,
 	start_cell: Vector2i,
 	rng: RngStreams
 ) -> Array[Vector2i]:
 	var pool := _interior_cells(encounter.board_cols, encounter.board_rows)
-	pool.erase(start_cell)
 	_shuffle_cells(pool, rng.get_stream(&"encounter"))
 	var used: Dictionary = {}
 	var result: Array[Vector2i] = []
@@ -145,7 +148,7 @@ static func _plan_enemy_spawns(
 					and not _is_border(explicit, encounter.board_cols, encounter.board_rows)
 					and not used.has(explicit)):
 				cell = explicit
-		# 随机内部格。
+		# 随机内部格。玩家选格只在**外圈**、敌人只在**内部**，故落点不依赖起点（部署预览与实际一致）。
 		if cell == Vector2i(-1, -1):
 			for candidate: Vector2i in pool:
 				if not used.has(candidate):
@@ -205,6 +208,34 @@ static func _collect_actions(actions: Dictionary, behavior: BehaviorDef) -> void
 	for action: EnemyActionDef in (behavior as SequenceBehaviorDef).sequence:
 		if action != null and not action.id.is_empty():
 			actions[action.id] = action
+
+
+## 召唤池：把 encounter.summon_enemy_ids 经 content 解析成 TurnSystem 直接可用的 spec 列表。
+## 每条 {enemy_id, unit_def_id, max_hp, appearance_key, behavior, actions}。
+## 规则层拿不到内容，故内容解析在这里做完，运行期只按 spec 生成单位。
+static func _build_summon_pool(encounter: EncounterDef, content: Object) -> Array:
+	var out: Array = []
+	for enemy_id: StringName in encounter.summon_enemy_ids:
+		var enemy_def: EnemyDef = content.get_enemy(enemy_id)
+		if enemy_def == null:
+			continue
+		var unit_def: UnitDef = content.get_unit(enemy_def.unit_def_id)
+		if unit_def == null:
+			continue
+		var actions: Array = []
+		if enemy_def.behavior is SequenceBehaviorDef:
+			for action: EnemyActionDef in (enemy_def.behavior as SequenceBehaviorDef).sequence:
+				if action != null:
+					actions.append(action)
+		out.append({
+			"enemy_id": enemy_id,
+			"unit_def_id": enemy_def.unit_def_id,
+			"max_hp": unit_def.base_stat(StatSystem.STAT_MAX_HP),
+			"appearance_key": enemy_def.appearance_key,
+			"behavior": enemy_def.behavior,
+			"actions": actions,
+		})
+	return out
 
 
 ## 展示文本。与 DemoBattleSetup._card_labels 同一格式（占位 UI 共用）。

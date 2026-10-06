@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/effects/statuses/status_def.gd" id="1_poison"]
+
+[resource]
+script = ExtResource("1_poison")
+status_id = &"status.poison"
+display_name = "中毒"
+description = "拥有者回合结束时受到等于中毒层数的伤害；持续时间随后减少。"

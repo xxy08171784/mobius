@@ -13,6 +13,7 @@ func run() -> Array[String]:
 	_test_reachable_budget_and_bounds()
 	_test_reachable_blocked_by_wall_and_occupancy()
 	_test_find_path()
+	_test_find_path_is_straight()
 	_test_target_cells()
 	return failures()
 
@@ -143,6 +144,26 @@ func _test_find_path() -> void:
 	var b2 := _make_board()
 	b2.place_unit(5, Vector2i(3, 0))
 	assert_equal(Pathfinder.find_path(b2, Vector2i(0, 0), Vector2i(3, 0)), [], "目标被占无路径")
+
+
+## A* 取直：同代价下尽量沿目标线走（直线 = 0 拐弯；对角目标 ≤ 1 拐弯）。
+func _test_find_path_is_straight() -> void:
+	var b := _make_board()
+	assert_equal(_turns(Pathfinder.find_path(b, Vector2i(0, 0), Vector2i(0, 4))), 0, "直线目标 0 拐弯")
+	assert_true(_turns(Pathfinder.find_path(b, Vector2i(0, 0), Vector2i(3, 3))) <= 1, "对角目标取直 ≤ 1 拐弯")
+
+	_wall(b, Vector2i(3, 0))
+	var p := Pathfinder.find_path(b, Vector2i(0, 0), Vector2i(6, 0))
+	assert_true(p.size() > 0 and p[p.size() - 1] == Vector2i(6, 0), "绕墙可达终点")
+	assert_equal(p.has(Vector2i(3, 0)), false, "绕行不穿墙")
+
+
+func _turns(path: Array[Vector2i]) -> int:
+	var n := 0
+	for i in range(2, path.size()):
+		if path[i] - path[i - 1] != path[i - 1] - path[i - 2]:
+			n += 1
+	return n
 
 
 func _test_target_cells() -> void:

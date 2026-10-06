@@ -13,6 +13,35 @@ extends RefCounted
 const METRIC_MANHATTAN := 0
 
 
+## 射程形状（空间概念，归本类；EnemyActionDef.range_shape 引用本枚举）。
+##   BOX       方框（切比雪夫）：3×3 = 半径 1、5×5 = 半径 2，**含对角**。
+##   DIAMOND   菱形（曼哈顿）：正交步数（旧语义，卡牌/兼容入口默认）。
+##   UNLIMITED 无视距离：全盘任意格。
+enum RangeShape { BOX, DIAMOND, UNLIMITED }
+
+
+## a->b 是否在给定形状与半径的射程内（UNLIMITED 恒真）。
+static func within_range(shape: RangeShape, a: Vector2i, b: Vector2i, range_: int) -> bool:
+	match shape:
+		RangeShape.BOX:
+			return maxi(absi(a.x - b.x), absi(a.y - b.y)) <= range_
+		RangeShape.UNLIMITED:
+			return true
+		_:
+			return absi(a.x - b.x) + absi(a.y - b.y) <= range_
+
+
+## 按形状度量 a->b 的格距（UNLIMITED 记为 0）。用于"离目标最近/最远"的候选比较。
+static func cell_distance(shape: RangeShape, a: Vector2i, b: Vector2i) -> int:
+	match shape:
+		RangeShape.BOX:
+			return maxi(absi(a.x - b.x), absi(a.y - b.y))
+		RangeShape.UNLIMITED:
+			return 0
+		_:
+			return absi(a.x - b.x) + absi(a.y - b.y)
+
+
 static func is_inside(board: BoardState, cell: Vector2i) -> bool:
 	return board.is_inside(cell)
 
@@ -31,18 +60,23 @@ static func reachable_cells(board: BoardState, from_cell: Vector2i, move_points:
 
 ## from_cell 射程内的格（不含自身）。require_los=true 时过滤掉视线被挡的格。
 ## 射程内被单位占据的格**仍然返回**（那是攻击目标所在格）。
+## 兼容入口：默认菱形（曼哈顿），旧语义不变。
 static func get_target_cells(board: BoardState, from_cell: Vector2i, range_: int, require_los: bool) -> Array[Vector2i]:
+	return get_target_cells_shaped(board, from_cell, range_, RangeShape.DIAMOND, require_los)
+
+
+## 按形状取 from_cell 射程内的格（不含自身；含被单位占据的格）。
+## UNLIMITED 返回全盘格（require_los 时按 LoS 过滤）。结果按 (y,x) 确定性排序。
+static func get_target_cells_shaped(board: BoardState, from_cell: Vector2i, range_: int, shape: RangeShape, require_los: bool) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
-	if range_ < 0 or not board.is_inside(from_cell):
+	if not board.is_inside(from_cell):
 		return out
-	for dy in range(-range_, range_ + 1):
-		for dx in range(-range_, range_ + 1):
-			if absi(dx) + absi(dy) > range_:
+	for y in range(board.rows):
+		for x in range(board.cols):
+			var cell := Vector2i(x, y)
+			if cell == from_cell:
 				continue
-			if dx == 0 and dy == 0:
-				continue
-			var cell := from_cell + Vector2i(dx, dy)
-			if not board.is_inside(cell):
+			if not within_range(shape, from_cell, cell, range_):
 				continue
 			if require_los and not has_line_of_sight(board, from_cell, cell):
 				continue
