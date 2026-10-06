@@ -32,7 +32,7 @@ func register_handler(handler: EffectHandler) -> void:
 	_handlers[handler.get_type_key()] = handler
 
 
-func resolve(state_in: Variant, plan: Variant, rng_in: Variant) -> Dictionary:
+func resolve(state_in: Variant, plan: Variant, rng_in: Variant, reactions: Dictionary = {}) -> Dictionary:
 	var state_clone := _clone_state(state_in)
 	if not bool(state_clone.get("ok", false)):
 		return _failure(state_in, rng_in, ERROR_INVALID_STATE)
@@ -68,7 +68,7 @@ func resolve(state_in: Variant, plan: Variant, rng_in: Variant) -> Dictionary:
 
 	var trigger_result := trigger_system.drain(
 		func(trigger: Dictionary) -> Dictionary:
-			return _process_trigger(trigger, work_state, battle_rng, events)
+			return _process_trigger(trigger, work_state, battle_rng, events, reactions)
 	)
 	if not bool(trigger_result.get("ok", false)):
 		var code: StringName = ERROR_TRIGGER_OVERFLOW if bool(trigger_result.get("overflow", false)) else StringName(String(trigger_result.get("error_code", "trigger_error")))
@@ -108,7 +108,8 @@ func _process_trigger(
 	trigger: Dictionary,
 	work_state: Variant,
 	battle_rng: RandomNumberGenerator,
-	events: EventBatch
+	events: EventBatch,
+	reactions: Dictionary
 ) -> Dictionary:
 	var trigger_context := EffectContext.new()
 	var stored_context: Variant = trigger.get("context")
@@ -130,7 +131,163 @@ func _process_trigger(
 		if not bool(result.get("ok", false)):
 			return result
 		produced_triggers.append_array(result.get("triggers", []))
+
+	# 被动反应：仅对"非反应产出"的触发展开（限深一层，防反伤互相反弹死循环）。
+	if not bool(trigger.get("from_reaction", false)) and not reactions.is_empty():
+		for raw_effect: Variant in _reaction_effects(trigger, work_state, reactions):
+			var effect := _normalize_effect(raw_effect)
+			if effect.is_empty():
+				return {"ok": false, "error_code": ERROR_INVALID_PLAN, "triggers": []}
+			var context := _context_for_effect(trigger_context, effect)
+			var result := _apply_effect(work_state, effect, context, battle_rng, events)
+			if not bool(result.get("ok", false)):
+				return result
+			for child: Variant in result.get("triggers", []):
+				if child is Dictionary:
+					(child as Dictionary)["from_reaction"] = true
+				produced_triggers.append(child)
 	return {"ok": true, "triggers": produced_triggers}
+
+
+## 按触发事件取相关单位的反应，展开成具体效果 dict。on_any_death 广播全场。
+func _reaction_effects(trigger: Dictionary, work_state: Variant, reactions: Dictionary) -> Array:
+	var out: Array = []
+	var event_type := StringName(String(trigger.get("event_type", &"")))
+	if event_type.is_empty() or reactions.is_empty():
+		return out
+	var context: Variant = trigger.get("context")
+	var attacker_id := -1
+	if context is EffectContext:
+		attacker_id = (context as EffectContext).source_unit_id
+
+	var instance_id := int(trigger.get("instance_id", -1))
+	var death_cell := BoardState.INVALID_CELL
+	var raw_cell: Variant = trigger.get("cell")
+	if raw_cell is Vector2i:
+		death_cell = raw_cell as Vector2i
+	var board := EffectStateAccess.get_board(work_state)
+
+	# [反应单位, 需匹配的事件类型]：
+	#   on_death -> 死亡单位自身的 on_death；另**广播**全场单位的 on_any_death（食尸鬼体质）
+	#   其它      -> 触发单位自身的同名反应
+	var pairs: Array = []
+	if event_type == &"on_death":
+		if instance_id >= 0:
+			pairs.append([instance_id, &"on_death"])
+		for uid: int in _all_unit_ids(work_state):
+			pairs.append([uid, &"on_any_death"])
+	elif event_type == &"on_any_death":
+		for uid: int in _all_unit_ids(work_state):
+			pairs.append([uid, &"on_any_death"])
+	elif instance_id >= 0:
+		pairs.append([instance_id, event_type])
+
+	for pair: Array in pairs:
+		var reactor_id: int = int(pair[0])
+		var want_event: StringName = pair[1]
+		var reactor_cell := BoardState.INVALID_CELL
+		if board != null:
+			reactor_cell = board.get_unit_cell(reactor_id)
+		if reactor_cell == BoardState.INVALID_CELL and reactor_id == instance_id:
+			reactor_cell = death_cell
+		for reaction: Variant in reactions.get(reactor_id, []):
+			if reaction is ReactionDef and (reaction as ReactionDef).event_type == want_event:
+				out.append_array(
+					_expand_reaction(reaction as ReactionDef, reactor_id, attacker_id, work_state, reactor_cell)
+				)
+	return out
+
+
+## 把一条反应展开为效果 dict 列表（解出动态目标）。
+func _expand_reaction(reaction: ReactionDef, reactor_id: int, attacker_id: int, work_state: Variant, reactor_cell: Vector2i) -> Array:
+	var out: Array = []
+	var reactor: Variant = EffectStateAccess.get_unit(work_state, reactor_id)
+	if reactor == null:
+		return out
+	var reactor_alive := int(EffectStateAccess.get_field(reactor, &"hp", 0)) > 0
+	match reaction.kind:
+		ReactionDef.Kind.DAMAGE_ATTACKER:
+			if attacker_id >= 0 and attacker_id != reactor_id:
+				out.append({
+					"type_key": &"damage",
+					"target": attacker_id,
+					"params": {"amount": reaction.amount, "ignore_block": reaction.ignore_block},
+				})
+		ReactionDef.Kind.AOE_AROUND_SELF:
+			for uid: int in _opponents_in_box(work_state, reactor_id, reactor_cell, reaction.radius):
+				out.append({
+					"type_key": &"damage",
+					"target": uid,
+					"params": {"amount": reaction.amount, "ignore_block": reaction.ignore_block},
+				})
+		ReactionDef.Kind.HEAL_SELF:
+			if reactor_alive:
+				out.append({"type_key": &"heal", "target": reactor_id, "params": {"amount": reaction.amount}})
+		ReactionDef.Kind.BUFF_SELF:
+			if reactor_alive and not reaction.status_id.is_empty():
+				out.append(_status_effect(reactor_id, reaction))
+		ReactionDef.Kind.BUFF_ALLIES:
+			if not reaction.status_id.is_empty():
+				for uid: int in _ally_ids(work_state, reactor_id):
+					out.append(_status_effect(uid, reaction))
+	return out
+
+
+func _status_effect(unit_id: int, reaction: ReactionDef) -> Dictionary:
+	return {
+		"type_key": &"apply_status",
+		"target": unit_id,
+		"status_id": reaction.status_id,
+		"params": {"stacks": maxi(1, reaction.stacks), "duration": maxi(1, reaction.duration)},
+	}
+
+
+func _all_unit_ids(work_state: Variant) -> Array[int]:
+	var out: Array[int] = []
+	var units: Variant = EffectStateAccess.get_field(work_state, &"units")
+	if units is Dictionary:
+		for key: Variant in (units as Dictionary):
+			out.append(int(key))
+	out.sort()
+	return out
+
+
+## 以 center 为中心的方框（切比雪夫）半径内、与 reactor 敌对阵营的单位 ID（确定性排序）。
+func _opponents_in_box(work_state: Variant, reactor_id: int, center: Vector2i, radius: int) -> Array[int]:
+	var out: Array[int] = []
+	var board := EffectStateAccess.get_board(work_state)
+	if board == null or center == BoardState.INVALID_CELL:
+		return out
+	var reactor: Variant = EffectStateAccess.get_unit(work_state, reactor_id)
+	var reactor_team := int(EffectStateAccess.get_field(reactor, &"team", -1))
+	for y: int in range(center.y - radius, center.y + radius + 1):
+		for x: int in range(center.x - radius, center.x + radius + 1):
+			var cell := Vector2i(x, y)
+			if not board.is_inside(cell):
+				continue
+			var uid := board.get_unit_at(cell)
+			if uid < 0 or uid == reactor_id:
+				continue
+			var other: Variant = EffectStateAccess.get_unit(work_state, uid)
+			if other != null and int(EffectStateAccess.get_field(other, &"team", -1)) != reactor_team:
+				out.append(uid)
+	out.sort()
+	return out
+
+
+## 与 reactor 同阵营（含自身）的单位 ID。
+func _ally_ids(work_state: Variant, reactor_id: int) -> Array[int]:
+	var out: Array[int] = []
+	var reactor: Variant = EffectStateAccess.get_unit(work_state, reactor_id)
+	if reactor == null:
+		return out
+	var team := int(EffectStateAccess.get_field(reactor, &"team", -1))
+	for uid: int in _all_unit_ids(work_state):
+		var u: Variant = EffectStateAccess.get_unit(work_state, uid)
+		if u != null and int(EffectStateAccess.get_field(u, &"team", -1)) == team \
+				and int(EffectStateAccess.get_field(u, &"hp", 0)) > 0:
+			out.append(uid)
+	return out
 
 
 func _normalize_plan(plan: Variant) -> Dictionary:

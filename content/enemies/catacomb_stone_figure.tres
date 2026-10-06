@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+[ext_resource type="Script" path="res://gameplay/enemies/reaction_def.gd" id="4_react"]
 
 [sub_resource type="Resource" id="act_approach"]
 script = ExtResource("2_act")
@@ -36,6 +37,12 @@ sequence = Array[ExtResource("2_act")]([SubResource("act_approach"), SubResource
 id = &"enemy.catacomb.stone_figure.behavior"
 fallback_action_id = &"stone_figure.heavy_blow"
 
+[sub_resource type="Resource" id="react_crack"]
+script = ExtResource("4_react")
+event_type = &"on_damaged"
+kind = 0
+amount = 2
+
 [resource]
 script = ExtResource("3_def")
 id = &"enemy.catacomb.stone_figure"
@@ -43,3 +50,4 @@ unit_def_id = &"unit.enemy.catacomb.stone_figure"
 behavior = SubResource("behavior")
 appearance_key = &"catacomb_stone_figure"
 display_name = "石俑"
+reactions = Array[ExtResource("4_react")]([SubResource("react_crack")])

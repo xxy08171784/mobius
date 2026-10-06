@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+[ext_resource type="Script" path="res://gameplay/enemies/reaction_def.gd" id="4_react"]
 
 [sub_resource type="Resource" id="act_approach"]
 script = ExtResource("2_act")
@@ -39,6 +40,20 @@ sequence = Array[ExtResource("2_act")]([SubResource("act_approach"), SubResource
 id = &"enemy.crypt.ghoul.behavior"
 fallback_action_id = &"ghoul.claw"
 
+[sub_resource type="Resource" id="react_ghoul_heal"]
+script = ExtResource("4_react")
+event_type = &"on_any_death"
+kind = 2
+amount = 7
+
+[sub_resource type="Resource" id="react_ghoul_rage"]
+script = ExtResource("4_react")
+event_type = &"on_any_death"
+kind = 3
+status_id = &"status.rage"
+stacks = 1
+duration = 1
+
 [resource]
 script = ExtResource("3_def")
 id = &"enemy.crypt.ghoul"
@@ -46,3 +61,4 @@ unit_def_id = &"unit.enemy.crypt.ghoul"
 behavior = SubResource("behavior")
 appearance_key = &"crypt_ghoul"
 display_name = "食尸鬼"
+reactions = Array[ExtResource("4_react")]([SubResource("react_ghoul_heal"), SubResource("react_ghoul_rage")])

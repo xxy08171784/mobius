@@ -10,6 +10,7 @@ var _rng: RngStreams = null
 var _card_defs: Dictionary = {}
 var _enemy_behaviors: Dictionary = {}
 var _enemy_actions: Dictionary = {}
+var _enemy_reactions: Dictionary = {}
 var _summon_pool: Array = []
 var _target_validator: Callable = Callable()
 var _result_cache: Dictionary = {}
@@ -28,12 +29,14 @@ func setup(
 	enemy_behaviors: Dictionary = {},
 	enemy_actions: Dictionary = {},
 	target_validator: Callable = Callable(),
-	summon_pool: Array = []
+	summon_pool: Array = [],
+	enemy_reactions: Dictionary = {}
 ) -> EventBatch:
 	state = initial_state if initial_state != null else BattleState.new()
 	_card_defs = card_defs.duplicate()
 	_enemy_behaviors = enemy_behaviors.duplicate()
 	_enemy_actions = enemy_actions.duplicate()
+	_enemy_reactions = enemy_reactions.duplicate()
 	_summon_pool = summon_pool.duplicate()
 	_target_validator = target_validator
 	_collect_actions_from_behaviors()
@@ -197,7 +200,8 @@ func _resolve_command(command: GameCommand) -> Dictionary:
 			_card_defs,
 			_rng,
 			TurnSystem.ENERGY_RESOURCE,
-			_target_validator
+			_target_validator,
+			_enemy_reactions
 		)
 		if not bool(planned.get("ok", false)):
 			return planned
@@ -235,7 +239,8 @@ func _resolve_command(command: GameCommand) -> Dictionary:
 					"params": {"move_points": actor.get_resource(TurnSystem.MOVE_RESOURCE)},
 				}],
 			},
-			work_rng
+			work_rng,
+			_enemy_reactions
 		)
 		if not bool(resolved.get("ok", false)):
 			return {"ok": false, "error_code": &"target"}
@@ -256,7 +261,8 @@ func _resolve_command(command: GameCommand) -> Dictionary:
 			work_rng,
 			_enemy_behaviors,
 			_enemy_actions,
-			_summon_pool
+			_summon_pool,
+			_enemy_reactions
 		)
 		if not bool(ended.get("ok", false)):
 			return {

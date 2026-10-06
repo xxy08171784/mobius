@@ -16,3 +16,6 @@ extends Resource
 
 ## 显示名（UI 数值面板用；空则由表现层回退到外观键）。
 @export var display_name: String = ""
+
+## 被动反应（死亡/受击触发，见 ReactionDef）。随战斗装配下发（不进 BattleState/存档）。
+@export var reactions: Array[ReactionDef] = []

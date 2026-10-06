@@ -211,6 +211,8 @@ static func status_text(unit: UnitState) -> String:
 				parts.append("腐蚀(%d)" % status.duration)
 			StatusRules.IGNITE:
 				parts.append("着火%d(%d)" % [status.stacks, status.duration])
+			StatusRules.RAGE:
+				parts.append("怒火%d(%d)" % [status.stacks, status.duration])
 			_:
 				parts.append(String(status.status_id))
 	return " ".join(parts)

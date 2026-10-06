@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+[ext_resource type="Script" path="res://gameplay/enemies/reaction_def.gd" id="4_react"]
 
 [sub_resource type="Resource" id="act_approach"]
 script = ExtResource("2_act")
@@ -27,6 +28,14 @@ sequence = Array[ExtResource("2_act")]([SubResource("act_approach"), SubResource
 id = &"enemy.crypt.hell_skeleton.behavior"
 fallback_action_id = &"hell_skeleton.decay_slash"
 
+[sub_resource type="Resource" id="react_undead_will"]
+script = ExtResource("4_react")
+event_type = &"on_death"
+kind = 4
+status_id = &"status.rage"
+stacks = 1
+duration = 1
+
 [resource]
 script = ExtResource("3_def")
 id = &"enemy.crypt.hell_skeleton"
@@ -34,3 +43,4 @@ unit_def_id = &"unit.enemy.crypt.hell_skeleton"
 behavior = SubResource("behavior")
 appearance_key = &"crypt_hell_skeleton"
 display_name = "地狱骷髅"
+reactions = Array[ExtResource("4_react")]([SubResource("react_undead_will")])

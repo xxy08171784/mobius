@@ -19,7 +19,7 @@ func run() -> Array[String]:
 		assert_equal(reward_49.card_number, 49, "formal card number should be stable")
 		assert_equal(reward_49.get_visual_key(), &"card_49", "formal card visual key should be stable")
 		assert_true(reward_49.reward_pool_enabled, "formal card #49 should be enabled in rewards")
-	assert_equal(db.status_ids().size(), 11, "catalog should expose 11 statuses (bleed/vuln/focus/poison/weak/slow/entangle/corrode/ignite/stun/knife_mark)")
+	assert_equal(db.status_ids().size(), 12, "catalog should expose 12 statuses (bleed/vuln/focus/poison/weak/slow/entangle/corrode/ignite/rage/stun/knife_mark)")
 	assert_equal(db.relic_ids().size(), 3, "catalog should expose 3 seed relics")
 	assert_equal(db.enemy_ids().size(), 28, "catalog should expose 8 tomb + 8 catacomb + 8 crypt + 4 mobius enemies")
 	assert_equal(db.monster_pool_ids().size(), 6, "catalog should expose act-1/2/3 mob + elite pools")

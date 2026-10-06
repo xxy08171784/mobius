@@ -25,6 +25,8 @@ const IGNITE: StringName = &"status.ignite"
 const STUN: StringName = &"status.stun"
 ## 刀痕（cxm 卡牌系统）。
 const KNIFE_MARK: StringName = &"status.knife_mark"
+## 怒火：每层令造成的普通伤害 +2（反应 buff，亡灵意志/食尸鬼体质）。
+const RAGE: StringName = &"status.rage"
 
 ## 回合结束按层数结算伤害的状态（DoT）。数组顺序即结算顺序（确定性）。
 const DOT_STATUSES: Array[StringName] = [BLEED, POISON, IGNITE]
@@ -38,6 +40,8 @@ const WEAK_OUTGOING_PERCENT := -0.25
 const CORRODE_BLOCK_PERCENT := -0.25
 ## 着火：每层结算的火焰伤害。
 const IGNITE_DAMAGE_PER_STACK := 5
+## 怒火：每层结算的普通伤害加成。
+const RAGE_DAMAGE_PER_STACK := 2
 
 
 static func stacks(unit: UnitState, status_id: StringName) -> int:
@@ -52,7 +56,8 @@ static func stacks(unit: UnitState, status_id: StringName) -> int:
 
 
 static func outgoing_damage_flat(unit: UnitState) -> float:
-	return float(stacks(unit, FOCUS)) * FOCUS_DAMAGE_PER_STACK
+	return float(stacks(unit, FOCUS)) * FOCUS_DAMAGE_PER_STACK \
+		+ float(stacks(unit, RAGE)) * RAGE_DAMAGE_PER_STACK
 
 
 static func incoming_damage_percent(unit: UnitState) -> float:

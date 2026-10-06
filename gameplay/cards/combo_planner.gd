@@ -20,7 +20,8 @@ func build_plan(
 	card_defs: Dictionary,
 	available_resource: int,
 	rng_in: Variant,
-	target_validator: Callable = Callable()
+	target_validator: Callable = Callable(),
+	reactions: Dictionary = {}
 ) -> Dictionary:
 	if deck_in == null or command == null or command.card_uids.is_empty():
 		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)
@@ -154,7 +155,7 @@ func build_plan(
 					(work_state as BattleState).round_index if work_state is BattleState else 0
 				),
 			}
-			var resolved := _resolver.resolve(work_state, effect_plan, work_rng)
+			var resolved := _resolver.resolve(work_state, effect_plan, work_rng, reactions)
 			if not bool(resolved.get("ok", false)):
 				return _failure(state_in, deck_in, rng_in, ERROR_EFFECT)
 			work_state = resolved["state_out"]
@@ -214,7 +215,8 @@ func build_plan_for_actor(
 	card_defs: Dictionary,
 	rng_in: Variant,
 	resource_key: StringName = &"energy",
-	target_validator: Callable = Callable()
+	target_validator: Callable = Callable(),
+	reactions: Dictionary = {}
 ) -> Dictionary:
 	var actor: Variant = EffectStateAccess.get_unit(state_in, command.actor_id)
 	if not actor is UnitState:
@@ -226,7 +228,8 @@ func build_plan_for_actor(
 		card_defs,
 		(actor as UnitState).get_resource(resource_key),
 		rng_in,
-		target_validator
+		target_validator,
+		reactions
 	)
 
 

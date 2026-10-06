@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://gameplay/enemies/sequence_behavior_def.gd" id="1_seq"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_action_def.gd" id="2_act"]
 [ext_resource type="Script" path="res://gameplay/enemies/enemy_def.gd" id="3_def"]
+[ext_resource type="Script" path="res://gameplay/enemies/reaction_def.gd" id="4_react"]
 
 [sub_resource type="Resource" id="act_hellfire"]
 script = ExtResource("2_act")
@@ -21,6 +22,19 @@ sequence = Array[ExtResource("2_act")]([SubResource("act_hellfire")])
 id = &"enemy.catacomb.will_o_wisp.behavior"
 fallback_action_id = &"will_o_wisp.hellfire"
 
+[sub_resource type="Resource" id="react_thorns"]
+script = ExtResource("4_react")
+event_type = &"on_damaged"
+kind = 0
+amount = 3
+
+[sub_resource type="Resource" id="react_boom"]
+script = ExtResource("4_react")
+event_type = &"on_death"
+kind = 1
+amount = 6
+radius = 1
+
 [resource]
 script = ExtResource("3_def")
 id = &"enemy.catacomb.will_o_wisp"
@@ -28,3 +42,4 @@ unit_def_id = &"unit.enemy.catacomb.will_o_wisp"
 behavior = SubResource("behavior")
 appearance_key = &"catacomb_will_o_wisp"
 display_name = "鬼火"
+reactions = Array[ExtResource("4_react")]([SubResource("react_thorns"), SubResource("react_boom")])

@@ -125,7 +125,8 @@ func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
 		data["enemy_behaviors"],
 		data["enemy_actions"],
 		Callable(self, "_validate_card_target"),
-		data.get("summon_pool", [])
+		data.get("summon_pool", []),
+		data.get("enemy_reactions", {})
 	)
 	_card_defs = data["card_defs"]
 

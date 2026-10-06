@@ -81,11 +81,14 @@ func apply(
 	if context.source_unit_id >= 0:
 		triggers.append(_make_trigger(10, context.source_unit_id, &"on_deal_damage", context))
 	if hp_after == 0:
-		triggers.append(_make_trigger(20, target_id, &"on_death", context))
-		# 死亡即离场：尸体不占格（combat_rules §9）。胜利判定按存活过滤（units），不受影响。
+		# on_death 触发带上死亡格（移除前捕获），供自爆/亡灵意志等反应定位自身。
+		var death_trigger := _make_trigger(20, target_id, &"on_death", context)
 		var board: Variant = EffectStateAccess.get_board(work_state)
 		if board != null:
+			death_trigger["cell"] = board.get_unit_cell(target_id)
+			# 死亡即离场：尸体不占格（combat_rules §9）。胜利判定按存活过滤（units），不受影响。
 			board.remove_unit(target_id)
+		triggers.append(death_trigger)
 
 	return {"ok": true, "events": [event], "triggers": triggers}
 

@@ -152,6 +152,24 @@ PLAYER_INPUT ──(EndTurn)────────→ PLAYER_END → ENEMY_ACT
 ### 7.4 上限（必须）
 单命令触发处理上限【建议默认 1000】。超限：**拒绝该命令**、丢弃工作快照、写调试日志；**不得**留下半结算的权威状态。
 
+### 7.5 反应（passive reactions，2026-10-06）
+
+敌人被动能力：某事件发生时触发一组效果（`ReactionDef`，由 `EncounterBuilder` 随战斗装配下发 `enemy_reactions`，**不进 `BattleState`/存档**）。事件由结算管线发出：
+
+| 事件 | 触发时机 | 本作载体 |
+|---|---|---|
+| `on_damaged` | 拥有者受到伤害 | 反伤（鬼火 3）、崩裂（石俑 2） |
+| `on_deal_damage` | 拥有者造成伤害 | 预留（汲血） |
+| `on_death` | 拥有者死亡 | 自爆（鬼火 3×3 造成 6）、亡灵意志（地狱骷髅 → 同阵营 +2 攻一回合） |
+| `on_any_death` | **任意**单位死亡（广播全场） | 食尸鬼体质（自愈 +7、+2 攻一回合） |
+
+反应种类（`ReactionDef.Kind`）：`DAMAGE_ATTACKER` / `AOE_AROUND_SELF`（方框含对角）/ `HEAL_SELF` / `BUFF_SELF` / `BUFF_ALLIES`。
+
+硬约束：
+- **限深一层**：反应产出的触发标记 `from_reaction=true`，`_process_trigger` 对它**不再展开反应** → 杜绝"反伤互相反弹"死循环；§7.4 的 1000 上限仍是兜底。
+- **on_death 带死亡格**：`damage_effect` 在移出盘面前把死亡格写入触发，供自爆定位自身。
+- 反应目标解算：攻击者 = 触发 `context.source_unit_id`；范围/同阵营单位按**存活 + 阵营**过滤（确定性排序）。
+
 ## 8. 状态（Status）生命周期
 
 - 每个 `StatusState` 记录：层数（stacks）、剩余回合（duration）、来源单位 ID。

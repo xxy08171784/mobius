@@ -60,6 +60,7 @@ static func build(
 	var spawns := _plan_enemy_spawns(encounter, start_cell, rng)
 	var enemy_behaviors: Dictionary = {}
 	var enemy_actions: Dictionary = {}
+	var enemy_reactions: Dictionary = {}
 	var unit_id := FIRST_ENEMY_UNIT_ID
 	var index := 0
 	for enemy_content_id: StringName in encounter.enemy_ids:
@@ -82,6 +83,7 @@ static func build(
 		board.place_unit(unit_id, spawns[index])
 		enemy_behaviors[unit_id] = enemy_def.behavior
 		_collect_actions(enemy_actions, enemy_def.behavior)
+		enemy_reactions[unit_id] = enemy_def.reactions
 		unit_id += 1
 		index += 1
 
@@ -103,6 +105,7 @@ static func build(
 		"card_defs": card_defs,
 		"enemy_behaviors": enemy_behaviors,
 		"enemy_actions": enemy_actions,
+		"enemy_reactions": enemy_reactions,
 		"summon_pool": _build_summon_pool(encounter, content),
 		"card_labels": _card_labels(card_defs),
 	}

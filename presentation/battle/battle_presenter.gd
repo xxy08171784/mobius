@@ -374,6 +374,8 @@ func _status_label(status_id: StringName) -> String:
 			return "腐蚀"
 		StatusRules.IGNITE:
 			return "着火"
+		StatusRules.RAGE:
+			return "怒火"
 		_:
 			return String(status_id)
 

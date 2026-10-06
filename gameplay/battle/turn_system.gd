@@ -69,14 +69,15 @@ func run_end_turn(
 	rng: RngStreams,
 	enemy_behaviors: Dictionary,
 	enemy_actions: Dictionary,
-	summon_pool: Array = []
+	summon_pool: Array = [],
+	enemy_reactions: Dictionary = {}
 ) -> Dictionary:
 	var events := EventBatch.new()
 	if state == null or rng == null or state.phase != BattleState.Phase.PLAYER_INPUT:
 		return {"ok": false, "error_code": &"phase", "events": events}
 
 	state.phase = BattleState.Phase.PLAYER_END
-	var player_finish := _finish_owner_turn(state, rng, UnitState.Team.PLAYER)
+	var player_finish := _finish_owner_turn(state, rng, UnitState.Team.PLAYER, enemy_reactions)
 	if not bool(player_finish.get("ok", false)):
 		return {"ok": false, "error_code": &"status_effect", "events": EventBatch.new()}
 	_append_events(events, player_finish.get("events"))
@@ -94,7 +95,7 @@ func run_end_turn(
 		enemy.clear_block()
 		if StatusRules.is_stunned(enemy):
 			state.enemy_steps[enemy_id] = int(state.enemy_steps.get(enemy_id, 0)) + 1
-			var stunned_finish := _finish_single_owner_turn(state, rng, enemy_id)
+			var stunned_finish := _finish_single_owner_turn(state, rng, enemy_id, enemy_reactions)
 			if not bool(stunned_finish.get("ok", false)):
 				return {"ok": false, "error_code": &"status_effect", "events": EventBatch.new()}
 			_append_events(events, stunned_finish.get("events"))
@@ -107,7 +108,8 @@ func run_end_turn(
 			intent,
 			enemy_behaviors,
 			enemy_actions,
-			summon_pool
+			summon_pool,
+			enemy_reactions
 		)
 		if not bool(action_result.get("ok", false)):
 			return {
@@ -116,7 +118,7 @@ func run_end_turn(
 				"events": EventBatch.new(),
 			}
 		_append_events(events, action_result.get("events"))
-		var enemy_finish := _finish_single_owner_turn(state, rng, enemy_id)
+		var enemy_finish := _finish_single_owner_turn(state, rng, enemy_id, enemy_reactions)
 		if not bool(enemy_finish.get("ok", false)):
 			return {"ok": false, "error_code": &"status_effect", "events": EventBatch.new()}
 		_append_events(events, enemy_finish.get("events"))
@@ -179,7 +181,8 @@ func _execute_enemy_intent(
 	intent: IntentState,
 	enemy_behaviors: Dictionary,
 	enemy_actions: Dictionary,
-	summon_pool: Array
+	summon_pool: Array,
+	enemy_reactions: Dictionary = {}
 ) -> Dictionary:
 	var empty_events := EventBatch.new()
 	if intent == null or intent.is_empty():
@@ -192,7 +195,7 @@ func _execute_enemy_intent(
 		return {"ok": true, "events": empty_events}
 
 	if action.kind == EnemyActionDef.Kind.CHARGE and action.charge_turns > 0:
-		return _execute_charge(state, rng, enemy_id, intent, action)
+		return _execute_charge(state, rng, enemy_id, intent, action, enemy_reactions)
 
 	if action.kind == EnemyActionDef.Kind.SUMMON:
 		return _execute_summon(state, rng, enemy_id, enemy_behaviors, enemy_actions, summon_pool)
@@ -202,7 +205,7 @@ func _execute_enemy_intent(
 		state.enemy_steps[enemy_id] = int(state.enemy_steps.get(enemy_id, 0)) + 1
 		return {"ok": true, "events": empty_events}
 
-	var resolved := _resolver.resolve(state, effect_plan, rng)
+	var resolved := _resolver.resolve(state, effect_plan, rng, enemy_reactions)
 	if not bool(resolved.get("ok", false)):
 		if resolved.get("error_code") == EffectResolver.ERROR_TRIGGER_OVERFLOW:
 			return {"ok": false, "error_code": &"trigger_overflow", "events": empty_events}
@@ -221,7 +224,8 @@ func _execute_charge(
 	rng: RngStreams,
 	enemy_id: int,
 	intent: IntentState,
-	action: EnemyActionDef
+	action: EnemyActionDef,
+	enemy_reactions: Dictionary = {}
 ) -> Dictionary:
 	var empty_events := EventBatch.new()
 	if not state.enemy_charge_remaining.has(enemy_id):
@@ -240,7 +244,7 @@ func _execute_charge(
 	var effect_plan := _attack_plan_if_valid(state, enemy_id, intent, action, rng)
 	if effect_plan.is_empty():
 		return {"ok": true, "events": empty_events}
-	var resolved := _resolver.resolve(state, effect_plan, rng)
+	var resolved := _resolver.resolve(state, effect_plan, rng, enemy_reactions)
 	if not bool(resolved.get("ok", false)):
 		if resolved.get("error_code") == EffectResolver.ERROR_TRIGGER_OVERFLOW:
 			return {"ok": false, "error_code": &"trigger_overflow", "events": empty_events}
@@ -674,18 +678,18 @@ func _run_scheduled_round_start(state: BattleState, rng: RngStreams) -> Dictiona
 	return {"ok": true, "events": events}
 
 
-func _finish_owner_turn(state: BattleState, rng: RngStreams, team: UnitState.Team) -> Dictionary:
+func _finish_owner_turn(state: BattleState, rng: RngStreams, team: UnitState.Team, enemy_reactions: Dictionary = {}) -> Dictionary:
 	var events := EventBatch.new()
 	var ids := state.player_ids() if team == UnitState.Team.PLAYER else state.enemy_ids()
 	for unit_id: int in ids:
-		var result := _finish_single_owner_turn(state, rng, unit_id)
+		var result := _finish_single_owner_turn(state, rng, unit_id, enemy_reactions)
 		if not bool(result.get("ok", false)):
 			return {"ok": false, "events": EventBatch.new()}
 		_append_events(events, result.get("events"))
 	return {"ok": true, "events": events}
 
 
-func _finish_single_owner_turn(state: BattleState, rng: RngStreams, unit_id: int) -> Dictionary:
+func _finish_single_owner_turn(state: BattleState, rng: RngStreams, unit_id: int, enemy_reactions: Dictionary = {}) -> Dictionary:
 	var events := EventBatch.new()
 	var unit := state.get_unit(unit_id)
 	if unit == null:
@@ -714,7 +718,8 @@ func _finish_single_owner_turn(state: BattleState, rng: RngStreams, unit_id: int
 					},
 				}],
 			},
-			rng
+			rng,
+			enemy_reactions
 		)
 		if not bool(resolved.get("ok", false)):
 			return {"ok": false, "events": EventBatch.new()}
