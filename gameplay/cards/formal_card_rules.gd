@@ -7,9 +7,9 @@ static func on_card_drawn(card: BattleCardState) -> void:
 		return
 	match card.card_id:
 		&"card.reward.37":
-			card.runtime_data["stacked_block"] = int(card.runtime_data.get("stacked_block", 0)) + 4
+			card.runtime_data["stacked_block"] = int(card.runtime_data.get("stacked_block", 0)) + (6 if card.upgrade_level > 0 else 4)
 		&"card.reward.46":
-			card.runtime_data["heal_charge"] = mini(9, int(card.runtime_data.get("heal_charge", 0)) + 3)
+			card.runtime_data["heal_charge"] = mini(12 if card.upgrade_level > 0 else 9, int(card.runtime_data.get("heal_charge", 0)) + (4 if card.upgrade_level > 0 else 3))
 
 static func choice_request(
 	state: BattleState,
@@ -50,21 +50,13 @@ static func apply_combo_pre_modifiers(
 		if source == null or source_def == null:
 			continue
 		match source_def.card_number:
-			26:
-				for uid: int in command.card_uids:
-					if uid == source_uid:
-						continue
-					var other := state.deck.get_card(uid)
-					var other_def := _def_for_card(card_defs, other)
-					if other != null and other_def != null and other_def.card_category == CardDef.CardCategory.TECHNIQUE:
-						other.damage_modifier += 3
 			49:
 				for uid: int in command.card_uids:
 					if uid == source_uid:
 						continue
 					var other := state.deck.get_card(uid)
 					if other != null:
-						other.block_modifier += 3
+						other.block_modifier += int(source_def.get_rule_value("bonus", source.upgrade_level, 3))
 
 static func prepare_effects(
 	card: BattleCardState,
@@ -119,3 +111,19 @@ static func resolve_card(
 	if state == null or card == null:
 		return _failure(state, rng)
 	return FormalCardRuleRegistry.resolve(state, rng, actor_id, card, definition, target, command, combo_metadata, card_defs)
+
+
+## 苦练在整组结算后才赋值，保证当前组合不受出牌顺序影响。
+static func apply_combo_post_modifiers(state: BattleState, command: PlayCardsCommand, card_defs: Dictionary, steps: Array[Dictionary]) -> void:
+	for step: Dictionary in steps:
+		if bool(step.get("fizzled", false)) or bool(step.get("skipped_terminal", false)):
+			continue
+		var source := state.deck.get_card(int(step.get("card_uid", -1)))
+		var source_def := _def_for_card(card_defs, source)
+		if source_def == null or source_def.card_number != 26:
+			continue
+		for uid: int in command.card_uids:
+			var other := state.deck.get_card(uid)
+			var other_def := _def_for_card(card_defs, other)
+			if other_def != null and other_def.card_category == CardDef.CardCategory.TECHNIQUE:
+				other.damage_modifier += int(source_def.get_rule_value("bonus", source.upgrade_level, 3))

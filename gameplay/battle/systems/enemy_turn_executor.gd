@@ -116,7 +116,7 @@ func _execute_summon(
 ) -> Dictionary:
 	var empty_events := EventBatch.new()
 	state.enemy_steps[summoner_id] = int(state.enemy_steps.get(summoner_id, 0)) + 1
-	if summon_pool.is_empty():
+	if summon_pool.is_empty() or state.alive_enemy_ids().size() >= 4:
 		return {"ok": true, "events": empty_events}
 
 	var stream: RandomNumberGenerator = rng.battle_rng()
@@ -268,7 +268,7 @@ func _attack_plan_with_advance(
 	if action.advance_steps > 0 and enemy != null:
 		var target_cell := _nearest_player_cell(state, enemy_id)
 		if target_cell != BoardState.INVALID_CELL:
-			var path := EnemyPlanner.plan_move(state.board, enemy, target_cell, action.advance_steps, action)
+			var path := EnemyPlanner.plan_move(state.board, enemy, target_cell, StatusRules.movement_budget(enemy, action.advance_steps), action)
 			if path.size() >= 2:
 				effects.append({
 					"type_key": &"move",
@@ -350,7 +350,7 @@ func _approach_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -
 	var enemy := state.get_unit(enemy_id)
 	if enemy == null or not enemy.is_alive():
 		return {}
-	var move_steps := maxi(0, action.move_steps - StatusRules.slow_penalty(enemy))
+	var move_steps := StatusRules.movement_budget(enemy, action.move_steps)
 	if move_steps <= 0:
 		return {}
 	var target_cell := _nearest_player_cell(state, enemy_id)
@@ -412,7 +412,7 @@ func _dash_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -> Di
 	if target_id < 0:
 		return {}
 	var target_cell := state.board.get_unit_cell(target_id)
-	var path := EnemyPlanner.plan_approach(state.board, enemy_id, target_cell, action.move_steps)
+	var path := EnemyPlanner.plan_approach(state.board, enemy_id, target_cell, StatusRules.movement_budget(enemy, action.move_steps))
 	var steps := maxi(0, path.size() - 1)
 	var amount := action.damage + steps * action.dash_damage_per_step
 	var effects: Array = []
@@ -422,7 +422,8 @@ func _dash_plan(state: BattleState, enemy_id: int, action: EnemyActionDef) -> Di
 			"target": {"cell": path[path.size() - 1]},
 			"params": {"move_points": steps},
 		})
-	if amount > 0:
+	var attack_from: Vector2i = path.back() if not path.is_empty() else state.board.get_unit_cell(enemy_id)
+	if amount > 0 and EnemyPlanner._can_hit(state.board, attack_from, target_cell, action):
 		effects.append({
 			"type_key": &"damage",
 			"target": target_id,

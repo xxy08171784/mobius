@@ -10,19 +10,48 @@ type_key = &"resource"
 params = {
 "amount": 1.0,
 "key": "move_points",
-"operation": "add"
+"operation": "add",
+"target_mode": "source"
 }
 
 [sub_resource type="Resource" id="Resource_7givb"]
 script = ExtResource("2_7givb")
 type_key = &"resource"
 params = {
-"amount": 4.0,
+"amount": 2.0,
 "key": "courage",
-"operation": "add"
+"operation": "add",
+"target_mode": "source"
 }
 
 [sub_resource type="Resource" id="Resource_jx5e4"]
+script = ExtResource("2_7givb")
+type_key = &"draw"
+params = {
+"count": 1.0
+}
+
+[sub_resource type="Resource" id="Resource_aj4v2"]
+script = ExtResource("2_7givb")
+type_key = &"resource"
+params = {
+"amount": 2.0,
+"key": "move_points",
+"operation": "add",
+"target_mode": "source"
+}
+
+[sub_resource type="Resource" id="Resource_lva55"]
+script = ExtResource("2_7givb")
+type_key = &"resource"
+params = {
+"amount": 3.0,
+"key": "courage",
+"operation": "add",
+"target_mode": "source"
+}
+
+[sub_resource type="Resource" id="Resource_ry8nv"]
 script = ExtResource("2_7givb")
 type_key = &"draw"
 params = {
@@ -37,8 +66,14 @@ card_category = 1
 visual_key = &"card_08"
 icon_key = &"icon_08"
 display_name = "信心"
-description = "[消耗] 获得1移动点、获得4层勇气、抽1牌。"
+description = "[消耗] 获得1移动点、2勇气，抽1张牌。"
 base_cost = 1
 tags = Array[StringName]([&"skill"])
 effects = Array[ExtResource("1_2idry")]([SubResource("Resource_ss1rg"), SubResource("Resource_7givb"), SubResource("Resource_jx5e4")])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"description": "[消耗] 获得2移动点、3勇气，抽1张牌。",
+"effects": Array[ExtResource("1_2idry")]([SubResource("Resource_aj4v2"), SubResource("Resource_lva55"), SubResource("Resource_ry8nv")])
+}
+}

@@ -11,5 +11,16 @@ card_category = 4
 visual_key = &"card_48"
 icon_key = &"icon_48"
 display_name = "扎根防守"
-description = "消耗所有移动点，每1个移动点护甲+3。"
+description = "消耗全部移动点，每点获得3护盾。"
+rule_values = {
+"per_move": 3.0
+}
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "消耗全部移动点，每点获得4护盾。",
+"rule_values": {
+"per_move": 4.0
+}
+}
+}

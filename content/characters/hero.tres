@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_hero")
 id = &"character.hero"
-display_name = "游侠"
+display_name = "莫小洛"
 unit_def_id = &"unit.hero.prototype"
-starter_deck = Array[StringName]([&"card.starter.punch", &"card.starter.punch", &"card.starter.attack", &"card.starter.attack", &"card.starter.attack", &"card.starter.charge", &"card.starter.charge", &"card.starter.relentless", &"card.starter.relentless", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend"])
-starter_relics = Array[StringName]([&"relic.loop_compass"])
+starter_deck = Array[StringName]([&"card.starter.punch", &"card.starter.attack", &"card.starter.attack", &"card.starter.charge", &"card.starter.relentless", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend", &"card.starter.defend"])
+starter_relics = Array[StringName]([])
 class_tags = Array[StringName]([&"warrior"])

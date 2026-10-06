@@ -21,6 +21,23 @@ params = {
 "target_mode": "source"
 }
 
+[sub_resource type="Resource" id="Resource_e0dwh"]
+script = ExtResource("2_ml1uc")
+type_key = &"damage"
+params = {
+"amount": 12.0
+}
+
+[sub_resource type="Resource" id="Resource_2louo"]
+script = ExtResource("2_ml1uc")
+type_key = &"resource"
+params = {
+"amount": 2.0,
+"key": "move_points",
+"operation": "add",
+"target_mode": "source"
+}
+
 [resource]
 script = ExtResource("2_svyuh")
 card_id = &"card.reward.32"
@@ -29,9 +46,15 @@ card_category = 3
 visual_key = &"card_32"
 icon_key = &"icon_32"
 display_name = "打了就跑"
-description = "[消耗] 造成9点伤害，获得1点移动点。"
+description = "[消耗] 造成9伤害，获得1移动点。"
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 effects = Array[ExtResource("1_e7sg8")]([SubResource("Resource_svyuh"), SubResource("Resource_ml1uc")])
 exhaust_on_play = true
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 造成12伤害，获得2移动点。",
+"effects": Array[ExtResource("1_e7sg8")]([SubResource("Resource_e0dwh"), SubResource("Resource_2louo")])
+}
+}

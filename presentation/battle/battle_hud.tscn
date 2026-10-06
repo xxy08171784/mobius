@@ -1,63 +1,21 @@
 [gd_scene format=3 uid="uid://yn4avli3xvlf"]
 
-[ext_resource type="Script" uid="uid://qgyneyscmgy5" path="res://presentation/battle/battle_hud.gd" id="1_hud"]
-[ext_resource type="Texture2D" uid="uid://dqq43m8np2ll7" path="res://assets/textures/ui/battle_hud_atlas.png" id="2_atlas"]
-[ext_resource type="Script" uid="uid://pfqvx2k4er6k" path="res://presentation/battle/status_icon_row.gd" id="3_status_row"]
+[ext_resource type="Script" path="res://presentation/battle/battle_hud.gd" id="1"]
+[ext_resource type="Script" path="res://presentation/battle/status_icon_row.gd" id="2"]
 
-[sub_resource type="AtlasTexture" id="Atlas_player_info"]
-atlas = ExtResource("2_atlas")
-region = Rect2(14, 236, 372, 255)
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.025, 0.035, 0.045, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.42, 0.45, 0.36, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
 
-[sub_resource type="AtlasTexture" id="Atlas_hp_empty"]
-atlas = ExtResource("2_atlas")
-region = Rect2(11, 518, 324, 126)
-
-[sub_resource type="AtlasTexture" id="Atlas_hp_full"]
-atlas = ExtResource("2_atlas")
-region = Rect2(341, 518, 302, 126)
-
-[sub_resource type="AtlasTexture" id="Atlas_shield_empty"]
-atlas = ExtResource("2_atlas")
-region = Rect2(655, 514, 295, 133)
-
-[sub_resource type="AtlasTexture" id="Atlas_shield_full"]
-atlas = ExtResource("2_atlas")
-region = Rect2(958, 519, 286, 123)
-
-[sub_resource type="AtlasTexture" id="Atlas_status_bg"]
-atlas = ExtResource("2_atlas")
-region = Rect2(654, 981, 290, 93)
-
-[sub_resource type="AtlasTexture" id="Atlas_round_banner"]
-atlas = ExtResource("2_atlas")
-region = Rect2(797, 232, 228, 262)
-
-[sub_resource type="AtlasTexture" id="Atlas_separator"]
-atlas = ExtResource("2_atlas")
-region = Rect2(956, 977, 274, 101)
-
-[sub_resource type="AtlasTexture" id="Atlas_round_badge"]
-atlas = ExtResource("2_atlas")
-region = Rect2(1020, 241, 227, 243)
-
-[sub_resource type="AtlasTexture" id="Atlas_enemy_info"]
-atlas = ExtResource("2_atlas")
-region = Rect2(391, 236, 396, 263)
-
-[sub_resource type="AtlasTexture" id="Atlas_energy_bar"]
-atlas = ExtResource("2_atlas")
-region = Rect2(6, 721, 343, 141)
-
-[sub_resource type="AtlasTexture" id="Atlas_energy_badge_empty"]
-atlas = ExtResource("2_atlas")
-region = Rect2(650, 652, 259, 262)
-
-[sub_resource type="AtlasTexture" id="Atlas_small_tag"]
-atlas = ExtResource("2_atlas")
-region = Rect2(20, 963, 288, 118)
-
-[node name="BattleHud" type="Control" unique_id=1613490032]
-z_index = 30
+[node name="BattleHud" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,380 +23,299 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_hud")
-metadata/_edit_vertical_guides_ = [990.0]
+z_index = 30
+script = ExtResource("1")
 
-[node name="PlayerHUD" type="Control" parent="." unique_id=391027922]
-anchors_preset = 0
+[node name="PlayerHUD" type="Control" parent="."]
+layout_mode = 0
 offset_left = 22.0
-offset_top = 16.0
-offset_right = 412.0
-offset_bottom = 267.0
+offset_top = 88.0
+offset_right = 308.0
+offset_bottom = 518.0
 mouse_filter = 2
 
-[node name="InfoFrame" type="TextureRect" parent="PlayerHUD" unique_id=1924726579]
+[node name="Backdrop" type="Panel" parent="PlayerHUD"]
 layout_mode = 0
-offset_right = 229.0
-offset_bottom = 143.0
-mouse_filter = 2
-texture = SubResource("Atlas_player_info")
-expand_mode = 1
-metadata/_edit_group_ = true
-
-[node name="PlayerName" type="Label" parent="PlayerHUD/InfoFrame" unique_id=945032743]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 150.0
-offset_top = 51.0
-offset_right = 202.0
-offset_bottom = 85.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 24
-text = "玩家"
-vertical_alignment = 1
-
-[node name="PlayerHPBar" type="TextureProgressBar" parent="PlayerHUD" unique_id=1399963977]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = -4.0
-offset_top = 163.0
-offset_right = 320.0
-offset_bottom = 289.0
-mouse_filter = 2
-value = 100.0
-texture_under = SubResource("Atlas_hp_empty")
-texture_progress = SubResource("Atlas_hp_full")
-metadata/_edit_group_ = true
-
-[node name="PlayerHPValue" type="Label" parent="PlayerHUD/PlayerHPBar" unique_id=561764390]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 16
-text = "30/30"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="PlayerShieldBar" type="TextureProgressBar" parent="PlayerHUD" unique_id=471733111]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = -9.0
-offset_top = 292.0
+offset_left = 0.0
+offset_top = 0.0
 offset_right = 286.0
-offset_bottom = 425.0
+offset_bottom = 430.0
 mouse_filter = 2
-texture_under = SubResource("Atlas_shield_empty")
-texture_progress = SubResource("Atlas_shield_full")
-metadata/_edit_group_ = true
+theme_override_styles/panel = SubResource("Panel")
 
-[node name="PlayerShieldValue" type="Label" parent="PlayerHUD/PlayerShieldBar" unique_id=1237093295]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 25.0
-offset_top = 7.0
-offset_right = 25.0
-offset_bottom = 7.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
-text = "护盾 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="StatusBar" type="TextureRect" parent="PlayerHUD" unique_id=364943323]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 443.0
-offset_right = 299.0
-offset_bottom = 505.0
-mouse_filter = 2
-texture = SubResource("Atlas_status_bg")
-expand_mode = 1
-metadata/_edit_group_ = true
-
-[node name="PlayerStatusIcons" type="HBoxContainer" parent="PlayerHUD/StatusBar" unique_id=589061772]
+[node name="PlayerName" type="Label" parent="PlayerHUD"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 18.0
+offset_left = 14.0
 offset_top = 10.0
-offset_right = 278.0
+offset_right = 272.0
 offset_bottom = 52.0
 mouse_filter = 2
-theme_override_constants/separation = 2
-script = ExtResource("3_status_row")
-
-[node name="RoundHUD" type="Control" parent="." unique_id=239950678]
-anchors_preset = 0
-offset_left = 1190.0
-offset_top = 10.0
-offset_right = 1460.0
-offset_bottom = 236.0
-mouse_filter = 2
-
-[node name="RoundLabel" type="Label" parent="RoundHUD" unique_id=191126533]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = -261.0
-offset_top = 103.0
-offset_right = -141.0
-offset_bottom = 145.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 18
-text = "玩家行动"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="RoundBanner" type="TextureRect" parent="RoundHUD" unique_id=1767833223]
-layout_mode = 0
-offset_left = -256.0
-offset_top = -9.0
-offset_right = -144.0
-offset_bottom = 115.0
-mouse_filter = 2
-texture = SubResource("Atlas_round_banner")
-expand_mode = 1
-
-[node name="Separator" type="TextureRect" parent="RoundHUD/RoundBanner" unique_id=818606016]
-layout_mode = 0
-offset_left = -23.0
-offset_top = -9.0
-offset_right = 133.0
-offset_bottom = 25.0
-mouse_filter = 2
-texture = SubResource("Atlas_separator")
-expand_mode = 1
-
-[node name="RoundBadge" type="TextureRect" parent="RoundHUD" unique_id=1663730279]
-layout_mode = 0
-offset_left = -152.0
-offset_top = 21.0
-offset_right = -86.0
-offset_bottom = 87.0
-mouse_filter = 2
-texture = SubResource("Atlas_round_badge")
-expand_mode = 1
-metadata/_edit_group_ = true
-
-[node name="RoundCount" type="Label" parent="RoundHUD/RoundBadge" unique_id=1661414799]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 16.0
-offset_top = 21.0
-offset_right = 50.0
-offset_bottom = 49.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 20
-text = "1"
-horizontal_alignment = 1
+text = "莫小洛"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 0
 vertical_alignment = 1
 
-[node name="EnemyHUD" type="Control" parent="." unique_id=2032090795]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -425.0
-offset_top = 64.0
-offset_right = -20.0
-offset_bottom = 493.0
-mouse_filter = 2
-
-[node name="InfoFrame" type="TextureRect" parent="EnemyHUD" unique_id=1164832691]
-layout_mode = 0
-offset_right = 405.0
-offset_bottom = 190.0
-mouse_filter = 2
-texture = SubResource("Atlas_enemy_info")
-expand_mode = 1
-metadata/_edit_group_ = true
-
-[node name="EnemyName" type="Label" parent="EnemyHUD/InfoFrame" unique_id=1527012048]
+[node name="PlayerHPBar" type="TextureProgressBar" parent="PlayerHUD"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 29.0
-offset_top = 72.0
-offset_right = 134.0
-offset_bottom = 104.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 23
-text = "敌人"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="EnemyHPBar" type="TextureProgressBar" parent="EnemyHUD" unique_id=1403990843]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 64.0
-offset_top = 178.0
-offset_right = 388.0
-offset_bottom = 304.0
+offset_left = 8.0
+offset_top = 70.0
+offset_right = 278.0
+offset_bottom = 158.0
 mouse_filter = 2
+nine_patch_stretch = true
 value = 100.0
-texture_under = SubResource("Atlas_hp_empty")
-texture_progress = SubResource("Atlas_hp_full")
-metadata/_edit_group_ = true
 
-[node name="EnemyHPValue" type="Label" parent="EnemyHUD/EnemyHPBar" unique_id=1882462982]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 16
-text = "24/24"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="EnemyShieldBar" type="TextureProgressBar" parent="EnemyHUD" unique_id=142125738]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 82.0
-offset_top = 296.0
-offset_right = 377.0
-offset_bottom = 429.0
-mouse_filter = 2
-texture_under = SubResource("Atlas_shield_empty")
-texture_progress = SubResource("Atlas_shield_full")
-metadata/_edit_group_ = true
-
-[node name="EnemyShieldValue" type="Label" parent="EnemyHUD/EnemyShieldBar" unique_id=1581825598]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 13
-text = "护盾 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ResourceHUD" type="Control" parent="." unique_id=1874019332]
-anchors_preset = 0
-offset_left = 20.0
-offset_top = 813.0
-offset_right = 348.0
-offset_bottom = 971.0
-mouse_filter = 2
-
-[node name="EnergyBar" type="TextureRect" parent="ResourceHUD" unique_id=1617313169]
-visible = false
-layout_mode = 0
-offset_left = -12.0
-offset_top = -69.0
-offset_right = 308.0
-offset_bottom = 9.0
-mouse_filter = 2
-texture = SubResource("Atlas_energy_bar")
-expand_mode = 1
-metadata/_edit_group_ = true
-
-[node name="EnergyText" type="Label" parent="ResourceHUD/EnergyBar" unique_id=530238296]
+[node name="PlayerHPValue" type="Label" parent="PlayerHUD"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 76.0
-offset_top = 29.0
-offset_right = 296.0
-offset_bottom = 57.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 16
-text = "能量 --   移动 --"
+offset_top = 70.0
+offset_right = 260.0
+offset_bottom = 158.0
+mouse_filter = 2
+text = "80 / 80"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EnergyBadge" type="TextureRect" parent="ResourceHUD" unique_id=1121292273]
+[node name="PlayerShieldBar" type="TextureProgressBar" parent="PlayerHUD"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 0
-offset_left = -5.0
-offset_top = 13.0
-offset_right = 81.0
-offset_bottom = 99.0
+offset_left = 8.0
+offset_top = 168.0
+offset_right = 62.0
+offset_bottom = 240.0
 mouse_filter = 2
-texture = SubResource("Atlas_energy_badge_empty")
-expand_mode = 1
-metadata/_edit_group_ = true
+nine_patch_stretch = true
+value = 100.0
 
-[node name="EnergyCount" type="Label" parent="ResourceHUD/EnergyBadge" unique_id=73049857]
+[node name="PlayerShieldValue" type="Label" parent="PlayerHUD"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 19.0
-offset_top = 23.0
-offset_right = 67.0
-offset_bottom = 63.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
+offset_left = 8.0
+offset_top = 168.0
+offset_right = 62.0
+offset_bottom = 240.0
+mouse_filter = 2
 text = "0"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ActionTag" type="TextureRect" parent="ResourceHUD" unique_id=979818320]
-visible = false
+[node name="PlayerStatusIcons" type="HFlowContainer" parent="PlayerHUD"]
+unique_name_in_owner = true
 layout_mode = 0
-offset_left = 2.0
-offset_top = 103.0
-offset_right = 180.0
-offset_bottom = 161.0
+offset_left = 14.0
+offset_top = 260.0
+offset_right = 272.0
+offset_bottom = 356.0
 mouse_filter = 2
-texture = SubResource("Atlas_small_tag")
-expand_mode = 1
-metadata/_edit_group_ = true
+theme_override_constants/separation = 4
+script = ExtResource("2")
+icon_size = 44.0
 
-[node name="TagText" type="Label" parent="ResourceHUD/ActionTag" unique_id=837881621]
+[node name="ResourceSummary" type="Label" parent="PlayerHUD"]
+visible = false
+unique_name_in_owner = true
 layout_mode = 0
-offset_left = 32.0
-offset_top = 17.0
-offset_right = 146.0
-offset_bottom = 42.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
-text = "行动资源"
+offset_left = 16.0
+offset_top = 360.0
+offset_right = 274.0
+offset_bottom = 420.0
+mouse_filter = 2
+text = "能量 3 / 3\n移动 2 / 2"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="EnemyHUD" type="Control" parent="."]
+layout_mode = 0
+offset_left = 1612.0
+offset_top = 88.0
+offset_right = 1898.0
+offset_bottom = 518.0
+mouse_filter = 2
+visible = false
+
+[node name="Backdrop" type="Panel" parent="EnemyHUD"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 286.0
+offset_bottom = 430.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="EnemyName" type="Label" parent="EnemyHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 10.0
+offset_right = 272.0
+offset_bottom = 52.0
+mouse_filter = 2
+text = "敌人"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="EnemyHPBar" type="TextureProgressBar" parent="EnemyHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 70.0
+offset_right = 278.0
+offset_bottom = 158.0
+mouse_filter = 2
+nine_patch_stretch = true
+value = 100.0
+
+[node name="EnemyHPValue" type="Label" parent="EnemyHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 76.0
+offset_top = 70.0
+offset_right = 260.0
+offset_bottom = 158.0
+mouse_filter = 2
+text = "80 / 80"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="EnemyShieldBar" type="TextureProgressBar" parent="EnemyHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 168.0
+offset_right = 62.0
+offset_bottom = 240.0
+mouse_filter = 2
+nine_patch_stretch = true
+value = 100.0
+
+[node name="EnemyShieldValue" type="Label" parent="EnemyHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 168.0
+offset_right = 62.0
+offset_bottom = 240.0
+mouse_filter = 2
+text = "0"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemyStatusIcons" type="HFlowContainer" parent="EnemyHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 260.0
+offset_right = 272.0
+offset_bottom = 356.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+script = ExtResource("2")
+icon_size = 44.0
 
 [node name="EnemyCount" type="Label" parent="EnemyHUD"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 30.0
-offset_top = 440.0
-offset_right = 395.0
-offset_bottom = 475.0
-theme_override_font_sizes/font_size = 18
-text = "存活敌人 0 · 点击棋子查看"
-horizontal_alignment = 1
+offset_left = 16.0
+offset_top = 360.0
+offset_right = 270.0
+offset_bottom = 420.0
+mouse_filter = 2
+text = "存活敌人 2"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 0
+vertical_alignment = 1
 
-[node name="ResourceSummary" type="Label" parent="."]
+[node name="RoundHUD" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 815.0
+offset_top = 10.0
+offset_right = 1105.0
+offset_bottom = 54.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="RoundCount" type="Label" parent="RoundHUD"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 30.0
-offset_top = 550.0
-offset_right = 305.0
-offset_bottom = 620.0
-theme_override_font_sizes/font_size = 22
-text = "能量 3 / 3\n移动 2 / 2"
+offset_left = 12.0
+offset_top = 0.0
+offset_right = 67.0
+offset_bottom = 44.0
+mouse_filter = 2
+text = "1"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoundLabel" type="Label" parent="RoundHUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 70.0
+offset_top = 0.0
+offset_right = 275.0
+offset_bottom = 44.0
+mouse_filter = 2
+text = "玩家行动"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnergyBadge" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+visible = false
+expand_mode = 1
+
+[node name="EnergyCount" type="Label" parent="EnergyBadge"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+text = "3"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0.02, 0.02, 0.02, 1)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="EnergyText" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+mouse_filter = 2

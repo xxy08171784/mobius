@@ -54,7 +54,7 @@ func _test_39_defense_secret() -> void:
 	var result := FormalCardFixture.resolve(state, 39, 3901, null, command)
 	assert_true(bool(result.get("ok", false)), "防守秘术应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(1).block, 11, "5基础+2张其他牌*3=11护甲")
+		assert_equal((result["state_out"] as BattleState).get_unit(1).block, 14, "其他牌计数3：5+3*3=14护盾")
 
 
 func _test_41_proper_defense() -> void:
@@ -65,7 +65,7 @@ func _test_41_proper_defense() -> void:
 	var result := FormalCardFixture.resolve(state, 41, 4101, null, null, defs)
 	assert_true(bool(result.get("ok", false)), "恰当防守应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(1).block, 16, "手牌有招式：5+11=16护甲")
+		assert_equal((result["state_out"] as BattleState).get_unit(1).block, 12, "手牌有招式：改为12护盾")
 
 
 func _test_43_regenerating_shell() -> void:
@@ -125,8 +125,8 @@ func _test_47_control() -> void:
 	assert_true(bool(result.get("ok", false)), "掌控应成功")
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
-		assert_equal(out.get_unit(1).block, 13, "获得13护甲")
-		assert_equal(out.get_unit(1).get_resource(&"courage"), 5, "紧邻敌人时+5勇气")
+		assert_equal(out.get_unit(1).block, 8, "获得8护盾")
+		assert_equal(out.get_unit(1).get_resource(&"courage"), 2, "紧邻敌人时+2勇气")
 
 
 func _test_48_rooted_defense() -> void:

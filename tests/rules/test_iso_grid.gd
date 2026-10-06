@@ -16,10 +16,8 @@ func run() -> Array[String]:
 
 
 func _make_layer() -> TileMapLayer:
-	var ts := TileSet.new()
-	ts.tile_shape = TileSet.TILE_SHAPE_ISOMETRIC
-	ts.tile_layout = TileSet.TILE_LAYOUT_DIAMOND_RIGHT
-	ts.tile_size = Vector2i(IsoGrid.DIAMOND_W, IsoGrid.DIAMOND_H)
+	# 使用正式缺图回退，保证没有纹理时几何和拾取仍能覆盖 64 个不同格子。
+	var ts := IsoBoardTheme.create_geometry_tileset()
 	var layer := TileMapLayer.new()
 	layer.tile_set = ts
 	return layer
@@ -46,12 +44,15 @@ func _test_diamond_geometry() -> void:
 func _test_round_trip() -> void:
 	var layer := _make_layer()
 	var bad := 0
+	var centers := {}
 	for row in range(8):
 		for col in range(8):
 			var cell := Vector2i(col, row)
+			centers[IsoGrid.center_of(layer, cell)] = true
 			if IsoGrid.cell_at(layer, IsoGrid.center_of(layer, cell)) != cell:
 				bad += 1
 	assert_equal(bad, 0, "cell → 中心 → cell 往返（8×8 全覆盖）")
+	assert_equal(centers.size(), 64, "缺图时 64 个格子不能叠在同一点")
 	layer.free()
 
 

@@ -1,6 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://presentation/common/run_toolbar.gd" id="1"]
+
 [node name="RunToolbar" type="HBoxContainer"]
+script = ExtResource("1")
 theme_override_constants/separation = 8
 
 [node name="Relics" type="HBoxContainer" parent="."]
@@ -8,10 +11,31 @@ layout_mode = 2
 theme_override_constants/separation = 4
 
 [node name="Deck" type="Button" parent="."]
+custom_minimum_size = Vector2(170, 44)
 layout_mode = 2
 text = "查看卡组"
+expand_icon = true
+theme_override_constants/icon_max_width = 32
 tooltip_text = "查看本局永久卡组与卡牌详情。"
 
 [node name="Pause" type="Button" parent="."]
+custom_minimum_size = Vector2(190, 44)
 layout_mode = 2
 text = "暂停 / 菜单"
+expand_icon = true
+theme_override_constants/icon_max_width = 32
+
+[node name="Gold" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Gold"]
+layout_mode = 2
+custom_minimum_size = Vector2(28, 28)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Value" type="Label" parent="Gold"]
+layout_mode = 2
+text = "0"
+vertical_alignment = 1

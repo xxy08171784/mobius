@@ -146,6 +146,13 @@ static func resolve(
 		command_value = command(1, [uid], [target])
 	if card_defs.is_empty() and definition != null:
 		card_defs[definition.card_id] = definition
+	var count := 0
+	for other_uid: int in command_value.card_uids:
+		if other_uid == uid:
+			continue
+		var other := state_value.deck.get_card(other_uid)
+		var other_def := load("res://content/cards/reward/card_%02d.tres" % int(String(other.card_id).get_slice(".", 2))) as CardDef
+		count += other_def.get_play_count_weight(other.upgrade_level)
 	return FormalCardRules.resolve_card(
 		state_value,
 		rng("card-%02d" % number),
@@ -154,6 +161,6 @@ static func resolve(
 		definition,
 		target,
 		command_value,
-		{},
+		{"other_play_count": count},
 		card_defs
 	)

@@ -44,7 +44,7 @@ static func plan(board: BoardState, enemy: UnitState, behavior: BehaviorDef, ste
 			if target == null:
 				return _degrade(board, enemy, behavior, players, intent)
 			var target_cell := board.get_unit_cell(target.unit_id)
-			var path := plan_move(board, enemy, target_cell, action.move_steps, action)
+			var path := plan_move(board, enemy, target_cell, StatusRules.movement_budget(enemy, action.move_steps), action)
 			if path.size() < 2:
 				return _degrade(board, enemy, behavior, players, intent)
 			intent.locked_cell = path[path.size() - 1]  # 锁定格子优先（预告；执行时按当前目标重算）

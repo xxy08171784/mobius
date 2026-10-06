@@ -83,11 +83,6 @@ static func _load_directional_frames(dir: String, prefix: String) -> Array[Textu
 	for fname: String in _list_pngs(dir, prefix):
 		var path := dir.path_join(fname)
 		var tex := load(path) as Texture2D
-		if tex == null:
-			# 兜底：素材尚未导入时退回原始解码（仅编辑器/开发期）。
-			var img := Image.load_from_file(path)
-			if img != null:
-				tex = ImageTexture.create_from_image(img)
 		if tex != null:
 			out.append(tex)
 	return out
@@ -95,15 +90,11 @@ static func _load_directional_frames(dir: String, prefix: String) -> Array[Textu
 
 static func _list_pngs(dir: String, prefix: String) -> Array[String]:
 	var names: Array[String] = []
-	var da := DirAccess.open(dir)
-	if da == null:
+	if not DirAccess.dir_exists_absolute(dir):
 		return names
-	da.list_dir_begin()
-	var name := da.get_next()
-	while name != "":
-		if not da.current_is_dir() and name.begins_with(prefix) and name.ends_with(".png"):
+	# DirAccess 在导出包只看到 .png.import；资源 API 返回可直接 load 的逻辑路径。
+	for name: String in ResourceLoader.list_directory(dir):
+		if name.begins_with(prefix) and name.ends_with(".png"):
 			names.append(name)
-		name = da.get_next()
-	da.list_dir_end()
 	names.sort()
 	return names

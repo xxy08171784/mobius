@@ -7,7 +7,7 @@ const BATTLE_HOOKS := [&"battle_start", &"round_start", &"card_played", &"damage
 static func equip(battle: BattleState, run: RunState, content: Object) -> void:
 	for relic: RelicState in run.relics:
 		var definition: RelicDef = content.get_relic(relic.relic_id)
-		if definition == null or not BATTLE_HOOKS.has(definition.trigger_key):
+		if definition == null or not definition.enabled or not BATTLE_HOOKS.has(definition.trigger_key):
 			continue
 		battle.relic_hooks.append({
 			"id": relic.relic_id, "instance_id": relic.instance_id,
@@ -39,7 +39,7 @@ static func trigger(battle: BattleState, hook: StringName) -> void:
 static func on_victory(run: RunState, content: Object) -> void:
 	for relic: RelicState in run.relics:
 		var definition: RelicDef = content.get_relic(relic.relic_id)
-		if definition == null or definition.trigger_key != &"battle_victory":
+		if definition == null or not definition.enabled or definition.trigger_key != &"battle_victory":
 			continue
 		run.gold += maxi(0, int(definition.trigger_params.get("reward_bonus", 0)))
 		run.hp = mini(run.max_hp, run.hp + maxi(0, int(definition.trigger_params.get("heal", 0))))

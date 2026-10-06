@@ -11,5 +11,10 @@ card_category = 4
 visual_key = &"card_37"
 icon_key = &"icon_37"
 display_name = "堆叠防守"
-description = "每抽出1次护甲+4（当前0），打出后重置。"
+description = "每次抽到：本牌护盾值+4。打出才获得护盾并清空储备。当前储备：{stored_block}。"
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "每次抽到：本牌护盾值+6。打出才获得护盾并清空储备。当前储备：{stored_block}。"
+}
+}

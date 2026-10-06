@@ -9,23 +9,25 @@ script = ExtResource("2_act")
 id = &"crossbow.shot"
 kind = 0
 target_policy = 0
-range = 0
-range_shape = 2
-damage = 8
+range = 4
+range_shape = 1
+damage = 6
 kiting = true
-advance_steps = 3
+advance_steps = 1
+requires_los = true
 
 [sub_resource type="Resource" id="act_volley"]
 script = ExtResource("2_act")
 id = &"crossbow.volley"
 kind = 0
 target_policy = 0
-range = 0
-range_shape = 2
-damage = 4
+range = 4
+range_shape = 1
+damage = 3
 hit_count = 2
 kiting = true
-advance_steps = 3
+advance_steps = 1
+requires_los = true
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

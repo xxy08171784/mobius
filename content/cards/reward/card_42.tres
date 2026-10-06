@@ -8,7 +8,16 @@
 script = ExtResource("2_s8r5n")
 type_key = &"block"
 params = {
-"amount": 7.0
+"amount": 6.0,
+"target_mode": "source"
+}
+
+[sub_resource type="Resource" id="Resource_s8r5n"]
+script = ExtResource("2_s8r5n")
+type_key = &"block"
+params = {
+"amount": 9.0,
+"target_mode": "source"
 }
 
 [resource]
@@ -19,8 +28,14 @@ card_category = 4
 visual_key = &"card_42"
 icon_key = &"icon_42"
 display_name = "重影盾"
-description = "护甲+7，出牌计数时算作2张牌。"
+description = "获得6护盾，组合出牌计数为2张。"
 base_cost = 1
 tags = Array[StringName]([&"defense"])
 effects = Array[ExtResource("1_2rttj")]([SubResource("Resource_2mwke")])
 play_count_weight = 2
+upgrade_overrides = {
+1: {
+"description": "获得9护盾，组合出牌计数为2张。",
+"effects": Array[ExtResource("1_2rttj")]([SubResource("Resource_s8r5n")])
+}
+}

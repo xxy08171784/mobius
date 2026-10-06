@@ -19,6 +19,9 @@ func apply(
 	if not destination is Vector2i:
 		return _error(&"invalid_target")
 
+	var actor: Variant = EffectStateAccess.get_unit(work_state, context.source_unit_id)
+	if actor is UnitState and StatusRules.move_locked(actor):
+		return _error(&"entangled")
 	var board := EffectStateAccess.get_board(work_state)
 	if board != null:
 		var params: Dictionary = effect.get("params", {})

@@ -11,7 +11,21 @@ card_category = 2
 visual_key = &"card_13"
 icon_key = &"icon_13"
 display_name = "冲刺斩"
-description = "往一个方向冲刺最远3格，造成10点基础伤害且每冲刺1格+5点伤害。"
+description = "向一个方向冲刺至多3格，碰到敌人造成10伤害，每实际移动1格再+4。缠绕时不可用。"
+rule_values = {
+"damage": 10.0,
+"per_step": 4.0
+}
+requires_active_movement = true
 base_cost = 2
 tags = Array[StringName]([&"technique"])
 content_target_kind = 3
+upgrade_overrides = {
+1: {
+"description": "向一个方向冲刺至多3格，碰到敌人造成13伤害，每实际移动1格再+5。缠绕时不可用。",
+"rule_values": {
+"damage": 13.0,
+"per_step": 5.0
+}
+}
+}

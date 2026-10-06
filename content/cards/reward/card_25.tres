@@ -11,7 +11,18 @@ card_category = 3
 visual_key = &"card_25"
 icon_key = &"icon_25"
 display_name = "肉搏"
-description = "造成13点伤害，仅当紧邻敌人时才可打出。"
+description = "紧邻敌人时造成12伤害。"
+rule_values = {
+"damage": 12.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "紧邻敌人时造成16伤害。",
+"rule_values": {
+"damage": 16.0
+}
+}
+}

@@ -11,7 +11,18 @@ card_category = 3
 visual_key = &"card_30"
 icon_key = &"icon_30"
 display_name = "困兽之力"
-description = "攻击力为【2格距离内敌人个数x5】。"
+description = "对目标造成伤害：2格内每有1个敌人，伤害+5。"
+rule_values = {
+"per_enemy": 5.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "对目标造成伤害：2格内每有1个敌人，伤害+7。",
+"rule_values": {
+"per_enemy": 7.0
+}
+}
+}

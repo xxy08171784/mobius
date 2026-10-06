@@ -8,6 +8,7 @@ const CARD_VIEW_SCENE := preload("res://presentation/cards/battle_card_view.tscn
 
 var _labels: Dictionary = {}
 var _views_by_uid: Dictionary = {}
+var drag_validator: Callable
 
 
 func set_card_labels(labels: Dictionary) -> void:
@@ -26,6 +27,7 @@ func render_hand(
 
 	var visible_uids: Dictionary = {}
 	var visual_index := 0
+	var remaining := CardSelectionBudget.energy(state) - CardSelectionBudget.total_cost(state, card_defs, selected_uids)
 	for uid: int in state.deck.hand:
 		var card := state.deck.get_card(uid)
 		if card == null:
@@ -42,7 +44,9 @@ func render_hand(
 			_views_by_uid[uid] = card_view
 			add_child(card_view)
 		var order := selected_uids.find(uid)
-		card_view.setup(card, definition, order, busy or not state.accepts_input())
+		card_view.setup(card, definition, order, busy or not state.accepts_input(), state)
+		card_view.drag_validator = drag_validator
+		card_view.set_affordable(order >= 0 or card.effective_cost(definition) <= remaining)
 		move_child(card_view, visual_index)
 		visual_index += 1
 

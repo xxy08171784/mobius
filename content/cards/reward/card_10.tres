@@ -11,9 +11,15 @@ card_category = 1
 visual_key = &"card_10"
 icon_key = &"icon_10"
 display_name = "恐吓"
-description = "[消耗] 让2格距离内的1个敌人立刻被吓退2步。"
+description = "[消耗] 将2格内的敌人击退2格。"
 base_cost = 1
 tags = Array[StringName]([&"skill"])
 exhaust_on_play = true
 attack_range = 2
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"cost": 0.0,
+"description": "[消耗] 将2格内的敌人击退2格。"
+}
+}

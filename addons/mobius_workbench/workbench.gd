@@ -13,6 +13,7 @@ const SCENES := {
 	"战斗卡牌 HUD": "res://presentation/battle/battle_card_hud.tscn",
 	"单张卡面": "res://presentation/cards/battle_card_view.tscn",
 	"局内工具栏": "res://presentation/common/run_toolbar.tscn",
+	"章节进入提示": "res://presentation/common/chapter_intro.tscn",
 	"手牌排列": "res://presentation/cards/hand_view.tscn",
 }
 var _resources: Array[Resource] = []

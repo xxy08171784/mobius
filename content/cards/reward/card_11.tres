@@ -11,6 +11,18 @@ card_category = 1
 visual_key = &"card_11"
 icon_key = &"icon_11"
 display_name = "勇气迸发"
-description = "[消耗] 对2格距离内所有敌人造成12点伤害。"
+description = "[消耗] 对2格内所有敌人造成12伤害。"
+rule_values = {
+"damage": 12.0
+}
+base_cost = 2
 tags = Array[StringName]([&"skill"])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"description": "[消耗] 对2格内所有敌人造成16伤害。",
+"rule_values": {
+"damage": 16.0
+}
+}
+}

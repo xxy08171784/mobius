@@ -1,18 +1,29 @@
 [gd_resource type="Resource" script_class="CardDef" format=3]
 
 [ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="1_card"]
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_wi086"]
 
 [resource]
 script = ExtResource("1_card")
 card_id = &"card.starter.charge"
 card_category = 3
 icon_key = &"icon_01"
-display_name = "突击"
-description = "向目标方向移动至多2格，并造成5点伤害。"
+display_name = "冲锋"
+description = "主动移动至多2格，造成5伤害。缠绕时不可用。"
+rule_values = {
+"damage": 5.0
+}
+requires_active_movement = true
 base_cost = 1
 reward_pool_enabled = false
 tags = Array[StringName]([&"attack"])
 attack_range = 3
 content_target_kind = 1
-content_target_team = 2
-
+upgrade_overrides = {
+1: {
+"description": "主动移动至多2格，造成8伤害。缠绕时不可用。",
+"rule_values": {
+"damage": 8.0
+}
+}
+}

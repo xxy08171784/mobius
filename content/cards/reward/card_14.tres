@@ -11,8 +11,20 @@ card_category = 2
 visual_key = &"card_14"
 icon_key = &"icon_14"
 display_name = "蹬踢后翻"
-description = "[消耗] 造成9点伤害，击退敌人1格且自己会后退1格。"
-base_cost = 2
+description = "[消耗] 造成9伤害，击退敌人1格，自己后退1格。缠绕时不可用。"
+rule_values = {
+"damage": 9.0
+}
+requires_active_movement = true
+base_cost = 1
 tags = Array[StringName]([&"technique"])
 exhaust_on_play = true
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 造成13伤害，击退敌人1格，自己后退1格。缠绕时不可用。",
+"rule_values": {
+"damage": 13.0
+}
+}
+}

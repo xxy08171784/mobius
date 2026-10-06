@@ -15,7 +15,24 @@ params = {
 script = ExtResource("2_3gooe")
 type_key = &"resource"
 params = {
-"amount": 5.0,
+"amount": 2.0,
+"key": "courage",
+"operation": "add",
+"target_mode": "source"
+}
+
+[sub_resource type="Resource" id="Resource_s127l"]
+script = ExtResource("2_3gooe")
+type_key = &"damage"
+params = {
+"amount": 9.0
+}
+
+[sub_resource type="Resource" id="Resource_005hg"]
+script = ExtResource("2_3gooe")
+type_key = &"resource"
+params = {
+"amount": 3.0,
 "key": "courage",
 "operation": "add",
 "target_mode": "source"
@@ -29,8 +46,14 @@ card_category = 3
 visual_key = &"card_29"
 icon_key = &"icon_29"
 display_name = "英勇打击"
-description = "造成6点伤害，+5层勇气。"
+description = "造成6伤害，获得2勇气。"
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 effects = Array[ExtResource("1_ojijc")]([SubResource("Resource_l5jjp"), SubResource("Resource_3gooe")])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "造成9伤害，获得3勇气。",
+"effects": Array[ExtResource("1_ojijc")]([SubResource("Resource_s127l"), SubResource("Resource_005hg")])
+}
+}

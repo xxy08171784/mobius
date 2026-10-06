@@ -11,7 +11,18 @@ card_category = 3
 visual_key = &"card_23"
 icon_key = &"icon_23"
 display_name = "重击"
-description = "造成15点伤害，下回合多抽1张牌。"
+description = "造成10伤害，下回合多抽1张牌。"
+rule_values = {
+"damage": 10.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "造成14伤害，下回合多抽1张牌。",
+"rule_values": {
+"damage": 14.0
+}
+}
+}

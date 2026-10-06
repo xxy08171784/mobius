@@ -66,20 +66,20 @@ func _test_self_cards() -> void:
 	if bool(result.get("ok", false)):
 		var out8: EffectTestState = result["state_out"]
 		assert_equal(int(out8.units[1]["resources"]["move_points"]), 3, "信心 +1 移动点")
-		assert_equal(int(out8.units[1]["resources"]["courage"]), 7, "信心 +4 勇气")
+		assert_equal(int(out8.units[1]["resources"]["courage"]), 5, "信心 +2 勇气")
 		assert_equal(out8.draw_pile, [102, 103, 104], "信心抽 1")
 
 	state = EffectTestState.new()
 	result = _resolve(40, state)
 	assert_true(bool(result.get("ok", false)), "符甲 should resolve")
 	if bool(result.get("ok", false)):
-		assert_equal(int((result["state_out"] as EffectTestState).units[1]["block"]), 10, "符甲 +10 护甲")
+		assert_equal(int((result["state_out"] as EffectTestState).units[1]["block"]), 8, "符甲 +8 护盾")
 
 	state = EffectTestState.new()
 	result = _resolve(42, state)
 	assert_true(bool(result.get("ok", false)), "重影盾 should resolve")
 	if bool(result.get("ok", false)):
-		assert_equal(int((result["state_out"] as EffectTestState).units[1]["block"]), 7, "重影盾 +7 护甲")
+		assert_equal(int((result["state_out"] as EffectTestState).units[1]["block"]), 6, "重影盾 +6 护盾")
 
 
 func _test_enemy_and_mixed_cards() -> void:
@@ -87,7 +87,7 @@ func _test_enemy_and_mixed_cards() -> void:
 	var result := _resolve(28, state, 2)
 	assert_true(bool(result.get("ok", false)), "重影刀 should resolve")
 	if bool(result.get("ok", false)):
-		assert_equal(int((result["state_out"] as EffectTestState).units[2]["hp"]), 5, "重影刀造成 8 伤害（先扣 3 护甲）")
+		assert_equal(int((result["state_out"] as EffectTestState).units[2]["hp"]), 6, "重影刀造成 7 伤害（先扣 3 护盾）")
 
 	state = EffectTestState.new()
 	result = _resolve(29, state, 2)
@@ -95,7 +95,7 @@ func _test_enemy_and_mixed_cards() -> void:
 	if bool(result.get("ok", false)):
 		var out29: EffectTestState = result["state_out"]
 		assert_equal(int(out29.units[2]["hp"]), 7, "英勇打击造成 6 伤害")
-		assert_equal(int(out29.units[1]["resources"]["courage"]), 8, "英勇打击给自己 +5 勇气")
+		assert_equal(int(out29.units[1]["resources"]["courage"]), 5, "英勇打击给自己 +2 勇气")
 
 	state = EffectTestState.new()
 	result = _resolve(32, state, 2)

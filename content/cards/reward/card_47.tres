@@ -11,6 +11,19 @@ card_category = 4
 visual_key = &"card_47"
 icon_key = &"icon_47"
 display_name = "掌控"
-description = "护甲+13，紧邻敌人时+5勇气。"
+description = "获得8护盾；周围8格有敌人时，再获得2勇气。"
+rule_values = {
+"block": 8.0,
+"courage": 2.0
+}
 base_cost = 1
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "获得11护盾；周围8格有敌人时，再获得3勇气。",
+"rule_values": {
+"block": 11.0,
+"courage": 3.0
+}
+}
+}

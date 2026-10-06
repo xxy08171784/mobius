@@ -11,7 +11,12 @@ card_category = 4
 visual_key = &"card_46"
 icon_key = &"icon_46"
 display_name = "疗伤"
-description = "[消耗] 抽到手牌就+3点生命值恢复效果，最高能恢复9点（当前0）。"
+description = "[消耗] 每次抽到蓄积3治疗，最多9；打出时治疗。当前蓄积：{heal_charge}。"
 base_cost = 1
 tags = Array[StringName]([&"defense"])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"description": "[消耗] 每次抽到蓄积4治疗，最多12；打出时治疗。当前蓄积：{heal_charge}。"
+}
+}

@@ -9,6 +9,9 @@ signal deployment_cancelled
 
 ## false 时由 RunFlow 在 add_child 前关闭 demo，并随后调用 configure()。
 @export var demo_autostart: bool = true
+## 三幕背景使用素材/背景；透明度可在检查器调整。
+@export_range(0.0, 1.0) var background_opacity: float = 0.32
+@export_range(0, 2) var chapter_index: int = 0
 
 const ENEMY_OPTIONS: Array = [
 	[&"enemy.ring_stalker", "环影猎手"],
@@ -40,14 +43,27 @@ var _deployment_mode: bool = false
 @onready var _defeat_overlay: Control = $DefeatOverlay
 @onready var _defeat_restart_button: Button = $DefeatOverlay/Center/Panel/Margin/Content/RestartButton
 var _ui: Dictionary = {}
+var _feedback: Label
+var _feedback_tween: Tween
 
 
 func _ready() -> void:
+	set_chapter(chapter_index)
+	_deployment_back_button.icon = UIArt.texture(&"back")
+	_deployment_back_button.expand_icon = true
+	_deployment_back_button.add_theme_constant_override("icon_max_width", 30)
 	_cache_ui()
 	_connect_ui()
 	_populate_enemy_selector()
+	_create_feedback()
 	if demo_autostart:
 		_start_demo()
+
+
+func set_chapter(index: int) -> void:
+	chapter_index = clampi(index, 0, 2)
+	$ChapterBackground.texture = UIArt.background(chapter_index)
+	$ChapterBackground.modulate.a = background_opacity
 
 
 func _cache_ui() -> void:
@@ -72,6 +88,15 @@ func _cache_ui() -> void:
 func _connect_ui() -> void:
 	_board_view.cell_pressed.connect(_on_cell_pressed)
 	_hand_view.card_pressed.connect(_on_card_pressed)
+	_hand_view.drag_validator = func(uid: int) -> bool:
+		return not _deployment_mode and _battle_input != null and _battle_input.can_start_drag(uid)
+	_board_view.drop_validator = func(uid: int, cell: Vector2i) -> String:
+		return "当前无法出牌" if _deployment_mode or _battle_input == null else _battle_input.drop_status(uid, cell)
+	_board_view.card_dropped.connect(func(uid: int, cell: Vector2i) -> void:
+		if _battle_input != null and not _deployment_mode:
+			_battle_input.play_dropped(uid, cell)
+	)
+	_board_view.drop_rejected.connect(show_feedback)
 	(_ui["play_button"] as Button).pressed.connect(_on_play_pressed)
 	(_ui["clear_button"] as Button).pressed.connect(_on_clear_pressed)
 	(_ui["end_turn_button"] as BaseButton).pressed.connect(_on_end_turn_pressed)
@@ -154,7 +179,7 @@ func _set_deployment_mode(enabled: bool) -> void:
 	_battle_card_hud.visible = not enabled
 	$HandScroll.visible = not enabled
 	$ActionButtons.visible = not enabled
-	$PreviewLabel.visible = not enabled
+	$PreviewLabel.visible = false
 	$ResultLabel.visible = not enabled
 	$SelectionLabel.visible = false
 	$DebugPanel.visible = false
@@ -200,10 +225,45 @@ func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
 	add_child(_battle_input)
 	_battle_input.bind(_session, data["card_defs"], _presenter)
 	_battle_input.battle_finished.connect(_on_battle_input_finished)
+	_battle_input.feedback_requested.connect(show_feedback)
 	_battle_input.checkpoint_requested.connect(func(state: BattleState) -> void: checkpoint_requested.emit(state))
 	checkpoint_requested.emit(_session.state)
 	if _session.state.is_terminal():
 		_on_battle_input_finished.call_deferred(_session.battle_result())
+
+
+func _create_feedback() -> void:
+	_feedback = Label.new()
+	_feedback.name = "ActionFeedback"
+	_feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_feedback.z_index = 100
+	_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_feedback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_feedback.add_theme_font_size_override("font_size", 32)
+	_feedback.add_theme_color_override("font_color", Color("ffe0a8"))
+	_feedback.add_theme_color_override("font_outline_color", Color("171b24"))
+	_feedback.add_theme_constant_override("outline_size", 6)
+	add_child(_feedback)
+	_feedback.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_feedback.offset_left = -380
+	_feedback.offset_right = 380
+	_feedback.offset_top = -40
+	_feedback.offset_bottom = 40
+	_feedback.hide()
+
+
+func show_feedback(message: String) -> void:
+	if _feedback == null or message.is_empty():
+		return
+	if _feedback_tween != null:
+		_feedback_tween.kill()
+	_feedback.text = message
+	_feedback.modulate.a = 1.0
+	_feedback.show()
+	_feedback_tween = create_tween()
+	_feedback_tween.tween_interval(1.1)
+	_feedback_tween.tween_property(_feedback, "modulate:a", 0.0, 0.25)
+	_feedback_tween.tween_callback(_feedback.hide)
 
 
 func _on_battle_input_finished(result: BattleResult) -> void:
@@ -262,38 +322,7 @@ func _validate_card_target(
 	definition: CardDef,
 	target: Variant
 ) -> Dictionary:
-	if not state is BattleState:
-		return {"ok": false}
-	var rule := definition.get_target_rule(card.upgrade_level)
-	if rule == null or rule is TargetSpec.DirectionTarget:
-		return {"ok": true}
-	if not target is TargetSpec:
-		return {"ok": false}
-	var battle := state as BattleState
-	var players := battle.alive_player_ids()
-	if players.is_empty():
-		return {"ok": false}
-	var actor_cell := battle.board.get_unit_cell(int(players[0]))
-	var target_cell := BoardState.INVALID_CELL
-	if target is TargetSpec.UnitTarget:
-		target_cell = battle.board.get_unit_cell((target as TargetSpec.UnitTarget).unit_id)
-	elif target is TargetSpec.CellTarget:
-		target_cell = (target as TargetSpec.CellTarget).cell
-	else:
-		return {"ok": true}
-	if target_cell == BoardState.INVALID_CELL:
-		return {"ok": false, "fizzle": true}
-	var distance := absi(actor_cell.x - target_cell.x) + absi(actor_cell.y - target_cell.y)
-	var attack_range := definition.get_attack_range(card.upgrade_level)
-	var los_ok := (
-		not definition.needs_line_of_sight(card.upgrade_level)
-		or BoardQuery.has_line_of_sight(battle.board, actor_cell, target_cell)
-	)
-	return {
-		"ok": distance <= attack_range and los_ok,
-		"fizzle": false,
-	}
-
+	return CardTargetRules.validate_range(state, card, definition, target)
 
 func _on_card_pressed(uid: int) -> void:
 	if _battle_input != null:

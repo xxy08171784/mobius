@@ -11,7 +11,22 @@ card_category = 3
 visual_key = &"card_19"
 icon_key = &"icon_19"
 display_name = "妖刀"
-description = "伤害6。若造成了生命值减少，则此牌在本次战斗伤害+4。"
+description = "造成6伤害。伤及生命时本牌伤害+2，至多累积+6，持续至战斗结束。"
+rule_values = {
+"damage": 6.0,
+"growth": 2.0,
+"growth_cap": 6.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "造成8伤害。伤及生命时本牌伤害+3，至多累积+9，持续至战斗结束。",
+"rule_values": {
+"damage": 8.0,
+"growth": 3.0,
+"growth_cap": 9.0
+}
+}
+}

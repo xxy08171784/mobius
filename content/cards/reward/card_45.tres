@@ -11,6 +11,17 @@ card_category = 4
 visual_key = &"card_45"
 icon_key = &"icon_45"
 display_name = "困兽之甲"
-description = "护甲值为【2格距离内敌人个数x8】。"
+description = "2格内每有1个敌人，获得8护盾。"
+rule_values = {
+"per_enemy": 8.0
+}
 base_cost = 2
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "2格内每有1个敌人，获得11护盾。",
+"rule_values": {
+"per_enemy": 11.0
+}
+}
+}

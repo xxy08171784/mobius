@@ -79,18 +79,23 @@ static func build(
 		)
 		enemy.enemy_id = enemy_content_id
 		units[unit_id] = enemy
-		board.place_unit(unit_id, spawns[index])
+		if not board.place_unit(unit_id, spawns[index]):
+			push_error("EncounterBuilder: enemy spawn is occupied")
+			return {}
 		enemy_behaviors[unit_id] = enemy_def.behavior
 		_collect_actions(enemy_actions, enemy_def.behavior)
 		unit_id += 1
 		index += 1
 
 	var card_defs: Dictionary = content.all_cards()
+	var deck := _build_deck(run)
+	# 只在新遭遇装配时洗牌。BattleCheckpoint.restore 直接恢复牌区与 RNG，不走此路径。
+	CardSystem.new().shuffle_draw(deck, rng.battle_rng())
 	var state := BattleFactory.create_state(
 		run.next_battle_id,
 		board,
 		units,
-		_build_deck(run),
+		deck,
 		rng,
 		encounter.hand_size,
 		encounter.energy_per_round,
@@ -144,7 +149,7 @@ static func _plan_enemy_spawns(
 ) -> Array[Vector2i]:
 	var pool := _interior_cells(encounter.board_cols, encounter.board_rows)
 	_shuffle_cells(pool, rng.get_stream(&"encounter"))
-	var used: Dictionary = {}
+	var used: Dictionary = {start_cell: true}
 	var result: Array[Vector2i] = []
 	for index in range(encounter.enemy_ids.size()):
 		var cell := Vector2i(-1, -1)

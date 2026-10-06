@@ -1,14 +1,21 @@
-[gd_resource type="Resource" script_class="CardDef" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CardDef" format=3]
 
 [ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="1_card"]
 [ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_effect"]
 [ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="3_base"]
 
-[sub_resource type="Resource" id="Effect_damage"]
+[sub_resource type="Resource" id="Resource_daoge"]
 script = ExtResource("2_effect")
 type_key = &"damage"
 params = {
-"amount": 4
+"amount": 4.0
+}
+
+[sub_resource type="Resource" id="Resource_oc5xs"]
+script = ExtResource("2_effect")
+type_key = &"damage"
+params = {
+"amount": 6.0
 }
 
 [resource]
@@ -16,12 +23,15 @@ script = ExtResource("1_card")
 card_id = &"card.starter.punch"
 card_category = 3
 icon_key = &"icon_01"
-display_name = "拳头"
-description = "造成4点伤害。"
-base_cost = 0
+display_name = "拳击"
+description = "造成4伤害。"
 reward_pool_enabled = false
 tags = Array[StringName]([&"attack"])
-effects = Array[ExtResource("3_base")]([SubResource("Effect_damage")])
+effects = Array[ExtResource("3_base")]([SubResource("Resource_daoge")])
 content_target_kind = 1
-content_target_team = 2
-
+upgrade_overrides = {
+1: {
+"description": "造成6伤害。",
+"effects": Array[ExtResource("3_base")]([SubResource("Resource_oc5xs")])
+}
+}

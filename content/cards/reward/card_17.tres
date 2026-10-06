@@ -11,9 +11,22 @@ card_category = 2
 visual_key = &"card_17"
 icon_key = &"icon_17"
 display_name = "飞刀"
-description = "[消耗] 往直线最远3格距离扔飞刀，造成8伤害。攻击附带标着飞刀状态。"
+description = "[消耗] 直线3格内造成7伤害，施加2层中毒。"
+rule_values = {
+"damage": 7.0,
+"poison": 2.0
+}
 base_cost = 1
 tags = Array[StringName]([&"technique"])
 exhaust_on_play = true
 attack_range = 3
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 直线3格内造成10伤害，施加3层中毒。",
+"rule_values": {
+"damage": 10.0,
+"poison": 3.0
+}
+}
+}

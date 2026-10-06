@@ -28,15 +28,10 @@ AudioService="*res://autoload/audio_service.gd"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 
-[physics]
+[dotnet]
 
-3d/physics_engine="Jolt Physics"
-
-[rendering]
-
-rendering_device/driver.windows="d3d12"
+project/assembly_name="mobius"
 
 [editor_plugins]
 
@@ -45,3 +40,11 @@ enabled=PackedStringArray("res://addons/mobius_workbench/plugin.cfg")
 [internationalization]
 
 locale/translations=PackedStringArray("res://localization/ui.zh_CN.translation", "res://localization/ui.en.translation")
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"

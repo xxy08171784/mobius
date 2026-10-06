@@ -123,7 +123,7 @@ func preview_battle(node_id: int) -> Dictionary:
 		return {}
 	var work := state.duplicate_state()
 	var work_rng := _rng.clone()
-	var transition := _resolve_node(work, work_rng, node, Vector2i(-1, -1))
+	var transition := _resolve_node(work, work_rng, node, Vector2i.ZERO)
 	if not bool(transition.get("ok", false)):
 		return {}
 	var battle_state: BattleState = (transition.get("battle", {}) as Dictionary).get("state", null)
@@ -214,6 +214,9 @@ func on_battle_finished(result: BattleResult) -> Dictionary:
 		RelicSystem.on_victory(work, _content)
 		var node := work.map.get_node(work.current_node_id)
 		if node != null and node.type_key == RouteMapDef.TYPE_BOSS:
+			# 每幕 Boss 胜利恢复已损失生命的 80%，向上取整；与胜利同一事务，重复回调不重复回血。
+			var missing_hp := maxi(0, work.max_hp - work.hp)
+			work.hp = mini(work.max_hp, work.hp + ceili(missing_hp * 0.8))
 			kind = _advance_act(work, rng)["kind"]
 		if kind == KIND_RUN_COMPLETE:
 			work.clear_pending()
@@ -404,6 +407,10 @@ func _pick_content(kind: StringName, rng: RngStreams) -> StringName:
 			ids = _content.event_ids()
 	var candidates: Array[StringName] = []
 	for id_value: Variant in ids:
+		if kind == &"relic":
+			var relic: RelicDef = _content.get_relic(StringName(String(id_value)))
+			if relic == null or not relic.enabled:
+				continue
 		candidates.append(StringName(String(id_value)))
 	if candidates.is_empty():
 		return &""

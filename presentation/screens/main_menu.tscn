@@ -60,7 +60,7 @@ horizontal_alignment = 1
 [node name="Subtitle" type="Label" parent="Margin/Panel/Padding/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "穿行回环，直到尽头。"
+text = "深入墓地，探索未知。"
 horizontal_alignment = 1
 
 [node name="Continue" type="Button" parent="Margin/Panel/Padding/Content"]

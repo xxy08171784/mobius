@@ -1,0 +1,6158 @@
+{
+  "policy": "greedy single-card, approach movement, no retreat, no relics, independent full-health fights",
+  "results": [
+    {
+      "act": 1,
+      "actions": 7,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1017,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 8,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 74,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 74,
+      "hp_lost": 6,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1148,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 11,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.slime",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1279,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 8,
+      "enemies": [
+        "enemy.tomb.bat",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1410,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 11,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1541,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 16,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(5, 4)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1672,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 9,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1803,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 13,
+      "enemies": [
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 0)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1934,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 12,
+      "enemies": [
+        "enemy.tomb.slime",
+        "enemy.tomb.bat",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 76,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 76,
+      "hp_lost": 4,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2065,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 16,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2196,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 14,
+      "enemies": [
+        "enemy.tomb.bat",
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 76,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 76,
+      "hp_lost": 4,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2327,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 9,
+      "enemies": [
+        "enemy.tomb.slime",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2458,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 8,
+      "enemies": [
+        "enemy.tomb.slime",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2589,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 15,
+      "enemies": [
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.slime",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2720,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 13,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 2)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2851,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 13,
+      "enemies": [
+        "enemy.tomb.soul_lantern",
+        "enemy.tomb.bat",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2982,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 9,
+      "enemies": [
+        "enemy.tomb.scorpion",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3113,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 8,
+      "enemies": [
+        "enemy.tomb.slime",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3244,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 13,
+      "enemies": [
+        "enemy.tomb.bat",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 1)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3375,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 12,
+      "enemies": [
+        "enemy.tomb.slime",
+        "enemy.tomb.slime",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3506,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 19,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 0)",
+          "hp": 73,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 73,
+      "hp_lost": 7,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1017,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 15,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 73,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 73,
+      "hp_lost": 7,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1148,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 17,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 1)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1279,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 11,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 62,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 62,
+      "hp_lost": 18,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1410,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 16,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 63,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 63,
+      "hp_lost": 17,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1541,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 15,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(5, 6)",
+          "hp": 74,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 74,
+      "hp_lost": 6,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1672,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 23,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 0)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1803,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 20,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(5, 0)",
+          "hp": 76,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 76,
+      "hp_lost": 4,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1934,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 16,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 74,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 74,
+      "hp_lost": 6,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2065,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 14,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 74,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 74,
+      "hp_lost": 6,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2196,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 18,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 4)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2327,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 0)",
+          "hp": 72,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 72,
+      "hp_lost": 8,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2458,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 14,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 3)",
+          "hp": 74,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 74,
+      "hp_lost": 6,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2589,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 18,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 0)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2720,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 18,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2851,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 20,
+      "enemies": [
+        "enemy.tomb.viper",
+        "enemy.tomb.soul_lantern"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 0)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2982,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 24,
+      "enemies": [
+        "enemy.tomb.crossbow",
+        "enemy.tomb.scorpion"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 0)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 3113,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 17,
+      "enemies": [
+        "enemy.tomb.viper",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 75,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 75,
+      "hp_lost": 5,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 3244,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 13,
+      "enemies": [
+        "enemy.tomb.skeleton",
+        "enemy.tomb.bat"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3375,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 12,
+      "enemies": [
+        "enemy.tomb.viper",
+        "enemy.tomb.slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3506,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1017,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 23,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1148,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 65,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 65,
+      "hp_lost": 15,
+      "rejected": 0,
+      "rounds": 7,
+      "seed": 1279,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 23,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 6)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 7,
+      "seed": 1410,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 6)",
+          "hp": 50,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 50,
+      "hp_lost": 30,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1541,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 24,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 5)",
+          "hp": 69,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 69,
+      "hp_lost": 11,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1672,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 61,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 61,
+      "hp_lost": 19,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1803,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 30,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 7
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 1934,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 20,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 63,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 63,
+      "hp_lost": 17,
+      "rejected": 0,
+      "rounds": 7,
+      "seed": 2065,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 20,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 61,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 61,
+      "hp_lost": 19,
+      "rejected": 0,
+      "rounds": 7,
+      "seed": 2196,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 55,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 55,
+      "hp_lost": 25,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 2327,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 27,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 0)",
+          "hp": 66,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 66,
+      "hp_lost": 14,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 2458,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 22,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 69,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 69,
+      "hp_lost": 11,
+      "rejected": 0,
+      "rounds": 7,
+      "seed": 2589,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 21,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 2720,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 25,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 66,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 66,
+      "hp_lost": 14,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 2851,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 25,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 2982,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 25,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 3)",
+          "hp": 65,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 65,
+      "hp_lost": 15,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 3113,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 23,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 62,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 62,
+      "hp_lost": 18,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 3244,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 24,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 6)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 7,
+      "seed": 3375,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 1,
+      "actions": 24,
+      "enemies": [
+        "enemy.tomb.tomb_statue"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 3506,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 7,
+      "enemies": [
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 2,
+      "seed": 1034,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 9,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1165,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.corpse_beetle",
+        "enemy.catacomb.paper",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 4)",
+          "hp": 63,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 63,
+      "hp_lost": 17,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1296,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.spider",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(6, 4)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1427,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 17,
+      "enemies": [
+        "enemy.catacomb.paper",
+        "enemy.catacomb.corpse_beetle",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1558,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 10,
+      "enemies": [
+        "enemy.catacomb.corpse_beetle",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1689,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 16,
+      "enemies": [
+        "enemy.catacomb.paper",
+        "enemy.catacomb.corpse_beetle",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 6)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1820,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 1)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1951,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 21,
+      "enemies": [
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(6, 5)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2082,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 11,
+      "enemies": [
+        "enemy.catacomb.paper",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2213,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 14,
+      "enemies": [
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 1)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2344,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 13,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2475,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.corpse_beetle",
+        "enemy.catacomb.spider",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 72,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 72,
+      "hp_lost": 8,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2606,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 10,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 5)",
+          "hp": 76,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 76,
+      "hp_lost": 4,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2737,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 13,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.spider",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 73,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 73,
+      "hp_lost": 7,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2868,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 13,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.corpse_beetle",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 4)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2999,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 9,
+      "enemies": [
+        "enemy.catacomb.paper",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3130,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 16,
+      "enemies": [
+        "enemy.catacomb.paper",
+        "enemy.catacomb.paper",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3261,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.will_o_wisp",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 1)",
+          "hp": 72,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 72,
+      "hp_lost": 8,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3392,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 10,
+      "enemies": [
+        "enemy.catacomb.spider",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 69,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 69,
+      "hp_lost": 11,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3523,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 20,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(6, 2)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1034,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1165,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 14,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 60,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 60,
+      "hp_lost": 20,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1296,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 12,
+      "enemies": [
+        "enemy.catacomb.stone_figure",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1427,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 12,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1558,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 12,
+      "enemies": [
+        "enemy.catacomb.guard_corpse",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1689,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.guard_corpse",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 73,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 73,
+      "hp_lost": 7,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1820,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.stone_figure",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 60,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 60,
+      "hp_lost": 20,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1951,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 16,
+      "enemies": [
+        "enemy.catacomb.stone_figure",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 3)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2082,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 11,
+      "enemies": [
+        "enemy.catacomb.guard_corpse",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 6)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2213,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 14,
+      "enemies": [
+        "enemy.catacomb.guard_corpse",
+        "enemy.catacomb.will_o_wisp"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 0)",
+          "hp": 59,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 59,
+      "hp_lost": 21,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2344,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 13,
+      "enemies": [
+        "enemy.catacomb.guard_corpse",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2475,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 14,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.corpse_beetle"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2606,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 16,
+      "enemies": [
+        "enemy.catacomb.stone_figure",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 66,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 66,
+      "hp_lost": 14,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2737,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 11,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2868,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 12,
+      "enemies": [
+        "enemy.catacomb.stone_figure",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 72,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 72,
+      "hp_lost": 8,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2999,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 15,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 68,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 68,
+      "hp_lost": 12,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 3130,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 12,
+      "enemies": [
+        "enemy.catacomb.clay_figure",
+        "enemy.catacomb.paper"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 5)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3261,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 12,
+      "enemies": [
+        "enemy.catacomb.guard_corpse",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3392,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 13,
+      "enemies": [
+        "enemy.catacomb.stone_figure",
+        "enemy.catacomb.spider"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 58,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 58,
+      "hp_lost": 22,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 3523,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 20,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1034,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 17,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 58,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 58,
+      "hp_lost": 22,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1165,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 26,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1296,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 29,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(0, 0)",
+          "hp": 69,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 69,
+      "hp_lost": 11,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 1427,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 19,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1558,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 25,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 76,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 76,
+      "hp_lost": 4,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 1689,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 18,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1820,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 22,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 73,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 73,
+      "hp_lost": 7,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1951,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 20,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 76,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 76,
+      "hp_lost": 4,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2082,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 28,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 4)",
+          "hp": 75,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 75,
+      "hp_lost": 5,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 2213,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 20,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 62,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 62,
+      "hp_lost": 18,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2344,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 22,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 77,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 77,
+      "hp_lost": 3,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2475,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 20,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 6)",
+          "hp": 54,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 54,
+      "hp_lost": 26,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2606,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 25,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 68,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 68,
+      "hp_lost": 12,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 2737,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 19,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 67,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 67,
+      "hp_lost": 13,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2868,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 26,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 0)",
+          "hp": 71,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 71,
+      "hp_lost": 9,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 2999,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 18,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 3130,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 20,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 4)",
+          "hp": 54,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        }
+      ],
+      "hp": 54,
+      "hp_lost": 26,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 3261,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 26,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 5)",
+          "hp": 68,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 68,
+      "hp_lost": 12,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 3392,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 2,
+      "actions": 31,
+      "enemies": [
+        "enemy.catacomb.ghost_soldier"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 49,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 49,
+      "hp_lost": 31,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 3523,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 15,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1051,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 10,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 69,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 69,
+      "hp_lost": 11,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1182,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 12,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 68,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 68,
+      "hp_lost": 12,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1313,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 62,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 62,
+      "hp_lost": 18,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1444,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 12,
+      "enemies": [
+        "enemy.crypt.stone_lion",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 3)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1575,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 12,
+      "enemies": [
+        "enemy.crypt.stone_lion",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1706,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 62,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 62,
+      "hp_lost": 18,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1837,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 8,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 75,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 75,
+      "hp_lost": 5,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1968,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 15,
+      "enemies": [
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 63,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 63,
+      "hp_lost": 17,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2099,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 8,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 61,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 61,
+      "hp_lost": 19,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2230,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 10,
+      "enemies": [
+        "enemy.crypt.stone_lion",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2361,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 10,
+      "enemies": [
+        "enemy.crypt.stone_lion",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 78,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 78,
+      "hp_lost": 2,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 2492,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 52,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 52,
+      "hp_lost": 28,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 2623,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 15,
+      "enemies": [
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 44,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 44,
+      "hp_lost": 36,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2754,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.hell_skeleton",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 4)",
+          "hp": 79,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 79,
+      "hp_lost": 1,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2885,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 57,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 57,
+      "hp_lost": 23,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 3016,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.stone_lion",
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 55,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 55,
+      "hp_lost": 25,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3147,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.mutated_slime",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 4)",
+          "hp": 63,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 63,
+      "hp_lost": 17,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3278,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 9,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 6)",
+          "hp": 70,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 70,
+      "hp_lost": 10,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3409,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 10,
+      "enemies": [
+        "enemy.crypt.man_eating_flower",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(4, 5)",
+          "hp": 80,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 80,
+      "hp_lost": 0,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 3540,
+      "tier": "monster",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 6)",
+          "hp": 45,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 45,
+      "hp_lost": 35,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 1051,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 11,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 62,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 62,
+      "hp_lost": 18,
+      "rejected": 0,
+      "rounds": 3,
+      "seed": 1182,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 54,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 54,
+      "hp_lost": 26,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1313,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 15,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 63,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 63,
+      "hp_lost": 17,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1444,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 51,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 51,
+      "hp_lost": 29,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1575,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 15,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 2)",
+          "hp": 72,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 72,
+      "hp_lost": 8,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 1706,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 75,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 75,
+      "hp_lost": 5,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1837,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 11,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 54,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 54,
+      "hp_lost": 26,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 1968,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 58,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 58,
+      "hp_lost": 22,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2099,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 11,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 7)",
+          "hp": 49,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 49,
+      "hp_lost": 31,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2230,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 12,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 64,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 64,
+      "hp_lost": 16,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 2361,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 16,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 65,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 65,
+      "hp_lost": 15,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2492,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.lizardman",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 6)",
+          "hp": 72,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 72,
+      "hp_lost": 8,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2623,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.hell_skeleton"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 59,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 59,
+      "hp_lost": 21,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2754,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 11,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 54,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 54,
+      "hp_lost": 26,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 2885,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 13,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 4)",
+          "hp": 46,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 46,
+      "hp_lost": 34,
+      "rejected": 0,
+      "rounds": 6,
+      "seed": 3016,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 14,
+      "enemies": [
+        "enemy.crypt.ghoul",
+        "enemy.crypt.stone_lion"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 47,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 47,
+      "hp_lost": 33,
+      "rejected": 0,
+      "rounds": 5,
+      "seed": 3147,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 10,
+      "enemies": [
+        "enemy.crypt.drought_demon",
+        "enemy.crypt.mutated_slime"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 52,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 52,
+      "hp_lost": 28,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3278,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 12,
+      "enemies": [
+        "enemy.crypt.lizardman",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 57,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 57,
+      "hp_lost": 23,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3409,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 11,
+      "enemies": [
+        "enemy.crypt.lizardman",
+        "enemy.crypt.man_eating_flower"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 73,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        }
+      ],
+      "hp": 73,
+      "hp_lost": 7,
+      "rejected": 0,
+      "rounds": 4,
+      "seed": 3540,
+      "tier": "elite",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 38,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 37,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        }
+      ],
+      "hp": 37,
+      "hp_lost": 43,
+      "rejected": 0,
+      "rounds": 13,
+      "seed": 1051,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 28,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 6)",
+          "hp": 32,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 32,
+      "hp_lost": 48,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 1182,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 31,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 32,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 32,
+      "hp_lost": 48,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 1313,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 35,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 40,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 6
+        }
+      ],
+      "hp": 40,
+      "hp_lost": 40,
+      "rejected": 0,
+      "rounds": 12,
+      "seed": 1444,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 34,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 3)",
+          "hp": 34,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 6
+        }
+      ],
+      "hp": 34,
+      "hp_lost": 46,
+      "rejected": 0,
+      "rounds": 12,
+      "seed": 1575,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 35,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 4)",
+          "hp": 19,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        }
+      ],
+      "hp": 19,
+      "hp_lost": 61,
+      "rejected": 0,
+      "rounds": 12,
+      "seed": 1706,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 31,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(3, 5)",
+          "hp": 39,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 39,
+      "hp_lost": 41,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 1837,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 37,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 50,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        }
+      ],
+      "hp": 50,
+      "hp_lost": 30,
+      "rejected": 0,
+      "rounds": 12,
+      "seed": 1968,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 30,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 28,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        }
+      ],
+      "hp": 28,
+      "hp_lost": 52,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 2099,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 32,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 6)",
+          "hp": 34,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 34,
+      "hp_lost": 46,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 2230,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 27,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 37,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 37,
+      "hp_lost": 43,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 2361,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 25,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 7)",
+          "hp": 41,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 41,
+      "hp_lost": 39,
+      "rejected": 0,
+      "rounds": 8,
+      "seed": 2492,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 30,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 7)",
+          "hp": 46,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 46,
+      "hp_lost": 34,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 2623,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 30,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 44,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 44,
+      "hp_lost": 36,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 2754,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 30,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 28,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 28,
+      "hp_lost": 52,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 2885,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 34,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 27,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 5
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 6
+        }
+      ],
+      "hp": 27,
+      "hp_lost": 53,
+      "rejected": 0,
+      "rounds": 12,
+      "seed": 3016,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 31,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 3)",
+          "hp": 28,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 28,
+      "hp_lost": 52,
+      "rejected": 0,
+      "rounds": 10,
+      "seed": 3147,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 29,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 5)",
+          "hp": 38,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 38,
+      "hp_lost": 42,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 3278,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 28,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(2, 1)",
+          "hp": 37,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 4
+        }
+      ],
+      "hp": 37,
+      "hp_lost": 43,
+      "rejected": 0,
+      "rounds": 9,
+      "seed": 3409,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    },
+    {
+      "act": 3,
+      "actions": 36,
+      "enemies": [
+        "enemy.crypt.tomb_master"
+      ],
+      "final_units": [
+        {
+          "cell": "(1, 4)",
+          "hp": 17,
+          "id": 1
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 2
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 3
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 6
+        },
+        {
+          "cell": "(-1, -1)",
+          "hp": 0,
+          "id": 7
+        }
+      ],
+      "hp": 17,
+      "hp_lost": 63,
+      "rejected": 0,
+      "rounds": 12,
+      "seed": 3540,
+      "tier": "boss",
+      "timeout": false,
+      "victory": true
+    }
+  ],
+  "samples_per_group": 20
+}

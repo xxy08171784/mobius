@@ -56,8 +56,8 @@ func _test_build_basic(content: Object) -> void:
 	var state: BattleState = data["state"]
 	assert_true(state.phase == BattleState.Phase.SETUP, "初始 phase 为 SETUP")
 	assert_equal(state.units.size(), 2, "1 玩家 + 1 敌人")
-	assert_equal(run.deck.size(), 15, "初始卡组 15 张")
-	assert_equal(state.deck.cards.size(), 15, "战斗牌堆 15 张")
+	assert_equal(run.deck.size(), 10, "初始卡组 10 张")
+	assert_equal(state.deck.cards.size(), 10, "战斗牌堆 10 张")
 	assert_true(not Dictionary(data["enemy_behaviors"]).is_empty(), "敌人行为已装配")
 	assert_true(not Dictionary(data["enemy_actions"]).is_empty(), "敌人行动表已装配")
 	assert_true(not Dictionary(data["card_labels"]).is_empty(), "卡牌展示文本非空")

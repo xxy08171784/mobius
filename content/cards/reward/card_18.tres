@@ -11,8 +11,19 @@ card_category = 3
 visual_key = &"card_18"
 icon_key = &"icon_18"
 display_name = "饮血剑"
-description = "[消耗] 造成9伤害，若击杀敌人则恢复3点生命值并永久增加3点生命值上限。"
+description = "[消耗] 造成10伤害。击杀时恢复3生命并永久增加3生命上限；全场最多触发一次。"
+rule_values = {
+"damage": 10.0
+}
 base_cost = 2
 tags = Array[StringName]([&"attack"])
 exhaust_on_play = true
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 造成15伤害。击杀时恢复3生命并永久增加3生命上限；全场最多触发一次。",
+"rule_values": {
+"damage": 15.0
+}
+}
+}

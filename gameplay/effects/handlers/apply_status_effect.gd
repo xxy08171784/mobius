@@ -25,6 +25,10 @@ func apply(
 	if status_id.is_empty():
 		return _error(&"invalid_status")
 
+	# 玩家没有眩晕机制；错误配置的玩家眩晕效果也不进入状态列表。
+	if target is UnitState and target.team == UnitState.Team.PLAYER and status_id == StatusRules.STUN:
+		return {"ok": true, "events": [], "triggers": []}
+
 	var statuses: Variant = EffectStateAccess.get_field(target, &"statuses")
 	if statuses == null:
 		statuses = {}

@@ -6,4 +6,4 @@
 script = ExtResource("1")
 status_id = &"status.stun"
 display_name = "眩晕"
-description = "下一次自身行动跳过。（策划未给出更细规则，当前为集中默认值）"
+description = "敌人跳过一次行动，随后消耗1回合持续时间；玩家不会被眩晕。"

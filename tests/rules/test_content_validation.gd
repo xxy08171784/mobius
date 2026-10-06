@@ -14,6 +14,7 @@ func run() -> Array[String]:
 	assert_true(not ContentValidator.validate(db).is_empty(), "broken unit reference detected")
 	enemy.unit_def_id = saved
 	var state := RunSession.create_run(&"character.hero", "relic-test", db)
+	state.add_relic(&"relic.loop_compass") # 模拟旧存档持有已停用遗物。
 	state.add_relic(&"relic.echo_shell")
 	state.add_relic(&"relic.mobius_coin")
 	var session := RunSession.new()
@@ -22,7 +23,7 @@ func run() -> Array[String]:
 	var battle := BattleSession.new()
 	battle.setup(data.rng, data.state, data.card_defs, data.enemy_behaviors, data.enemy_actions)
 	assert_equal(battle.state.get_unit(1).block, 4, "echo shell grants opening block")
-	assert_equal(battle.state.get_unit(1).get_resource(&"move_points"), battle.state.move_points_per_round + 1, "compass grants opening movement")
+	assert_equal(battle.state.get_unit(1).get_resource(&"move_points"), battle.state.move_points_per_round, "retired compass does not grant movement")
 	var snapshot := SaveCodec.new().clone_state(battle.state) as BattleState
 	var resumed := BattleSession.new()
 	resumed.setup(data.rng, snapshot, data.card_defs, data.enemy_behaviors, data.enemy_actions)

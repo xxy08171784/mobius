@@ -11,6 +11,17 @@ card_category = 1
 visual_key = &"card_02"
 icon_key = &"icon_02"
 display_name = "立刻征用"
-description = "从抽牌堆中挑选1张攻击类的牌放入手牌，本回合提升其6点攻击力。"
+description = "从抽牌堆选择1张攻击牌入手，本回合该牌伤害+6。"
+rule_values = {
+"bonus": 6.0
+}
 base_cost = 1
 tags = Array[StringName]([&"skill"])
+upgrade_overrides = {
+1: {
+"description": "从抽牌堆选择1张攻击牌入手，本回合该牌伤害+9。",
+"rule_values": {
+"bonus": 9.0
+}
+}
+}

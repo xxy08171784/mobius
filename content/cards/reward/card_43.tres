@@ -11,6 +11,17 @@ card_category = 4
 visual_key = &"card_43"
 icon_key = &"icon_43"
 display_name = "再生硬壳"
-description = "护甲+9。下个回合也+9护甲。"
+description = "获得9护盾，下回合开始时再获得9护盾。"
+rule_values = {
+"block": 9.0
+}
 base_cost = 2
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "获得12护盾，下回合开始时再获得12护盾。",
+"rule_values": {
+"block": 12.0
+}
+}
+}

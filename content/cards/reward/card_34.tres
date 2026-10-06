@@ -12,6 +12,14 @@ params = {
 "ignore_block": true
 }
 
+[sub_resource type="Resource" id="Resource_b270x"]
+script = ExtResource("2_b270x")
+type_key = &"damage"
+params = {
+"amount": 23.0,
+"ignore_block": true
+}
+
 [resource]
 script = ExtResource("2_j2hx1")
 card_id = &"card.reward.34"
@@ -20,9 +28,15 @@ card_category = 3
 visual_key = &"card_34"
 icon_key = &"icon_34"
 display_name = "刺透"
-description = "[消耗] 造成17点伤害。攻击无视护甲值。"
+description = "[消耗] 造成17伤害，无视护盾。"
 base_cost = 2
 tags = Array[StringName]([&"attack"])
 effects = Array[ExtResource("1_2s2um")]([SubResource("Resource_j2hx1")])
 exhaust_on_play = true
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 造成23伤害，无视护盾。",
+"effects": Array[ExtResource("1_2s2um")]([SubResource("Resource_b270x")])
+}
+}

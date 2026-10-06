@@ -11,6 +11,17 @@ card_category = 1
 visual_key = &"card_03"
 icon_key = &"icon_03"
 display_name = "谨慎"
-description = "[消耗] 消耗所有勇气，每消耗1层获得2点护甲（总计?）。"
+description = "[消耗] 消耗全部勇气，每层获得2护盾。当前预计：{cautious_block}。"
+rule_values = {
+"per_courage": 2.0
+}
 tags = Array[StringName]([&"skill"])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"description": "[消耗] 消耗全部勇气，每层获得3护盾。当前预计：{cautious_block}。",
+"rule_values": {
+"per_courage": 3.0
+}
+}
+}

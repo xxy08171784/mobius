@@ -77,7 +77,7 @@ func _test_direction_card_through_combo_planner() -> void:
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
 		assert_equal(out.board.get_unit_cell(1), Vector2i(4, 2), "冲刺斩正式路径移动到敌人前")
-		assert_equal(out.get_unit(2).hp, 20, "冲刺2格造成20伤害")
+		assert_equal(out.get_unit(2).hp, 22, "冲刺2格造成18伤害")
 		assert_equal(out.deck.zone_of(13001), DeckState.ZONE_DISCARD, "冲刺斩结算后进入弃牌堆")
 
 

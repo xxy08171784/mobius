@@ -16,3 +16,6 @@ extends Resource
 
 ## 显示名（UI 数值面板用；空则由表现层回退到外观键）。
 @export var display_name: String = ""
+
+## 只影响棋子美术大小，不改变属性、占格或攻击距离。
+@export_range(0.5, 2.0) var visual_scale: float = 1.0

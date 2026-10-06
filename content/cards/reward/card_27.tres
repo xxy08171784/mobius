@@ -11,7 +11,18 @@ card_category = 3
 visual_key = &"card_27"
 icon_key = &"icon_27"
 display_name = "妙用招式"
-description = "若同“招式牌”一起出牌，则提供该招式牌150%的伤害值。"
+description = "造成同组第一张招式基础伤害的100%；不含移动追加与状态加成。"
+rule_values = {
+"multiplier": 1.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "造成同组第一张招式基础伤害的125%；不含移动追加与状态加成。",
+"rule_values": {
+"multiplier": 1.25
+}
+}
+}

@@ -18,8 +18,8 @@ kind = 0
 target_policy = 0
 range = 1
 range_shape = 1
-damage = 9
-advance_steps = 3
+damage = 11
+advance_steps = 2
 
 [sub_resource type="Resource" id="act_rot_grip"]
 script = ExtResource("2_act")
@@ -28,18 +28,18 @@ kind = 0
 target_policy = 0
 range = 1
 range_shape = 1
-damage = 5
+damage = 6
 apply_status_id = &"status.weak"
 apply_status_stacks = 1
 apply_status_duration = 2
-advance_steps = 3
+advance_steps = 2
 
 [sub_resource type="Resource" id="act_bulwark"]
 script = ExtResource("2_act")
 id = &"guard_corpse.bulwark"
 kind = 3
 target_policy = 1
-block = 6
+block = 8
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

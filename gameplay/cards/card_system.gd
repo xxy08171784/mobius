@@ -54,6 +54,12 @@ func reshuffle_discard(deck: DeckState, rng: RandomNumberGenerator) -> bool:
 	return true
 
 
+## 新战斗开场洗牌；显式传入 battle RNG，保持复盘和存档确定性。
+func shuffle_draw(deck: DeckState, rng: RandomNumberGenerator) -> void:
+	if deck != null and rng != null:
+		_shuffle_in_place(deck.draw, rng)
+
+
 func move_hand_to_resolving(deck: DeckState, uids: Array[int]) -> Dictionary:
 	if deck == null or uids.is_empty():
 		return {"ok": false, "error_code": &"invalid_selection"}

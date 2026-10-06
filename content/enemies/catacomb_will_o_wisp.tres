@@ -9,11 +9,12 @@ script = ExtResource("2_act")
 id = &"will_o_wisp.hellfire"
 kind = 0
 target_policy = 0
-range = 0
-range_shape = 2
-damage = 4
+range = 4
+range_shape = 1
+damage = 5
 kiting = true
-advance_steps = 2
+advance_steps = 1
+requires_los = true
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

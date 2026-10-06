@@ -11,6 +11,19 @@ card_category = 4
 visual_key = &"card_41"
 icon_key = &"icon_41"
 display_name = "恰当防守"
-description = "护甲+5。手牌中有招式牌时，则护甲+11。"
+description = "获得5护盾；结算时手中还留有招式牌，改为12护盾。"
+rule_values = {
+"block": 5.0,
+"conditional_block": 12.0
+}
 base_cost = 1
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "获得7护盾；结算时手中还留有招式牌，改为16护盾。",
+"rule_values": {
+"block": 7.0,
+"conditional_block": 16.0
+}
+}
+}

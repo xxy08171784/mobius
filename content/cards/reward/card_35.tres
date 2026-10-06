@@ -11,6 +11,17 @@ card_category = 3
 visual_key = &"card_35"
 icon_key = &"icon_35"
 display_name = "扎根打击"
-description = "消耗所有移动点，每点移动能造成4点攻击。"
+description = "消耗全部移动点，每点对目标造成4伤害。"
+rule_values = {
+"per_move": 4.0
+}
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "消耗全部移动点，每点对目标造成5伤害。",
+"rule_values": {
+"per_move": 5.0
+}
+}
+}

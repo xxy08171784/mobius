@@ -43,12 +43,12 @@ func _test_19_demon_blade() -> void:
 		return
 	var out := result["state_out"] as BattleState
 	assert_equal(out.get_unit(2).hp, 24, "第一次造成6伤害")
-	assert_equal(out.deck.get_card(1901).damage_modifier, 4, "真正掉血后本场伤害永久+4")
+	assert_equal(out.deck.get_card(1901).damage_modifier, 2, "真正掉血后本场伤害+2")
 	result = FormalCardFixture.resolve(out, 19, 1901, target)
 	if bool(result.get("ok", false)):
 		var out2 := result["state_out"] as BattleState
-		assert_equal(out2.get_unit(2).hp, 14, "第二次应造成10伤害")
-		assert_equal(out2.deck.get_card(1901).damage_modifier, 8, "再次掉血后继续累计+4")
+		assert_equal(out2.get_unit(2).hp, 16, "第二次应造成8伤害")
+		assert_equal(out2.deck.get_card(1901).damage_modifier, 4, "再次掉血后继续累计+2")
 
 
 func _test_20_stun() -> void:
@@ -72,7 +72,7 @@ func _test_21_attack_secret() -> void:
 	var result := FormalCardFixture.resolve(state, 21, 2101, target, command)
 	assert_true(bool(result.get("ok", false)), "进攻秘术应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 18, "2张其他牌同出：6+2*3=12伤害")
+		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 15, "重影刀计2、英勇打击计1：6+3*3=15伤害")
 
 
 func _test_22_execution_blade() -> void:
@@ -87,7 +87,7 @@ func _test_22_execution_blade() -> void:
 	var result := FormalCardFixture.resolve(state, 22, 2201, FormalCardFixture.unit_target(2))
 	assert_true(bool(result.get("ok", false)), "索命刀应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 12, "负面状态目标承受3倍即18伤害")
+		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 18, "负面状态目标承受2倍即12伤害")
 
 
 func _test_23_heavy_strike() -> void:
@@ -97,7 +97,7 @@ func _test_23_heavy_strike() -> void:
 	assert_true(bool(result.get("ok", false)), "重击应成功")
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
-		assert_equal(out.get_unit(2).hp, 15, "重击造成15伤害")
+		assert_equal(out.get_unit(2).hp, 20, "重击造成10伤害")
 		assert_equal(out.scheduled_effects.size(), 1, "登记一个下回合延迟效果")
 		assert_equal(StringName(String(out.scheduled_effects[0].get("kind", ""))), &"draw", "延迟效果为额外抽牌")
 		assert_equal(int(out.scheduled_effects[0].get("round", 0)), 2, "在下一回合触发")
@@ -115,7 +115,7 @@ func _test_25_brawl() -> void:
 	var result := FormalCardFixture.resolve(state, 25, 2501, FormalCardFixture.unit_target(2))
 	assert_true(bool(result.get("ok", false)), "紧邻时肉搏应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 17, "肉搏造成13伤害")
+		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 18, "肉搏造成12伤害")
 
 
 func _test_26_training() -> void:
@@ -126,7 +126,7 @@ func _test_26_training() -> void:
 		1, [2601, 2602], [FormalCardFixture.unit_target(2), FormalCardFixture.unit_target(2)]
 	)
 	FormalCardRules.apply_combo_pre_modifiers(state, command, FormalCardFixture.defs([26, 14]))
-	assert_equal(state.deck.get_card(2602).damage_modifier, 3, "苦练使同出招式牌本场攻击力+3")
+	assert_equal(state.deck.get_card(2602).damage_modifier, 0, "苦练不能在本组结算前增伤")
 
 
 func _test_27_technique_synergy() -> void:
@@ -139,7 +139,7 @@ func _test_27_technique_synergy() -> void:
 	var result := FormalCardFixture.resolve(state, 27, 2701, target, command, defs)
 	assert_true(bool(result.get("ok", false)), "妙用招式应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 17, "蹬踢后翻9伤害的150%=13.5，向下取整13")
+		assert_equal((result["state_out"] as BattleState).get_unit(2).hp, 21, "基础版取蹬踢后翻基础伤害100%")
 
 
 func _test_30_cornered_power() -> void:
@@ -174,7 +174,7 @@ func _test_33_overflow() -> void:
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
 		assert_equal(out.get_unit(2).hp, 0, "主目标死亡")
-		assert_equal(out.get_unit(3).hp, 18, "7伤打5血产生2溢出，对周围敌人造成2")
+		assert_equal(out.get_unit(3).hp, 16, "9伤打5血产生4溢出，对周围敌人造成4")
 		assert_equal(out.get_unit(4).hp, 20, "远处敌人不受溢出影响")
 
 

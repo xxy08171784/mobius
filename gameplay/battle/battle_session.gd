@@ -35,7 +35,7 @@ func setup(
 	_enemy_behaviors = enemy_behaviors.duplicate()
 	_enemy_actions = enemy_actions.duplicate()
 	_summon_pool = summon_pool.duplicate()
-	_target_validator = target_validator
+	_target_validator = target_validator if target_validator.is_valid() else CardTargetRules.validate_range
 	_collect_actions_from_behaviors()
 	_result_cache.clear()
 	_result_cache_order.clear()
@@ -188,6 +188,9 @@ func _evaluate(command: GameCommand, commit: bool) -> CommandResult:
 
 	state = work_state
 	_rng = work_rng
+	if resolution.has("enemy_behaviors"):
+		_enemy_behaviors = resolution.enemy_behaviors
+		_enemy_actions = resolution.enemy_actions
 
 	var result := CommandResult.new()
 	result.accepted = true
@@ -261,11 +264,13 @@ func _resolve_command(command: GameCommand) -> Dictionary:
 	if command is EndTurnCommand:
 		var work_state := SaveCodec.new().clone_state(state) as BattleState
 		var work_rng := _rng.clone()
+		var work_behaviors := _enemy_behaviors.duplicate()
+		var work_actions := _enemy_actions.duplicate()
 		var ended := _turn_system.run_end_turn(
 			work_state,
 			work_rng,
-			_enemy_behaviors,
-			_enemy_actions,
+			work_behaviors,
+			work_actions,
 			_summon_pool
 		)
 		if not bool(ended.get("ok", false)):
@@ -278,6 +283,8 @@ func _resolve_command(command: GameCommand) -> Dictionary:
 			"state_out": work_state,
 			"rng_out": work_rng,
 			"events": ended.get("events", EventBatch.new()),
+			"enemy_behaviors": work_behaviors,
+			"enemy_actions": work_actions,
 		}
 
 	return {"ok": false, "error_code": &"command_type"}
@@ -311,6 +318,8 @@ func _move_cost(command: MoveCommand) -> int:
 
 
 func _move_target_valid(command: MoveCommand) -> bool:
+	if StatusRules.move_locked(state.get_unit(command.actor_id)):
+		return false
 	if not state.board.is_inside(command.destination):
 		return false
 	if state.board.is_occupied(command.destination):

@@ -11,7 +11,18 @@ card_category = 3
 visual_key = &"card_22"
 icon_key = &"icon_22"
 display_name = "索命刀"
-description = "造成6点伤害。对有负面状态的敌人，此牌造成3倍伤害。"
+description = "造成6伤害；目标有负面状态时，改为12伤害。"
+rule_values = {
+"damage": 6.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "造成8伤害；目标有负面状态时，改为16伤害。",
+"rule_values": {
+"damage": 8.0
+}
+}
+}

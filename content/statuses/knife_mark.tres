@@ -6,4 +6,4 @@
 script = ExtResource("1")
 status_id = &"status.knife_mark"
 display_name = "标着飞刀"
-description = "目标身上的飞刀标记；持续到被套索取回。"
+description = "旧存档兼容标记；正式卡牌不再施加，也不参与套索结算。"

@@ -22,7 +22,7 @@ func _test_13_dash_slash() -> void:
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
 		assert_equal(out.board.get_unit_cell(1), Vector2i(4, 2), "遇敌前停下，实际冲刺2格")
-		assert_equal(out.get_unit(2).hp, 20, "10基础+每格5，冲刺2格造成20伤害")
+		assert_equal(out.get_unit(2).hp, 22, "10基础+每格4，冲刺2格造成18伤害")
 
 
 func _test_14_kick_backflip() -> void:
@@ -50,7 +50,7 @@ func _test_15_hook() -> void:
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
 		assert_equal(out.board.get_unit_cell(2), Vector2i(3, 2), "目标实际拖回2格")
-		assert_equal(out.get_unit(2).hp, 24, "5伤害按拖2格+24%后取整为6")
+		assert_equal(out.get_unit(2).hp, 20, "6基础+拖动2格各加2，造成10伤害")
 
 
 func _test_16_whirlwind() -> void:
@@ -62,10 +62,10 @@ func _test_16_whirlwind() -> void:
 	assert_true(bool(result.get("ok", false)), "旋风斩应成功")
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
-		assert_equal(out.get_unit(2).hp, 25, "邻接敌人1受到5伤害")
-		assert_equal(out.get_unit(3).hp, 25, "邻接敌人2受到5伤害")
+		assert_equal(out.get_unit(2).hp, 23, "邻接敌人1受到7伤害")
+		assert_equal(out.get_unit(3).hp, 23, "邻接敌人2受到7伤害")
 		assert_equal(out.get_unit(4).hp, 30, "非周身8格敌人不受伤")
-		assert_equal(out.get_unit(1).block, 4, "命中2人获得4护甲")
+		assert_equal(out.get_unit(1).block, 6, "命中2人获得6护盾")
 
 
 func _test_17_throwing_knife() -> void:
@@ -76,7 +76,7 @@ func _test_17_throwing_knife() -> void:
 	assert_true(bool(result.get("ok", false)), "飞刀应成功")
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
-		assert_equal(out.get_unit(2).hp, 22, "飞刀造成8伤害")
-		assert_equal(StatusRules.stacks(out.get_unit(2), StatusRules.KNIFE_MARK), 1, "附加1层飞刀标记")
+		assert_equal(out.get_unit(2).hp, 23, "飞刀造成7伤害")
+		assert_equal(StatusRules.stacks(out.get_unit(2), StatusRules.POISON), 2, "附加2层中毒")
 		var status: StatusState = out.get_unit(2).statuses.values()[0] as StatusState
-		assert_equal(status.duration, -1, "飞刀标记应持续到显式取回")
+		assert_equal(status.duration, -1, "中毒寿命由层数决定")

@@ -11,6 +11,17 @@ card_category = 3
 visual_key = &"card_26"
 icon_key = &"icon_26"
 display_name = "苦练"
-description = "攻击结束后，提升同出的招式牌3点攻击力。"
+description = "本组结算后，同出的招式牌伤害+3；下次打出起生效，持续至战斗结束。"
+rule_values = {
+"bonus": 3.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
+upgrade_overrides = {
+1: {
+"description": "本组结算后，同出的招式牌伤害+5；下次打出起生效，持续至战斗结束。",
+"rule_values": {
+"bonus": 5.0
+}
+}
+}

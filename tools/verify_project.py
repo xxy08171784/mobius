@@ -31,11 +31,14 @@ def main() -> int:
         ("content", ["--headless", "-s", "res://tools/validate_content.gd"]),
         ("rules", ["--headless", "-s", "res://tests/run_all.gd"]),
         ("ui", ["--headless", "res://tests/ui_smoke.tscn"]),
+        ("controls", ["--headless", "res://tests/battle_controls_smoke.tscn"]),
         ("startup", ["--headless", "--quit-after", "4"]),
     ]
     if args.capture:
         commands.append(("visual", ["--rendering-method", "gl_compatibility", "--resolution", args.resolution,
                                     "res://tests/ui_smoke.tscn", "--", "--capture"]))
+        commands.append(("controls-visual", ["--rendering-method", "gl_compatibility", "--resolution", args.resolution,
+                                             "res://tests/battle_controls_smoke.tscn", "--", "--capture"]))
     for name, options in commands:
         try:
             result = subprocess.run([executable, "--path", str(ROOT), *options], cwd=ROOT,
@@ -53,7 +56,7 @@ def main() -> int:
             print(result.stdout)
             return 1
         for line in result.stdout.splitlines():
-            if line.startswith(("Rule tests:", "Content validation:", "UI smoke:")):
+            if line.startswith(("Rule tests:", "Content validation:", "UI smoke:", "Battle controls:")):
                 print(line)
     print(f"Logs: {output}")
     return 0

@@ -1,0 +1,1138 @@
+[
+  {
+    "path": "res://content/cards/reward/card_01.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "直线3格内：将敌人拉近1格并造成5伤害，或拾取地面物品。",
+      "attack_range": 3,
+      "rule_values": {
+        "damage": 5,
+        "pull": 1
+      }
+    },
+    "upgrade": {
+      "description": "直线3格内：将敌人拉近2格并造成8伤害，或拾取地面物品。",
+      "rule_values": {
+        "damage": 8,
+        "pull": 2
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_02.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "从抽牌堆选择1张攻击牌入手，本回合该牌伤害+6。",
+      "rule_values": {
+        "bonus": 6
+      }
+    },
+    "upgrade": {
+      "description": "从抽牌堆选择1张攻击牌入手，本回合该牌伤害+9。",
+      "rule_values": {
+        "bonus": 9
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_03.tres",
+    "base": {
+      "base_cost": 0,
+      "description": "[消耗] 消耗全部勇气，每层获得2护盾。当前预计：{cautious_block}。",
+      "rule_values": {
+        "per_courage": 2
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 消耗全部勇气，每层获得3护盾。当前预计：{cautious_block}。",
+      "rule_values": {
+        "per_courage": 3
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_04.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "生成3张拳：0费，4伤害，消耗。"
+    },
+    "upgrade": {
+      "description": "生成3张拳+：0费，6伤害，消耗。"
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_05.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 选择1张手牌中的招式，费用-1，持续至战斗结束。"
+    },
+    "upgrade": {
+      "description": "[消耗] 选择1张手牌中的招式，费用-1，持续至战斗结束。",
+      "cost": 0
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_06.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 消耗最多2张手牌，每张获得8护盾。",
+      "rule_values": {
+        "per_exhaust": 8
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 消耗最多2张手牌，每张获得11护盾。",
+      "rule_values": {
+        "per_exhaust": 11
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_07.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "获得4护盾，抽2张牌。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 4,
+            "target_mode": "source"
+          }
+        },
+        {
+          "type_key": "draw",
+          "params": {
+            "count": 2
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "获得7护盾，抽2张牌。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 7,
+            "target_mode": "source"
+          }
+        },
+        {
+          "type_key": "draw",
+          "params": {
+            "count": 2
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_08.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 获得1移动点、2勇气，抽1张牌。",
+      "effects": [
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "move_points",
+            "operation": "add",
+            "amount": 1,
+            "target_mode": "source"
+          }
+        },
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "courage",
+            "operation": "add",
+            "amount": 2,
+            "target_mode": "source"
+          }
+        },
+        {
+          "type_key": "draw",
+          "params": {
+            "count": 1
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "[消耗] 获得2移动点、3勇气，抽1张牌。",
+      "effects": [
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "move_points",
+            "operation": "add",
+            "amount": 2,
+            "target_mode": "source"
+          }
+        },
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "courage",
+            "operation": "add",
+            "amount": 3,
+            "target_mode": "source"
+          }
+        },
+        {
+          "type_key": "draw",
+          "params": {
+            "count": 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_09.tres",
+    "base": {
+      "base_cost": 0,
+      "description": "没有勇气时获得3勇气，否则获得1勇气。",
+      "rule_values": {
+        "initial_courage": 3,
+        "courage": 1
+      }
+    },
+    "upgrade": {
+      "description": "没有勇气时获得4勇气，否则获得2勇气。",
+      "rule_values": {
+        "initial_courage": 4,
+        "courage": 2
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_10.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 将2格内的敌人击退2格。"
+    },
+    "upgrade": {
+      "description": "[消耗] 将2格内的敌人击退2格。",
+      "cost": 0
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_11.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "[消耗] 对2格内所有敌人造成12伤害。",
+      "rule_values": {
+        "damage": 12
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 对2格内所有敌人造成16伤害。",
+      "rule_values": {
+        "damage": 16
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_12.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "[消耗] 复制1张手牌（能力牌除外），仅本场战斗有效。"
+    },
+    "upgrade": {
+      "description": "[消耗] 复制1张手牌（能力牌除外），仅本场战斗有效。",
+      "cost": 1
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_13.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "向一个方向冲刺至多3格，碰到敌人造成10伤害，每实际移动1格再+4。缠绕时不可用。",
+      "requires_active_movement": true,
+      "rule_values": {
+        "damage": 10,
+        "per_step": 4
+      }
+    },
+    "upgrade": {
+      "description": "向一个方向冲刺至多3格，碰到敌人造成13伤害，每实际移动1格再+5。缠绕时不可用。",
+      "rule_values": {
+        "damage": 13,
+        "per_step": 5
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_14.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 造成9伤害，击退敌人1格，自己后退1格。缠绕时不可用。",
+      "requires_active_movement": true,
+      "rule_values": {
+        "damage": 9
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 造成13伤害，击退敌人1格，自己后退1格。缠绕时不可用。",
+      "rule_values": {
+        "damage": 13
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_15.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "直线3格内：拉近敌人至多2格，造成6伤害，每实际拉动1格再+2。",
+      "rule_values": {
+        "damage": 6,
+        "per_step": 2
+      }
+    },
+    "upgrade": {
+      "description": "直线3格内：拉近敌人至多2格，造成8伤害，每实际拉动1格再+3。",
+      "rule_values": {
+        "damage": 8,
+        "per_step": 3
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_16.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "对周围8格的敌人各造成7伤害，每命中1人获得3护盾。",
+      "rule_values": {
+        "damage": 7,
+        "per_enemy_block": 3
+      }
+    },
+    "upgrade": {
+      "description": "对周围8格的敌人各造成10伤害，每命中1人获得4护盾。",
+      "rule_values": {
+        "damage": 10,
+        "per_enemy_block": 4
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_17.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 直线3格内造成7伤害，施加2层中毒。",
+      "rule_values": {
+        "damage": 7,
+        "poison": 2
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 直线3格内造成10伤害，施加3层中毒。",
+      "rule_values": {
+        "damage": 10,
+        "poison": 3
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_18.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "[消耗] 造成10伤害。击杀时恢复3生命并永久增加3生命上限；全场最多触发一次。",
+      "rule_values": {
+        "damage": 10
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 造成15伤害。击杀时恢复3生命并永久增加3生命上限；全场最多触发一次。",
+      "rule_values": {
+        "damage": 15
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_19.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成6伤害。伤及生命时本牌伤害+2，至多累积+6，持续至战斗结束。",
+      "rule_values": {
+        "damage": 6,
+        "growth": 2,
+        "growth_cap": 6
+      }
+    },
+    "upgrade": {
+      "description": "造成8伤害。伤及生命时本牌伤害+3，至多累积+9，持续至战斗结束。",
+      "rule_values": {
+        "damage": 8,
+        "growth": 3,
+        "growth_cap": 9
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_20.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "[消耗] 造成12伤害，眩晕敌人1回合。",
+      "rule_values": {
+        "damage": 12
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 造成16伤害，眩晕敌人1回合。",
+      "rule_values": {
+        "damage": 16
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_21.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成6伤害，同组其他牌每计数1张，再+3伤害。",
+      "rule_values": {
+        "damage": 6,
+        "per_card": 3
+      }
+    },
+    "upgrade": {
+      "description": "造成8伤害，同组其他牌每计数1张，再+4伤害。",
+      "rule_values": {
+        "damage": 8,
+        "per_card": 4
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_22.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成6伤害；目标有负面状态时，改为12伤害。",
+      "rule_values": {
+        "damage": 6
+      }
+    },
+    "upgrade": {
+      "description": "造成8伤害；目标有负面状态时，改为16伤害。",
+      "rule_values": {
+        "damage": 8
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_23.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成10伤害，下回合多抽1张牌。",
+      "rule_values": {
+        "damage": 10
+      }
+    },
+    "upgrade": {
+      "description": "造成14伤害，下回合多抽1张牌。",
+      "rule_values": {
+        "damage": 14
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_24.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成5伤害，击退1格。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 5
+          }
+        },
+        {
+          "type_key": "push",
+          "params": {
+            "steps": 1,
+            "direction_mode": "away_from_source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "造成8伤害，击退1格。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 8
+          }
+        },
+        {
+          "type_key": "push",
+          "params": {
+            "steps": 1,
+            "direction_mode": "away_from_source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_25.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "紧邻敌人时造成12伤害。",
+      "rule_values": {
+        "damage": 12
+      }
+    },
+    "upgrade": {
+      "description": "紧邻敌人时造成16伤害。",
+      "rule_values": {
+        "damage": 16
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_26.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "本组结算后，同出的招式牌伤害+3；下次打出起生效，持续至战斗结束。",
+      "rule_values": {
+        "bonus": 3
+      }
+    },
+    "upgrade": {
+      "description": "本组结算后，同出的招式牌伤害+5；下次打出起生效，持续至战斗结束。",
+      "rule_values": {
+        "bonus": 5
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_27.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成同组第一张招式基础伤害的100%；不含移动追加与状态加成。",
+      "rule_values": {
+        "multiplier": 1
+      }
+    },
+    "upgrade": {
+      "description": "造成同组第一张招式基础伤害的125%；不含移动追加与状态加成。",
+      "rule_values": {
+        "multiplier": 1.25
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_28.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成7伤害，组合出牌计数为2张。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 7
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "造成10伤害，组合出牌计数为2张。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 10
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_29.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成6伤害，获得2勇气。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 6
+          }
+        },
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "courage",
+            "operation": "add",
+            "amount": 2,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "造成9伤害，获得3勇气。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 9
+          }
+        },
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "courage",
+            "operation": "add",
+            "amount": 3,
+            "target_mode": "source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_30.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "对目标造成伤害：2格内每有1个敌人，伤害+5。",
+      "rule_values": {
+        "per_enemy": 5
+      }
+    },
+    "upgrade": {
+      "description": "对目标造成伤害：2格内每有1个敌人，伤害+7。",
+      "rule_values": {
+        "per_enemy": 7
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_31.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 造成9伤害，施加1层减速，持续1回合。",
+      "attack_range": 3,
+      "rule_values": {
+        "damage": 9,
+        "status_stacks": 1
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 造成12伤害，施加2层减速，持续1回合。",
+      "rule_values": {
+        "damage": 12,
+        "status_stacks": 2
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_32.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 造成9伤害，获得1移动点。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 9
+          }
+        },
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "move_points",
+            "operation": "add",
+            "amount": 1,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "[消耗] 造成12伤害，获得2移动点。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 12
+          }
+        },
+        {
+          "type_key": "resource",
+          "params": {
+            "key": "move_points",
+            "operation": "add",
+            "amount": 2,
+            "target_mode": "source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_33.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成9伤害。击杀时将溢出伤害扩散至目标周围8格的敌人。",
+      "rule_values": {
+        "damage": 9
+      }
+    },
+    "upgrade": {
+      "description": "造成13伤害。击杀时将溢出伤害扩散至目标周围8格的敌人。",
+      "rule_values": {
+        "damage": 13
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_34.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "[消耗] 造成17伤害，无视护盾。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 17,
+            "ignore_block": true
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "[消耗] 造成23伤害，无视护盾。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 23,
+            "ignore_block": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_35.tres",
+    "base": {
+      "base_cost": 0,
+      "description": "消耗全部移动点，每点对目标造成4伤害。",
+      "rule_values": {
+        "per_move": 4
+      }
+    },
+    "upgrade": {
+      "description": "消耗全部移动点，每点对目标造成5伤害。",
+      "rule_values": {
+        "per_move": 5
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_36.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "造成5伤害，获得4护盾。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 5
+          }
+        },
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 4,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "造成7伤害，获得6护盾。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 7
+          }
+        },
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 6,
+            "target_mode": "source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_37.tres",
+    "base": {
+      "base_cost": 0,
+      "description": "每次抽到：本牌护盾值+4。打出才获得护盾并清空储备。当前储备：{stored_block}。"
+    },
+    "upgrade": {
+      "description": "每次抽到：本牌护盾值+6。打出才获得护盾并清空储备。当前储备：{stored_block}。"
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_38.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "获得5护盾，抽1张牌并升级它，仅本场战斗有效；每张牌最多升级一次。",
+      "rule_values": {
+        "block": 5
+      }
+    },
+    "upgrade": {
+      "description": "获得8护盾，抽1张牌并升级它，仅本场战斗有效；每张牌最多升级一次。",
+      "rule_values": {
+        "block": 8
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_39.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "获得5护盾，同组其他牌每计数1张，再+3护盾。",
+      "rule_values": {
+        "block": 5,
+        "per_card": 3
+      }
+    },
+    "upgrade": {
+      "description": "获得7护盾，同组其他牌每计数1张，再+4护盾。",
+      "rule_values": {
+        "block": 7,
+        "per_card": 4
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_40.tres",
+    "base": {
+      "base_cost": 0,
+      "description": "[消耗] 获得8护盾，组合出牌计数为0张。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 8,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "[消耗] 获得12护盾，组合出牌计数为0张。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 12,
+            "target_mode": "source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_41.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "获得5护盾；结算时手中还留有招式牌，改为12护盾。",
+      "rule_values": {
+        "block": 5,
+        "conditional_block": 12
+      }
+    },
+    "upgrade": {
+      "description": "获得7护盾；结算时手中还留有招式牌，改为16护盾。",
+      "rule_values": {
+        "block": 7,
+        "conditional_block": 16
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_42.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "获得6护盾，组合出牌计数为2张。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 6,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "获得9护盾，组合出牌计数为2张。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 9,
+            "target_mode": "source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_43.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "获得9护盾，下回合开始时再获得9护盾。",
+      "rule_values": {
+        "block": 9
+      }
+    },
+    "upgrade": {
+      "description": "获得12护盾，下回合开始时再获得12护盾。",
+      "rule_values": {
+        "block": 12
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_44.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "弃掉1张手牌，获得10护盾。",
+      "rule_values": {
+        "block": 10
+      }
+    },
+    "upgrade": {
+      "description": "弃掉1张手牌，获得14护盾。",
+      "rule_values": {
+        "block": 14
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_45.tres",
+    "base": {
+      "base_cost": 2,
+      "description": "2格内每有1个敌人，获得8护盾。",
+      "rule_values": {
+        "per_enemy": 8
+      }
+    },
+    "upgrade": {
+      "description": "2格内每有1个敌人，获得11护盾。",
+      "rule_values": {
+        "per_enemy": 11
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_46.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 每次抽到蓄积3治疗，最多9；打出时治疗。当前蓄积：{heal_charge}。"
+    },
+    "upgrade": {
+      "description": "[消耗] 每次抽到蓄积4治疗，最多12；打出时治疗。当前蓄积：{heal_charge}。"
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_47.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "获得8护盾；周围8格有敌人时，再获得2勇气。",
+      "rule_values": {
+        "block": 8,
+        "courage": 2
+      }
+    },
+    "upgrade": {
+      "description": "获得11护盾；周围8格有敌人时，再获得3勇气。",
+      "rule_values": {
+        "block": 11,
+        "courage": 3
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_48.tres",
+    "base": {
+      "base_cost": 0,
+      "description": "消耗全部移动点，每点获得3护盾。",
+      "rule_values": {
+        "per_move": 3
+      }
+    },
+    "upgrade": {
+      "description": "消耗全部移动点，每点获得4护盾。",
+      "rule_values": {
+        "per_move": 4
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/reward/card_49.tres",
+    "base": {
+      "base_cost": 1,
+      "description": "[消耗] 同组其他牌护盾值+3，从本次生效，持续至战斗结束。",
+      "rule_values": {
+        "bonus": 3
+      }
+    },
+    "upgrade": {
+      "description": "[消耗] 同组其他牌护盾值+5，从本次生效，持续至战斗结束。",
+      "rule_values": {
+        "bonus": 5
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/starter/attack.tres",
+    "base": {
+      "description": "造成6伤害。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 6
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "造成9伤害。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 9
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/starter/punch.tres",
+    "base": {
+      "description": "造成4伤害。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 4
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "造成6伤害。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 6
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/starter/defend.tres",
+    "base": {
+      "description": "获得5护盾。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 5,
+            "target_mode": "source"
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "获得8护盾。",
+      "effects": [
+        {
+          "type_key": "block",
+          "params": {
+            "amount": 8,
+            "target_mode": "source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "res://content/cards/starter/charge.tres",
+    "base": {
+      "description": "主动移动至多2格，造成5伤害。缠绕时不可用。",
+      "requires_active_movement": true,
+      "rule_values": {
+        "damage": 5
+      }
+    },
+    "upgrade": {
+      "description": "主动移动至多2格，造成8伤害。缠绕时不可用。",
+      "rule_values": {
+        "damage": 8
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/starter/relentless.tres",
+    "base": {
+      "description": "本场首次造成6伤害，之后造成11伤害。",
+      "rule_values": {
+        "damage": 6,
+        "repeat_damage": 11
+      }
+    },
+    "upgrade": {
+      "description": "本场首次造成9伤害，之后造成15伤害。",
+      "rule_values": {
+        "damage": 9,
+        "repeat_damage": 15
+      }
+    }
+  },
+  {
+    "path": "res://content/cards/tokens/fist.tres",
+    "base": {
+      "description": "[消耗] 造成4伤害。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 4
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "description": "[消耗] 造成6伤害。",
+      "effects": [
+        {
+          "type_key": "damage",
+          "params": {
+            "amount": 6
+          }
+        }
+      ]
+    }
+  }
+]

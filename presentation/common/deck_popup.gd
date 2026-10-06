@@ -34,7 +34,7 @@ static func for_battle(state: BattleState, card_defs: Dictionary) -> DeckPopup:
 			var card: BattleCardState = state.deck.get_card(int(uid_value))
 			if card == null:
 				continue
-			entries.append({"def": _def_for(card_defs, card.card_id), "level": card.upgrade_level})
+			entries.append({"def": _def_for(card_defs, card.card_id), "level": card.upgrade_level, "card": card, "state": state})
 		groups.append({"title": "%s（%d）" % [zone["title"], entries.size()], "entries": entries})
 	popup._groups = groups
 	return popup
@@ -108,7 +108,7 @@ func _build_entries(list: VBoxContainer) -> void:
 			var level := int(entry.get("level", 0))
 			var button := Button.new()
 			button.text = _entry_text(definition, level)
-			button.tooltip_text = CardInfo.tooltip_for(definition, level)
+			button.tooltip_text = CardInfo.tooltip_for(definition, level, entry.get("card"), entry.get("state"))
 			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			button.focus_mode = Control.FOCUS_NONE
 			button.custom_minimum_size = Vector2(0, 34)
@@ -123,7 +123,7 @@ func _on_dim_input(event: InputEvent) -> void:
 static func _entry_text(definition: CardDef, level: int) -> String:
 	if definition == null:
 		return "（未知卡牌）"
-	var suffix := " [升级]" if level > 0 else ""
+	var suffix := "+" if level > 0 else ""
 	return "%s%s  （%d 费 · %s）" % [
 		CardInfo.display_name_of(definition),
 		suffix,

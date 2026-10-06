@@ -18,8 +18,8 @@ kind = 0
 target_policy = 0
 range = 1
 range_shape = 1
-damage = 7
-advance_steps = 3
+damage = 13
+advance_steps = 2
 
 [sub_resource type="Resource" id="act_lick"]
 script = ExtResource("2_act")
@@ -29,9 +29,9 @@ target_policy = 0
 range = 1
 range_shape = 1
 apply_status_id = &"status.corrode"
-apply_status_stacks = 2
+apply_status_stacks = 1
 apply_status_duration = 2
-advance_steps = 3
+advance_steps = 2
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

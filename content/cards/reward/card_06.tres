@@ -11,7 +11,18 @@ card_category = 1
 visual_key = &"card_06"
 icon_key = &"icon_06"
 display_name = "遣散"
-description = "[消耗] 选择最多2张手牌放入已消耗牌堆，每消耗1张获得8点护甲。"
-base_cost = 2
+description = "[消耗] 消耗最多2张手牌，每张获得8护盾。"
+rule_values = {
+"per_exhaust": 8.0
+}
+base_cost = 1
 tags = Array[StringName]([&"skill"])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"description": "[消耗] 消耗最多2张手牌，每张获得11护盾。",
+"rule_values": {
+"per_exhaust": 11.0
+}
+}
+}
