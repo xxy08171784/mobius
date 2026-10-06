@@ -21,3 +21,6 @@ extends Resource
 
 func is_valid() -> bool:
 	return not id.is_empty() and not unit_def_id.is_empty() and not starter_deck.is_empty()
+
+## 0 表示默认可选；大于 0 时由 Profile 货币解锁。
+@export_range(0, 9999) var unlock_cost: int = 0

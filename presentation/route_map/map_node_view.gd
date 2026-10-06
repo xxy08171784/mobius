@@ -24,6 +24,8 @@ var _pulse_tween: Tween = null
 func _ready() -> void:
 	_pivot_center()
 	resized.connect(_pivot_center)
+	focus_entered.connect(queue_redraw)
+	focus_exited.connect(queue_redraw)
 
 
 ## 以中心为缩放枢轴（size 由父节点摆好后才确定；resize 时同步更新）。
@@ -39,6 +41,7 @@ func setup(id: int, type_key: StringName, skin: RouteMapSkin) -> void:
 
 func apply_state(new_state: StringName) -> void:
 	state = new_state
+	focus_mode = Control.FOCUS_ALL if state == &"available" else Control.FOCUS_NONE
 	if _icon == null:
 		_icon = get_node_or_null("Icon")
 	if _icon != null:
@@ -63,6 +66,8 @@ func apply_state(new_state: StringName) -> void:
 func _draw() -> void:
 	if _skin == null or state == &"locked" or state == &"visited":
 		return
+	if has_focus():
+		draw_rect(Rect2(Vector2.ZERO, size), Color.WHITE, false, 3.0)
 	var c := size * 0.5
 	var r := minf(size.x, size.y) * 0.5 - 2.0
 	if state == &"current":
@@ -73,6 +78,9 @@ func _draw() -> void:
 
 ## 开始循环缩放；已在播放则不重启（避免每次刷新跳一下）。
 func _start_pulse() -> void:
+	var settings := get_node_or_null("/root/SettingsService")
+	if settings != null and settings.reduced_motion:
+		return
 	if _pulse_tween != null and _pulse_tween.is_valid():
 		return
 	var peak := Vector2(pulse_max_scale, pulse_max_scale)
@@ -92,6 +100,10 @@ func _stop_pulse() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_accept") and state == &"available":
+		activated.emit(node_id)
+		accept_event()
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		# 只有当前可进入的节点响应点击；visited/current/locked 一律不响应（StS 式）。
 		if state == &"available":

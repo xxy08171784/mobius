@@ -67,14 +67,16 @@ func _test_victory_gold_and_reward_via_session(content: Object) -> void:
 	var run: RunState = RunSession.create_run(&"character.hero", "reward-session", content)
 	var session := RunSession.new()
 	session.setup(run, content)
+	session.enter_node(session.available_node_ids()[0])
 	var gold_before := run.gold
 
 	var result := BattleResult.new()
 	result.victory = true
+	result.battle_id = session.state.pending_battle_id
 	result.persistent_changes = {"player_hp": {EncounterBuilder.PLAYER_UNIT_ID: 28}}
 	var outcome := session.on_battle_finished(result)
 	assert_equal(String(outcome.get("kind", "")), "victory", "胜利转移")
-	assert_equal(run.gold, gold_before + RewardSystem.GOLD_REWARD, "胜利发金币")
+	assert_equal(session.state.gold, gold_before + RewardSystem.GOLD_REWARD, "胜利发金币")
 
 	# 同 seed 的 RunSession 生成相同三选一。
 	var run_a: RunState = RunSession.create_run(&"character.hero", "reward-det", content)
@@ -83,6 +85,12 @@ func _test_victory_gold_and_reward_via_session(content: Object) -> void:
 	var run_b: RunState = RunSession.create_run(&"character.hero", "reward-det", content)
 	var session_b := RunSession.new()
 	session_b.setup(run_b, content)
+	for pending: RunSession in [session_a, session_b]:
+		pending.enter_node(pending.available_node_ids()[0])
+		var victory := BattleResult.new()
+		victory.battle_id = pending.state.pending_battle_id
+		victory.victory = true
+		pending.on_battle_finished(victory)
 	assert_equal(
 		session_a.generate_reward().offers,
 		session_b.generate_reward().offers,

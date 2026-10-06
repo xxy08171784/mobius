@@ -6,7 +6,7 @@ extends Resource
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var priority: int = 0
-## 先冻结内容侧触发键与参数；运行时 RelicState 属于未来 RunState，本阶段不越界接入 BattleState。
+## 触发键与参数由 RelicSystem 消费；计数保存在 RelicState / BattleState，定义只读。
 @export var trigger_key: StringName = &""
 @export var trigger_params: Dictionary = {}
 

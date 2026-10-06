@@ -70,8 +70,8 @@ func _test_shop(content: Object) -> void:
 	rng_a.seed = 7
 	var rng_b := RandomNumberGenerator.new()
 	rng_b.seed = 7
-	var shop_a := ShopSystem.generate(def, rng_a)
-	var shop_b := ShopSystem.generate(def, rng_b)
+	var shop_a := ShopSystem.generate(def, rng_a, content)
+	var shop_b := ShopSystem.generate(def, rng_b, content)
 	assert_equal(shop_a.offer_count(), def.offer_count, "商品数 = offer_count")
 	assert_equal(shop_a.offers, shop_b.offers, "同 seed 商品确定")
 

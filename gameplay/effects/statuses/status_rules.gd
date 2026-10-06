@@ -125,7 +125,7 @@ static func slow_penalty(unit: UnitState) -> int:
 
 
 static func is_negative(status_id: StringName) -> bool:
-	return status_id in [BLEED, POISON, VULNERABLE, STUN, SLOW, KNIFE_MARK]
+	return status_id in [BLEED, POISON, VULNERABLE, STUN, SLOW, KNIFE_MARK, WEAK, ENTANGLE, CORRODE, IGNITE]
 
 
 static func has_negative_status(unit: UnitState) -> bool:

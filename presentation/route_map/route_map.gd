@@ -1,8 +1,7 @@
 class_name RouteMapScreen
 extends Control
 ## 选关地图屏：按当前章（CampaignDef.act_index）生成地图、摆放节点、处理点击。
-## 进入 boss 节点 → 发出 act_completed 并自动推进到下一章（原型用）。
-## 规则走 RouteGraph.can_enter/enter；不依赖 RunSession（后续接线点）。
+## 正式模式只投影 RunSession；F6 独立预览时 demo_autostart 使用内建演示图。
 
 ## 选中节点后发出（携带 MapNodeState）。
 signal node_selected(node: MapNodeState)
@@ -15,6 +14,7 @@ signal node_entered(transition: Dictionary)
 signal activated(node_id: int)
 
 ## 三章配置。缺省时用 3 份默认 RouteMapDef。
+@export var demo_autostart: bool = true
 @export var campaign: CampaignDef = null
 @export var skin: RouteMapSkin = null
 ## 当前章号。
@@ -51,7 +51,8 @@ func _ready() -> void:
 	if skin == null:
 		skin = RouteMapSkin.new()
 		skin.load_defaults()
-	set_act(act_index, run_seed)
+	if demo_autostart:
+		set_act(act_index, run_seed)
 
 
 ## 切换到第 index 章（0 起）。用该章的配置 + 独立种子重新生成地图。
@@ -86,8 +87,8 @@ func bind_run_session(session: RunSession) -> void:
 		return
 	act_index = session.state.act_index
 	graph = session.state.map
-	_current_id = session.state.current_node_id
 	_clear()
+	_current_id = session.state.current_node_id
 	_apply_background()
 	_layout_views()
 	_scroll_to_bottom()
@@ -119,7 +120,7 @@ func _act_seed() -> int:
 
 func _apply_background() -> void:
 	# 卷轴背景是 Canvas 的首个子节点：随 Scroll 一起滚动，节点图标画在它上面。
-	$Scroll/Canvas/Background.texture = skin.background_for(act_index)
+	$Scroll/Center/Canvas/Background.texture = skin.background_for(act_index)
 
 
 func _clear() -> void:
@@ -128,8 +129,8 @@ func _clear() -> void:
 	_node_views.clear()
 	_centers.clear()
 	_current_id = -1
-	if $Scroll/Canvas/Edges.is_inside_tree():
-		$Scroll/Canvas/Edges.queue_redraw()
+	if $Scroll/Center/Canvas/Edges.is_inside_tree():
+		$Scroll/Center/Canvas/Edges.queue_redraw()
 
 
 func _build_map() -> void:
@@ -142,7 +143,7 @@ func _build_map() -> void:
 
 func _layout_views() -> void:
 	var def := _current_def()
-	var canvas: Control = $Scroll/Canvas
+	var canvas: Control = $Scroll/Center/Canvas
 	var canvas_w := margin * 2.0 + maxf(float(def.cols - 1), 0.0) * col_spacing
 	var canvas_h := margin * 2.0 + float(def.rows) * row_spacing
 	var bg: Texture2D = skin.background_for(act_index)
@@ -175,10 +176,10 @@ func _layout_views() -> void:
 		view.size = Vector2(node_cell, node_cell)
 		view.position = center - view.size * 0.5
 		view.activated.connect(_on_node_activated)
-		$Scroll/Canvas/Nodes.add_child(view)
+		$Scroll/Center/Canvas/Nodes.add_child(view)
 		_node_views[id] = view
 
-	$Scroll/Canvas/Edges.setup(graph, _centers, skin.path_color, skin.path_width)
+	$Scroll/Center/Canvas/Edges.setup(graph, _centers, skin.path_color, skin.path_width)
 	_refresh_all()
 
 

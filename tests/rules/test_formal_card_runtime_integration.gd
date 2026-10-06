@@ -180,13 +180,15 @@ func _test_battle_result_writes_max_hp_to_run() -> void:
 	var run := RunSession.create_run(&"character.hero", "formal-max-hp", content)
 	var session := RunSession.new()
 	session.setup(run, content)
+	session.enter_node(session.available_node_ids()[0])
 	var max_before := run.max_hp
 	var result := BattleResult.new()
 	result.victory = true
+	result.battle_id = session.state.pending_battle_id
 	result.persistent_changes = {
 		"max_hp_delta": 3,
 		"player_hp": {EncounterBuilder.PLAYER_UNIT_ID: run.hp},
 	}
 	var outcome := session.on_battle_finished(result)
 	assert_equal(String(outcome.get("kind", "")), "victory", "饮血剑永久变化通过正常胜利路径写回")
-	assert_equal(run.max_hp, max_before + 3, "RunState 最大生命永久+3")
+	assert_equal(session.state.max_hp, max_before + 3, "RunState 最大生命永久+3")

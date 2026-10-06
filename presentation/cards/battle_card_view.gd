@@ -21,6 +21,8 @@ func _ready() -> void:
 	_hit_button.pressed.connect(_on_pressed)
 	_hit_button.mouse_entered.connect(_on_mouse_entered)
 	_hit_button.mouse_exited.connect(_on_mouse_exited)
+	_hit_button.focus_entered.connect(_on_mouse_entered)
+	_hit_button.focus_exited.connect(_on_mouse_exited)
 
 
 func setup(

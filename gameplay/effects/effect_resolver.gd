@@ -32,6 +32,10 @@ func register_handler(handler: EffectHandler) -> void:
 	_handlers[handler.get_type_key()] = handler
 
 
+func supports(type_key: StringName) -> bool:
+	return _handlers.has(type_key)
+
+
 func resolve(state_in: Variant, plan: Variant, rng_in: Variant) -> Dictionary:
 	var state_clone := _clone_state(state_in)
 	if not bool(state_clone.get("ok", false)):

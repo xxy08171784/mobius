@@ -194,10 +194,12 @@ func _test_boss_advances_act(content: Object) -> void:
 	var boss := g.add_boss(1)
 	g.add_edge(entry.id, boss.id)
 	session.state.map = g
-	session.state.current_node_id = boss.id
-	g.mark_visited(boss.id)
+	session.state.current_node_id = entry.id
+	g.mark_visited(entry.id)
+	session.enter_node(boss.id)
 
 	var result := BattleResult.new()
+	result.battle_id = session.state.pending_battle_id
 	result.victory = true
 	result.persistent_changes = {"player_hp": {EncounterBuilder.PLAYER_UNIT_ID: 25}}
 	var out := session.on_battle_finished(result)

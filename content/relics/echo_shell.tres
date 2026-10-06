@@ -6,7 +6,7 @@
 script = ExtResource("1_1iqxu")
 relic_id = &"relic.echo_shell"
 display_name = "回声甲壳"
-description = "预留：战斗开始时获得护盾。"
+description = "战斗开始时获得护盾。"
 trigger_key = &"battle_start"
 trigger_params = {
 "block": 4

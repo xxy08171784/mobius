@@ -6,7 +6,7 @@
 script = ExtResource("1_sxhly")
 relic_id = &"relic.mobius_coin"
 display_name = "莫比乌斯硬币"
-description = "预留：战斗胜利后的奖励修正。"
+description = "战斗胜利时额外获得 1 金币。"
 trigger_key = &"battle_victory"
 trigger_params = {
 "reward_bonus": 1

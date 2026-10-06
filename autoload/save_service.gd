@@ -1,92 +1,147 @@
 extends Node
-## 存档读写门面。autoload。
-## user://profile.json  user://settings.cfg  user://runs/current.json(.bak)
-## 原子写：临时文件 -> 校验可读 -> 保留旧档备份 -> 替换；处理读写失败。
-
+## 校验封装 + 同目录临时文件 + 上一份有效备份；Run/Profile 使用同一可靠读写实现。
+signal persistence_error(message: String)
+signal backup_recovered(path: String)
 const PROFILE_PATH := "user://profile.json"
 const RUN_PATH := "user://runs/current.json"
 const RUN_BACKUP_PATH := "user://runs/current.bak"
+var run_path: String = RUN_PATH
+var profile_path: String = PROFILE_PATH
+var last_error: String = ""
+var recovered_from_backup: bool = false
 
 
 func save_profile(profile: RefCounted) -> bool:
-	# TODO: ProfileState 落地后实现。
-	return false
+	return profile is ProfileState and _write_json(profile_path, (profile as ProfileState).to_dict())
 
 
-func load_profile() -> RefCounted:
-	# TODO: ProfileState 落地后实现。
-	return null
+func load_profile() -> ProfileState:
+	var profile := ProfileState.from_dict(_read_json(profile_path))
+	if profile != null:
+		return profile
+	var backup := _backup_path(profile_path)
+	profile = ProfileState.from_dict(_read_json(backup))
+	if profile != null:
+		_recover(backup, profile_path)
+	return profile
 
 
-## 是否存在可续玩的 Run 存档。
 func has_run() -> bool:
-	return FileAccess.file_exists(RUN_PATH)
+	var run := load_run() as RunState
+	return run != null and run.is_active()
 
 
-## 保存一局 RunState。仅在效果队列排空的安全点（节点边界）调用。
 func save_run(run: RefCounted) -> bool:
-	if run == null or not run is RunState:
-		push_error("SaveService.save_run: expected RunState, got %s" % (type_string(typeof(run)) if run != null else "null"))
-		return false
-	var data := SaveCodec.new().encode_state(run)
-	if data.is_empty():
-		push_error("SaveService.save_run: encode failed")
-		return false
-	return _write_json(RUN_PATH, data)
+	if not run is RunState:
+		return _error("无效的冒险状态。")
+	return _write_json(run_path, SaveCodec.new().encode_state(run))
 
 
-## 读档；无存档或损坏返回 null。读档后由 RunSession.setup 恢复 RNG 与内容绑定。
-func load_run() -> RefCounted:
-	var data := _read_json(RUN_PATH)
-	if data.is_empty():
+func load_run(include_settled: bool = false) -> RefCounted:
+	recovered_from_backup = false
+	var primary := _read_json(run_path)
+	if int(primary.get("schema_version", 0)) > SaveMigrator.CURRENT_SCHEMA_VERSION:
+		_error("存档版本比当前游戏更新，请使用更新版本的游戏读取。")
 		return null
-	var loaded: RefCounted = SaveCodec.new().decode_state(data)
-	if loaded is RunState:
-		return loaded
-	return null
+	var run := _decode_run(primary)
+	if run == null:
+		var backup := _backup_path(run_path)
+		run = _decode_run(_read_json(backup))
+		if run != null:
+			recovered_from_backup = true
+			_recover(backup, run_path)
+	if run != null:
+		var profile := load_profile()
+		if not include_settled and profile != null and profile.completed_runs.has(run.instance_id):
+			return null
+	return run
 
 
-## 原子写：临时文件 -> JSON 可解析校验 -> 旧档备份 -> 替换。
-func _write_json(path: String, data: Dictionary) -> bool:
-	var global_path := ProjectSettings.globalize_path(path)
-	DirAccess.make_dir_recursive_absolute(global_path.get_base_dir())
+func _decode_run(data: Dictionary) -> RunState:
+	if not SaveMigrator.new().can_load(data) or data.get("state_type", "") != "RunState":
+		return null
+	var payload: Variant = data.get("state")
+	if not payload is Dictionary:
+		return null
+	for key: String in ["map", "deck", "relics", "rng_snapshot", "hp", "seed"]:
+		if not payload.has(key):
+			return null
+	var run := SaveCodec.new().decode_state(data) as RunState
+	if run == null or run.map == null or run.map.nodes.is_empty() or run.max_hp < 1:
+		return null
+	if not [&"route", &"deployment", &"battle", &"rest", &"shop", &"event", &"treasure", &"reward", &"run_over"].has(run.flow_phase):
+		return null
+	if run.flow_phase == &"battle" and (run.pending_battle_id < 0 or not run.pending_payload.has("battle")):
+		return null
+	return run
 
-	var text := JSON.stringify(data)
-	var temp_path := path + ".tmp"
-	var file := FileAccess.open(temp_path, FileAccess.WRITE)
-	if file == null:
-		push_error("SaveService: cannot open temp file %s" % temp_path)
+
+func archive_run(run: RunState) -> bool:
+	if run == null or run.instance_id.is_empty():
+		return _error("无法归档：缺少冒险编号。")
+	var archive := run_path.get_base_dir().path_join("history").path_join(run.instance_id.validate_filename() + ".json")
+	if not _write_json(archive, SaveCodec.new().encode_state(run)):
 		return false
-	file.store_string(text)
-	file.close()
+	return clear_run()
 
-	# 校验：临时文件必须能被 JSON 解析，否则视为写失败，不碰旧档。
-	var check := FileAccess.open(temp_path, FileAccess.READ)
-	if check == null:
-		push_error("SaveService: temp file unreadable %s" % temp_path)
-		return false
-	var parsed: Variant = JSON.parse_string(check.get_as_text())
-	check.close()
-	if not parsed is Dictionary:
-		push_error("SaveService: temp file failed JSON check")
-		return false
 
-	var temp_global := ProjectSettings.globalize_path(temp_path)
-	var path_global := ProjectSettings.globalize_path(path)
-	var backup_global := ProjectSettings.globalize_path(RUN_BACKUP_PATH)
-
-	# 保留旧档为 .bak（覆盖上次备份）。
-	if FileAccess.file_exists(path):
-		if FileAccess.file_exists(RUN_BACKUP_PATH):
-			DirAccess.remove_absolute(backup_global)
-		DirAccess.copy_absolute(path_global, backup_global)
-
-	# 替换：Windows 上 rename 覆盖已存在文件不可靠，先删旧再改，备份兜底。
-	DirAccess.remove_absolute(path_global)
-	if DirAccess.rename_absolute(temp_global, path_global) != OK:
-		push_error("SaveService: rename failed; backup preserved at %s" % RUN_BACKUP_PATH)
-		return false
+func clear_run() -> bool:
+	# 先清备份：即使后续主档删除失败，也不会在读档时复活上一战。
+	for path: String in [_backup_path(run_path), run_path + ".tmp", run_path]:
+		if FileAccess.file_exists(path) and DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) != OK:
+			return _error("无法清理存档：" + path)
 	return true
+
+
+func _write_json(path: String, data: Dictionary) -> bool:
+	last_error = ""
+	var global_path := ProjectSettings.globalize_path(path)
+	if DirAccess.make_dir_recursive_absolute(global_path.get_base_dir()) != OK:
+		return _error("无法创建存档目录。")
+	var payload := JSON.stringify(data)
+	var envelope := {"payload": payload, "sha256": payload.sha256_text()}
+	var temp := path + ".tmp"
+	var file := FileAccess.open(temp, FileAccess.WRITE)
+	if file == null:
+		return _error("无法写入临时存档：" + temp)
+	file.store_string(JSON.stringify(envelope))
+	file.flush()
+	var write_error := file.get_error()
+	file.close()
+	if write_error != OK or _read_json(temp).is_empty():
+		return _error("临时存档校验失败。")
+	var backup := _backup_path(path)
+	# 不用损坏的主档覆盖有效备份。
+	if not _read_json(path).is_empty():
+		if DirAccess.copy_absolute(global_path, ProjectSettings.globalize_path(backup)) != OK:
+			return _error("备份失败；旧存档保持不变。")
+	if not _replace_file(temp, path):
+		# Windows 替换失败时恢复主文件，保留 temp 供诊断（读档绝不自动选未提交的 temp）。
+		if not FileAccess.file_exists(path) and FileAccess.file_exists(backup):
+			DirAccess.copy_absolute(ProjectSettings.globalize_path(backup), global_path)
+		return _error("替换存档失败；已保留上一份备份。")
+	return true
+
+
+func _replace_file(source: String, destination: String) -> bool:
+	var target := ProjectSettings.globalize_path(destination)
+	if FileAccess.file_exists(destination) and DirAccess.remove_absolute(target) != OK:
+		return false
+	return DirAccess.rename_absolute(ProjectSettings.globalize_path(source), target) == OK
+
+
+func _recover(backup: String, destination: String) -> bool:
+	var temp := destination + ".recovery"
+	if DirAccess.copy_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(temp)) != OK:
+		return _error("备份可读，但无法恢复主存档。")
+	if not _replace_file(temp, destination):
+		return _error("备份可读，但主存档恢复失败。")
+	backup_recovered.emit(destination)
+	return true
+
+
+func _backup_path(path: String) -> String:
+	return path.get_basename() + ".bak"
 
 
 func _read_json(path: String) -> Dictionary:
@@ -97,6 +152,17 @@ func _read_json(path: String) -> Dictionary:
 		return {}
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
-	if parsed is Dictionary:
-		return parsed as Dictionary
-	return {}
+	if not parsed is Dictionary:
+		return {}
+	if parsed.has("payload"):
+		var payload := String(parsed.get("payload", ""))
+		if payload.sha256_text() != String(parsed.get("sha256", "")):
+			return {}
+		parsed = JSON.parse_string(payload)
+	return parsed if parsed is Dictionary else {}
+
+
+func _error(message: String) -> bool:
+	last_error = message
+	persistence_error.emit(message)
+	return false

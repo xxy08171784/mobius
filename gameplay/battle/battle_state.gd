@@ -22,6 +22,7 @@ var resume_phase: Phase = Phase.PLAYER_INPUT
 
 ## 战斗稳定 ID；Phase 3 MVP 用 int，未来由 RunState/Encounter 分配。
 var battle_id: int = -1
+var run_instance_id: String = ""
 var round_index: int = 0
 
 ## 每次成功提交 +1；UI 用它与 CommandResult.state_version 拒绝过期预览。
@@ -50,6 +51,7 @@ var scheduled_effects: Array[Dictionary] = []
 var ground_items: Dictionary = {} # Vector2i -> Array[StringName]
 var collected_items: Array[StringName] = []
 var run_changes: Dictionary = {}
+var relic_hooks: Array[Dictionary] = []
 
 ## ROUND_START 锁定，ENEMY_ACT 直接执行同一 IntentState。
 var enemy_intents: Dictionary[int, IntentState] = {}
