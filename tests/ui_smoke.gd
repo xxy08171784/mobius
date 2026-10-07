@@ -119,6 +119,8 @@ func _art_scenarios(flow: RunFlow) -> void:
 		flow._clear_screen()
 		var run := RunSession.create_run(&"character.hero", "visual-act-%d" % act, db)
 		var encounter := db.get_encounter(StringName("encounter.boss.act%d" % (act + 1))).duplicate(true) as EncounterDef
+		# 本测试手工控制单位落点，禁用随机障碍以免固定格不可走。
+		encounter.obstacle_count = 0
 		if act == 1:
 			encounter.enemy_ids.append(&"enemy.catacomb.spider")
 			encounter.enemy_ids.append(&"enemy.catacomb.corpse_beetle")

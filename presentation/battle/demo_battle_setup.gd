@@ -48,6 +48,11 @@ static func build(seed_text: String = "phase5-content-demo", enemy_content_id: S
 	board.place_unit(1, Vector2i(2, 5))
 	board.place_unit(2, Vector2i(4, 4))
 
+	# 演示预览也摆随机障碍。
+	var obstacle_pool := ContentDB.get_obstacle_pool(&"obstacle_pool.act1")
+	if obstacle_pool != null:
+		ObstacleGenerator.place_obstacles(board, obstacle_pool, 5, rng.get_stream(&"encounter"), ContentDB)
+
 	var state := BattleFactory.create_state(401, board, units, deck, rng, 5, 3, 2)
 	var enemy_actions := _enemy_actions(enemy_def)
 

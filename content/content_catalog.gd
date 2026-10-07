@@ -15,3 +15,6 @@ extends Resource
 @export var events: Array[EventDef] = []
 ## 墓外主题：按幕的怪物池（进入战斗时抽 2~4 只）。
 @export var monster_pools: Array[MonsterPoolDef] = []
+## 棋盘随机障碍：稳定 ID 定义与按幕抽取池。
+@export var obstacles: Array[ObstacleDef] = []
+@export var obstacle_pools: Array[ObstaclePoolDef] = []

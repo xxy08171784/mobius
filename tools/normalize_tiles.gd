@@ -133,13 +133,16 @@ func _measure(img: Image) -> Dictionary:
 				first = y
 			last = y
 			max_w = maxi(max_w, hi - lo + 1)
+	# 找"最宽行"用于推算菱形高：用容差取**首个接近最大值**的行。
+	# 起因：菱形顶面+侧壁的六边形轮廓里，侧壁宽度与顶面对角线几乎相同；
+	# 逐像素严格取最大会被侧壁 1px 抖动带到平台底部，把厚度当成菱形高，
+	# 导致偏高的假象（实测 2地块新3/新4）。
 	var band := first
-	var widest := 0
+	var tolerance := 2
 	for y in range(first, last + 1):
-		var wdt := row_max[y] - row_min[y] + 1
-		if wdt > widest:
-			widest = wdt
+		if row_max[y] - row_min[y] + 1 >= max_w - tolerance:
 			band = y
+			break
 	var H := 2 * (band - first)
 	var x0 := 99999
 	var x1 := -1

@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="CardDef" format=3]
+[gd_resource type="Resource" script_class="CardDef" format=3 uid="uid://06gmd87lerv2"]
 
-[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_j4aso"]
-[ext_resource type="Script" path="res://gameplay/effects/configured_effect_def.gd" id="2_xm64p"]
-[ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="3_3cuph"]
+[ext_resource type="Script" uid="uid://bfwnsm8ujfo4f" path="res://gameplay/effects/effect_def.gd" id="1_j4aso"]
+[ext_resource type="Script" uid="uid://dedkx26w4smkc" path="res://gameplay/effects/configured_effect_def.gd" id="2_xm64p"]
+[ext_resource type="Script" uid="uid://cyl8kx1wecxnf" path="res://gameplay/cards/card_def.gd" id="3_3cuph"]
 
 [sub_resource type="Resource" id="Resource_qktbb"]
 script = ExtResource("2_xm64p")

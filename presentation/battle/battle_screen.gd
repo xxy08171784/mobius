@@ -64,6 +64,8 @@ func set_chapter(index: int) -> void:
 	chapter_index = clampi(index, 0, 2)
 	$ChapterBackground.texture = UIArt.background(chapter_index)
 	$ChapterBackground.modulate.a = background_opacity
+	if _board_view != null:
+		_board_view.set_chapter(chapter_index)
 
 
 func _cache_ui() -> void:
@@ -169,7 +171,7 @@ func configure_deployment(preview: Dictionary) -> void:
 		for x in range(cols):
 			if x == 0 or y == 0 or x == cols - 1 or y == rows - 1:
 				allowed.append(Vector2i(x, y))
-	_board_view.render_deployment(cols, rows, allowed, enemy_cells)
+	_board_view.render_deployment(cols, rows, allowed, enemy_cells, false, preview.get("obstacles", {}))
 
 
 func _set_deployment_mode(enabled: bool) -> void:

@@ -7,6 +7,7 @@ extends Control
 
 const ROUTE_SCENE := preload("res://presentation/route_map/route_map.tscn")
 const BATTLE_SCENE := preload("res://presentation/battle/battle_screen.tscn")
+const PLOT_INTRO_SCENE := preload("res://presentation/common/plot_intro.tscn")
 
 var _session: RunSession = null
 var _status: Label = null
@@ -280,13 +281,31 @@ func _show_character_select() -> void:
 	screen.setup(characters, App.ensure_profile().unlocked_difficulty)
 	screen.chosen.connect(func(id: StringName) -> void:
 		App.selected_difficulty = screen.difficulty()
-		start_run(id, screen.seed_text())
+		# 先取出 seed：剧情播放前 _clear_screen 会释放角色选择屏，回调里不能再引用 screen。
+		var run_seed := screen.seed_text()
+		_show_plot_intro(func() -> void: start_run(id, run_seed))
 	)
 	screen.unlock_requested.connect(func(id: StringName) -> void:
 		App.unlock_character(id)
 		_show_character_select()
 	)
 	screen.back.connect(show_main_menu)
+
+
+## 开场剧情：纯表现层，播完回调 next（开新 run）。期间隐藏常驻顶栏，结束后恢复。
+func _show_plot_intro(next: Callable) -> void:
+	_clear_screen()
+	_update_hud()
+	if _top_bar != null:
+		_top_bar.visible = false
+	var intro: PlotIntro = PLOT_INTRO_SCENE.instantiate()
+	intro.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(intro)
+	intro.finished.connect(func() -> void:
+		if _top_bar != null:
+			_top_bar.visible = true
+		next.call()
+	)
 
 
 func _on_character_chosen(character_id: StringName) -> void:

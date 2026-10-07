@@ -132,10 +132,19 @@ func preview_battle(node_id: int) -> Dictionary:
 	var cells: Array[Vector2i] = []
 	for enemy_id: int in battle_state.enemy_ids():
 		cells.append(battle_state.board.get_unit_cell(enemy_id))
+	# 障碍格（cell -> 障碍 ID），供部署预览一并显示。
+	var obstacles: Dictionary = {}
+	for row in range(battle_state.board.rows):
+		for col in range(battle_state.board.cols):
+			var cell := Vector2i(col, row)
+			var cell_state := battle_state.board.get_cell(cell)
+			if cell_state != null and not cell_state.terrain_key.is_empty():
+				obstacles[cell] = cell_state.terrain_key
 	return {
 		"cols": battle_state.board.cols,
 		"rows": battle_state.board.rows,
 		"enemy_cells": cells,
+		"obstacles": obstacles,
 	}
 
 

@@ -119,6 +119,7 @@ func _test_full_battle_state_json_round_trip() -> void:
 	)
 	assert_equal(decoded.board.get_unit_cell(1), Vector2i(1, 1), "board occupancy persists")
 	assert_true(not decoded.board.is_traversable(Vector2i(3, 3)), "explicit terrain persists")
+	assert_equal(decoded.board.get_cell(Vector2i(3, 3)).terrain_key, &"wall", "terrain_key（障碍 ID）persists")
 	assert_equal(decoded.get_unit(1).get_status(77).status_id, &"poison", "StatusState persists")
 	assert_equal(decoded.deck.zone_of(70), DeckState.ZONE_HAND, "card zone persists")
 	assert_equal(decoded.enemy_intents[2].action_id, &"enemy.attack", "enemy intent persists")

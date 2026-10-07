@@ -23,6 +23,10 @@ extends Resource
 @export var energy_per_round: int = 3
 @export var move_points_per_round: int = 2
 
+## 随机障碍：池 ID 与数量（拷进临时 EncounterDef，见 MonsterPool._compose）。
+@export var obstacle_pool_id: StringName = &""
+@export var obstacle_count: int = 0
+
 
 func is_valid() -> bool:
 	return not id.is_empty() and not enemy_ids.is_empty()

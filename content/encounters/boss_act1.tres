@@ -8,3 +8,5 @@ id = &"encounter.boss.act1"
 enemy_ids = Array[StringName]([&"enemy.tomb.tomb_statue"])
 summon_enemy_ids = Array[StringName]([&"enemy.tomb.soul_lantern", &"enemy.tomb.bat", &"enemy.tomb.scorpion", &"enemy.tomb.slime"])
 tier = &"boss"
+obstacle_pool_id = &"obstacle_pool.act1"
+obstacle_count = 6

@@ -16,6 +16,7 @@ func run() -> Array[String]:
 	_test_determinism(content)
 	_test_player_start_override(content)
 	_test_enemies_spawn_interior(content)
+	_test_obstacles(content)
 	_test_invalid_defs(content)
 	return failures()
 
@@ -147,6 +148,80 @@ func _test_enemies_spawn_interior(content: Object) -> void:
 			cell.x > 0 and cell.y > 0 and cell.x < encounter.board_cols - 1 and cell.y < encounter.board_rows - 1,
 			"敌人在内部格（非边缘）"
 		)
+
+
+func _test_obstacles(content: Object) -> void:
+	var pool: MonsterPoolDef = content.call("get_monster_pool", &"monster_pool.act1")
+	assert_true(pool != null, "act1 怪物池存在")
+	if pool == null:
+		return
+	assert_true(pool.obstacle_count > 0 and not pool.obstacle_pool_id.is_empty(), "act1 池配置了障碍池与数量")
+	var encounter := MonsterPool.build_encounter(pool, 3, _rng("obs-draw").get_stream(&"encounter"))
+	assert_true(encounter != null and encounter.obstacle_count > 0, "抽出的遭遇携带障碍配置")
+	if encounter == null:
+		return
+	var data := EncounterBuilder.build(encounter, _run(content), _rng("obs-build"), content)
+	if data.is_empty():
+		assert_true(false, "带障碍的 build 应成功")
+		return
+	var state: BattleState = data["state"]
+	var obstacles := _obstacle_map(state.board)
+	assert_equal(obstacles.size(), encounter.obstacle_count, "障碍数量符合配置")
+	for cell: Vector2i in obstacles:
+		assert_true(_is_interior(cell, state.board), "障碍在内部格")
+		assert_true(not state.board.is_occupied(cell), "障碍不在单位格")
+		assert_true(not state.board.is_traversable(cell), "障碍格不可走")
+	assert_true(_open_connected(state.board), "摆障碍后开放格仍连通")
+	# 同 seed 确定性。
+	var b := EncounterBuilder.build(encounter, _run(content), _rng("obs-build"), content)
+	assert_equal(_obstacle_map((b["state"] as BattleState).board), obstacles, "同 seed 障碍布局确定")
+
+
+func _obstacle_map(board: BoardState) -> Dictionary:
+	var out: Dictionary = {}
+	for y in range(board.rows):
+		for x in range(board.cols):
+			var cell := Vector2i(x, y)
+			var cs := board.get_cell(cell)
+			if cs != null and not cs.terrain_key.is_empty():
+				out[cell] = cs.terrain_key
+	return out
+
+
+func _is_interior(cell: Vector2i, board: BoardState) -> bool:
+	return cell.x > 0 and cell.y > 0 and cell.x < board.cols - 1 and cell.y < board.rows - 1
+
+
+func _open_connected(board: BoardState) -> bool:
+	var start := Vector2i(-1, -1)
+	for y in range(board.rows):
+		for x in range(board.cols):
+			var c := Vector2i(x, y)
+			if board.is_traversable(c) and not board.is_occupied(c):
+				start = c
+				break
+		if start != Vector2i(-1, -1):
+			break
+	if start == Vector2i(-1, -1):
+		return true
+	var visited: Dictionary = {start: true}
+	var stack: Array[Vector2i] = [start]
+	while not stack.is_empty():
+		var cur: Vector2i = stack.pop_back()
+		for d: Vector2i in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var nxt := cur + d
+			if not board.is_inside(nxt) or visited.has(nxt):
+				continue
+			if not board.is_traversable(nxt) or board.is_occupied(nxt):
+				continue
+			visited[nxt] = true
+			stack.append(nxt)
+	for y in range(board.rows):
+		for x in range(board.cols):
+			var c := Vector2i(x, y)
+			if board.is_traversable(c) and not board.is_occupied(c) and not visited.has(c):
+				return false
+	return true
 
 
 func _test_invalid_defs(content: Object) -> void:

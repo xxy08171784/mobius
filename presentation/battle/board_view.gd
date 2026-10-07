@@ -30,6 +30,8 @@ const HOVER_COLOR := Color(1.0, 0.9, 0.2, 0.95)
 const THREAT_COLOR := Color(0.75, 0.25, 0.85, 0.45)   # 紫：怪物能打到的格子
 const ENEMY_DEPLOY_COLOR := Color(1.0, 0.3, 0.3, 0.55)  # 红：进场选格屏上的敌人位置
 const MARGIN := 8.0
+## 障碍精灵基础缩放（源图 ~200~350px，乘后约单格高度量级；再乘 ObstacleDef.visual_scale）。
+const OBSTACLE_SCALE := 0.6
 
 var _world: Node2D = null
 var _tile_layer: TileMapLayer = null
@@ -38,12 +40,17 @@ var _unit_root: Node2D = null
 
 var _units: Dictionary[int, UnitView] = {}
 var _unit_cells: Dictionary[int, Vector2i] = {}
+## 障碍精灵（cell -> Node2D），与单位同挂 _unit_root 以便 y 排序交错。
+var _obstacles: Dictionary[Vector2i, Node2D] = {}
 var _highlights: Dictionary[Vector2i, Color] = {}
 var _threat_cells: Array[Vector2i] = []
 var _hover: Vector2i = Vector2i(-1, -1)
 var _cols: int = 0
 var _rows: int = 0
 var _tiles_built: bool = false
+
+## 当前章节（决定用哪一幕的地板）；set_chapter 切换。
+var _chapter: int = 0
 
 ## 部署模式允许拾取/悬停的格子（由 render_deployment 传入的外圈）；空 = 非部署视图，
 ## 任意盘内格都可点（合法性由规则层/调用方判断）。
@@ -69,6 +76,16 @@ func _ready() -> void:
 
 
 # ---- 对外接口 ------------------------------------------------------------
+
+## 切换章节地板；通常在 add_child 前或部署/战斗前调用。
+func set_chapter(index: int) -> void:
+	_chapter = clampi(index, 0, IsoBoardTheme.chapter_count() - 1)
+	if _tile_layer != null:
+		_tile_layer.tile_set = IsoBoardTheme.get_tileset(_chapter)
+		_tiles_built = false
+		if _cols > 0 and _rows > 0:
+			_rebuild_tiles(_cols, _rows)
+
 
 ## 战斗棋盘：由 BattleState 驱动。
 func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool = false) -> void:
@@ -102,6 +119,7 @@ func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool
 
 	_highlights = highlights
 	_sync_units(state)
+	_sync_obstacles_from_state(state)
 	# 战斗视图：点任意格，可点击合法性交给规则层（清掉部署模式的限定格）。
 	_allowed_cells.clear()
 	if _highlight_layer != null:
@@ -109,7 +127,8 @@ func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool
 
 
 ## 进场选格盘：只铺地板并高亮可选格（绿）与敌人所在格（红），无单位。
-func render_deployment(cols: int, rows: int, allowed_cells: Array[Vector2i] = [], enemy_cells: Array[Vector2i] = [], busy: bool = false) -> void:
+## obstacles：cell -> 障碍 ID（terrain_key），随部署预览一并显示。
+func render_deployment(cols: int, rows: int, allowed_cells: Array[Vector2i] = [], enemy_cells: Array[Vector2i] = [], busy: bool = false, obstacles: Dictionary = {}) -> void:
 	_ensure_world()
 	_rebuild_tiles(cols, rows)
 	var highlights: Dictionary[Vector2i, Color] = {}
@@ -120,6 +139,7 @@ func render_deployment(cols: int, rows: int, allowed_cells: Array[Vector2i] = []
 	_highlights = highlights
 	_allowed_cells = allowed_cells.duplicate()
 	_clear_units()
+	_apply_obstacles(obstacles)
 	if _highlight_layer != null:
 		_highlight_layer.queue_redraw()
 
@@ -324,7 +344,7 @@ func _ensure_world() -> void:
 	add_child(_world)
 	_tile_layer = TileMapLayer.new()
 	_tile_layer.name = "Tiles"
-	_tile_layer.tile_set = IsoBoardTheme.get_tileset()
+	_tile_layer.tile_set = IsoBoardTheme.get_tileset(_chapter)
 	_tile_layer.y_sort_enabled = true
 	_world.add_child(_tile_layer)
 	_highlight_layer = _HighlightLayer.new()
@@ -349,7 +369,7 @@ func _rebuild_tiles(cols: int, rows: int) -> void:
 		for row in range(rows):
 			for col in range(cols):
 				var cell := Vector2i(col, row)
-				var source := IsoBoardTheme.floor_source_for(cell)
+				var source := IsoBoardTheme.floor_source_for(cell, _chapter)
 				if source >= 0:
 					_tile_layer.set_cell(cell, source, Vector2i(0, 0))
 	_tiles_built = true
@@ -418,6 +438,53 @@ func _appearance_key_for(unit: UnitState) -> StringName:
 		return &""
 	var definition: UnitDef = ContentDB.get_unit(unit.def_id)
 	return &"" if definition == null else definition.appearance_key
+
+
+# ---- 内部：障碍 ----------------------------------------------------------
+
+## 从 BattleState 的显式格子地形同步障碍精灵（terrain_key 非空视为障碍）。
+func _sync_obstacles_from_state(state: BattleState) -> void:
+	var wanted: Dictionary[Vector2i, StringName] = {}
+	if state != null and state.board != null:
+		for row in range(state.board.rows):
+			for col in range(state.board.cols):
+				var cell := Vector2i(col, row)
+				var cs := state.board.get_cell(cell)
+				if cs != null and not cs.terrain_key.is_empty():
+					wanted[cell] = cs.terrain_key
+	_apply_obstacles(wanted)
+
+
+## wanted：cell -> 障碍 ID（terrain_key）。增删精灵；缺图/无定义时该格只留暗色地。
+func _apply_obstacles(wanted: Dictionary) -> void:
+	if _unit_root == null:
+		return
+	for cell: Vector2i in _obstacles.keys():
+		if not wanted.has(cell):
+			_obstacles[cell].queue_free()
+			_obstacles.erase(cell)
+	for cell: Vector2i in wanted:
+		if _obstacles.has(cell):
+			continue
+		var obstacle_id := StringName(String(wanted[cell]))
+		var definition: ObstacleDef = ContentDB.get_obstacle(obstacle_id) if ContentDB.is_loaded() else null
+		var key: StringName = definition.appearance_key if definition != null else obstacle_id
+		var tex := ObstacleVisuals.texture_for(key)
+		if tex == null:
+			continue
+		var visual_scale := definition.visual_scale if definition != null else 1.0
+		var node := Node2D.new()
+		# 地面点 = 菱形下顶点（格子中心往下半个菱形高）。
+		node.position = IsoGrid.center_of(_tile_layer, cell) + Vector2(0, float(IsoGrid.DIAMOND_H) * 0.5)
+		var scale := OBSTACLE_SCALE * visual_scale
+		var sprite := Sprite2D.new()
+		sprite.texture = tex
+		sprite.scale = Vector2(scale, scale)
+		# Sprite2D 以纹理中心为原点：往上移半高，让底边落在地面点。
+		sprite.position = Vector2(0, -float(tex.get_height()) * scale * 0.5)
+		node.add_child(sprite)
+		_unit_root.add_child(node)
+		_obstacles[cell] = node
 
 
 # ---- 内部：高亮绘制 ------------------------------------------------------

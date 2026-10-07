@@ -36,10 +36,16 @@ static func validate(content: Object, campaign: CampaignDef = null) -> Array[Str
 		var encounter: EncounterDef = content.get_encounter(id)
 		for enemy: StringName in encounter.enemy_ids + encounter.summon_enemy_ids:
 			_require(content.get_enemy(enemy), id, enemy, errors)
+		if not encounter.obstacle_pool_id.is_empty():
+			_require(content.get_obstacle_pool(encounter.obstacle_pool_id), id, encounter.obstacle_pool_id, errors)
 	for id: StringName in content.monster_pool_ids():
 		var pool: MonsterPoolDef = content.get_monster_pool(id)
 		for enemy: StringName in pool.enemy_ids:
 			_require(content.get_enemy(enemy), id, enemy, errors)
+	for id: StringName in content.obstacle_pool_ids():
+		var obstacle_pool: ObstaclePoolDef = content.get_obstacle_pool(id)
+		for obstacle: StringName in obstacle_pool.obstacle_ids:
+			_require(content.get_obstacle(obstacle), id, obstacle, errors)
 	for id: StringName in content.shop_ids():
 		var shop: ShopDef = content.get_shop(id)
 		var cards: Array = shop.pool.resolve(content) if shop.pool != null else shop.card_pool
@@ -77,6 +83,8 @@ static func validate(content: Object, campaign: CampaignDef = null) -> Array[Str
 				_require(content.get_monster_pool(pool_id), &"campaign", pool_id, errors)
 			var boss := StringName("encounter.boss.act%d" % act)
 			_require(content.get_encounter(boss), &"campaign", boss, errors)
+			var obstacle_pool := StringName("obstacle_pool.act%d" % act)
+			_require(content.get_obstacle_pool(obstacle_pool), &"campaign", obstacle_pool, errors)
 	return errors
 
 

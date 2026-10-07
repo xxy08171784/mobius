@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ObstaclePoolDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/board/obstacle_pool_def.gd" id="1_opol"]
+
+[resource]
+script = ExtResource("1_opol")
+id = &"obstacle_pool.act2"
+obstacle_ids = Array[StringName]([&"obstacle.act2.broken_sarcophagus", &"obstacle.act2.skull_mound", &"obstacle.act2.bone_pile", &"obstacle.act2.chained_pillar", &"obstacle.act2.broken_pillar", &"obstacle.act2.brazier_pillar", &"obstacle.act2.collapsed_beam", &"obstacle.act2.sealed_gate"])

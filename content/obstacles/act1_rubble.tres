@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObstacleDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/board/obstacle_def.gd" id="1_obs"]
+
+[resource]
+script = ExtResource("1_obs")
+id = &"obstacle.act1.rubble"
+display_name = "石块废墟"
+appearance_key = &"act1_rubble"
+visual_scale = 1.0
+traversable = false
+blocks_los = false
+trap = false

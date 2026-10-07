@@ -4,6 +4,7 @@ extends Resource
 @export var menu: AudioStream
 @export var route: AudioStream
 @export var battle: AudioStream
+@export var opening: AudioStream
 @export var victory: AudioStream
 @export var defeat: AudioStream
 @export var click: AudioStream

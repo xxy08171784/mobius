@@ -16,6 +16,8 @@ var _encounters: Dictionary = {}
 var _shops: Dictionary = {}
 var _events: Dictionary = {}
 var _monster_pools: Dictionary = {}
+var _obstacles: Dictionary = {}
+var _obstacle_pools: Dictionary = {}
 
 
 func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
@@ -46,6 +48,10 @@ func load_catalog(path: String = DEFAULT_CATALOG) -> bool:
 		ok = _register(_events, definition.id if definition != null else &"", definition, "event") and ok
 	for definition: MonsterPoolDef in catalog.monster_pools:
 		ok = _register(_monster_pools, definition.id if definition != null else &"", definition, "monster_pool") and ok
+	for definition: ObstacleDef in catalog.obstacles:
+		ok = _register(_obstacles, definition.id if definition != null else &"", definition, "obstacle") and ok
+	for definition: ObstaclePoolDef in catalog.obstacle_pools:
+		ok = _register(_obstacle_pools, definition.id if definition != null else &"", definition, "obstacle_pool") and ok
 	if not ok:
 		_clear_indexes()
 		return false
@@ -103,6 +109,14 @@ func get_monster_pool(id: StringName) -> MonsterPoolDef:
 	return _monster_pools.get(id) as MonsterPoolDef
 
 
+func get_obstacle(id: StringName) -> ObstacleDef:
+	return _obstacles.get(id) as ObstacleDef
+
+
+func get_obstacle_pool(id: StringName) -> ObstaclePoolDef:
+	return _obstacle_pools.get(id) as ObstaclePoolDef
+
+
 func all_cards() -> Dictionary:
 	return _cards.duplicate()
 
@@ -149,6 +163,14 @@ func monster_pool_ids() -> Array:
 	return _sorted_ids(_monster_pools)
 
 
+func obstacle_ids() -> Array:
+	return _sorted_ids(_obstacles)
+
+
+func obstacle_pool_ids() -> Array:
+	return _sorted_ids(_obstacle_pools)
+
+
 func _register(index: Dictionary, id: StringName, definition: Variant, kind: String) -> bool:
 	if definition == null or id.is_empty():
 		push_error("ContentDB: invalid %s definition" % kind)
@@ -175,6 +197,8 @@ func _clear_indexes() -> void:
 	_shops.clear()
 	_events.clear()
 	_monster_pools.clear()
+	_obstacles.clear()
+	_obstacle_pools.clear()
 
 
 func _sorted_ids(index: Dictionary) -> Array:

@@ -28,6 +28,12 @@ extends Resource
 ## 本遭遇可召唤的小怪内容 ID 池（Boss 每隔几回合刷新用；EncounterBuilder 解析成召唤池）。
 @export var summon_enemy_ids: Array[StringName] = []
 
+## 随机障碍：池 ID（ObstaclePoolDef.id，如 obstacle_pool.act1）；空表示本遭遇无随机障碍。
+@export var obstacle_pool_id: StringName = &""
+
+## 随机障碍数量（从池中随机摆放几个；0 = 不摆）。仅在此值 >0 且池非空时生效。
+@export var obstacle_count: int = 0
+
 
 func is_valid() -> bool:
 	return not id.is_empty() and not enemy_ids.is_empty()

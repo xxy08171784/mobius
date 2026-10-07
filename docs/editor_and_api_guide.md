@@ -61,6 +61,8 @@
 | 本地化 | `localization/ui.csv` | CSV 第一列为键，zh_CN/en 列为翻译；保存后由 Godot 导入生成 translation |
 | 地图美术 | `presentation/route_map/route_map_skin.gd` | RouteMapSkin 的各章背景、节点图标与连线样式 |
 | 卡面美术 | `assets/textures/cards/frames`、`icons` | `CardVisuals` 根据卡类别和 icon_key 读取 |
+| 棋盘地块 | `assets/textures/tiles/actN/normalized` | `IsoBoardTheme` 按幕加载；某幕缺图回退第一幕 |
+| 棋盘障碍 | `content/obstacles/*.tres` + `assets/textures/obstacles/<appearance_key>.png` | `ObstacleDef`（阻挡移动，高物件 `blocks_los`）；按幕池 `content/pools/obstacle_pool.actN.tres`；`EncounterDef/MonsterPoolDef` 的 `obstacle_pool_id/obstacle_count` 控制每战随机摆放 |
 
 表中的目录为查找范围，具体资源以 Catalog 的引用为准。事件当前使用全局候选池，尚未增加事件章节/角色条件树；需要这种规则时应扩展选择器，不要只在文件名加 act2 就期待自动过滤。
 

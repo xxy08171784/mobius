@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObstacleDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/board/obstacle_def.gd" id="1_obs"]
+
+[resource]
+script = ExtResource("1_obs")
+id = &"obstacle.act2.brazier_pillar"
+display_name = "火盆石柱"
+appearance_key = &"act2_brazier_pillar"
+visual_scale = 1.0
+traversable = false
+blocks_los = true
+trap = false

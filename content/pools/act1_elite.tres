@@ -13,3 +13,5 @@ player_start = Vector2i(2, 5)
 hand_size = 5
 energy_per_round = 3
 move_points_per_round = 2
+obstacle_pool_id = &"obstacle_pool.act1"
+obstacle_count = 5

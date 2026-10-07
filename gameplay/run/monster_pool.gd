@@ -96,4 +96,6 @@ static func _compose(id: StringName, ids: Array[StringName], template: MonsterPo
 	encounter.energy_per_round = template.energy_per_round
 	encounter.move_points_per_round = template.move_points_per_round
 	encounter.tier = tier
+	encounter.obstacle_pool_id = template.obstacle_pool_id
+	encounter.obstacle_count = template.obstacle_count
 	return encounter

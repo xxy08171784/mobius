@@ -89,6 +89,13 @@ static func build(
 		unit_id += 1
 		index += 1
 
+	# 随机障碍：敌人落点确定后、用同一条 encounter 流摆放（不依赖玩家起点，预览=实际）。
+	if encounter.obstacle_count > 0 and not encounter.obstacle_pool_id.is_empty():
+		var obstacle_pool: ObstaclePoolDef = content.get_obstacle_pool(encounter.obstacle_pool_id)
+		ObstacleGenerator.place_obstacles(
+			board, obstacle_pool, encounter.obstacle_count, rng.get_stream(&"encounter"), content
+		)
+
 	var card_defs: Dictionary = content.all_cards()
 	var deck := _build_deck(run)
 	# 只在新遭遇装配时洗牌。BattleCheckpoint.restore 直接恢复牌区与 RNG，不走此路径。

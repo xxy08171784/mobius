@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObstacleDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/board/obstacle_def.gd" id="1_obs"]
+
+[resource]
+script = ExtResource("1_obs")
+id = &"obstacle.act3.lion_brazier"
+display_name = "狮首火盆"
+appearance_key = &"act3_lion_brazier"
+visual_scale = 1.0
+traversable = false
+blocks_los = true
+trap = false

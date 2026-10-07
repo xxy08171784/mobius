@@ -22,6 +22,12 @@ func _check(condition: bool, message: String) -> void:
 func _run() -> void:
 	var tiles := IsoBoardTheme.get_tileset()
 	_check(tiles != null and tiles.get_source_count() == 16, "export loads all 16 floor textures")
+	var tiles_act2 := IsoBoardTheme.get_tileset(1)
+	_check(tiles_act2 != null and tiles_act2.get_source_count() == 5, "export loads act 2 floor textures")
+	var tiles_act3 := IsoBoardTheme.get_tileset(2)
+	_check(tiles_act3 != null and tiles_act3.get_source_count() == 5, "export loads act 3 floor textures")
+	var obstacle_tex := ObstacleVisuals.texture_for(&"act1_cross_tombstone")
+	_check(obstacle_tex != null, "export loads an obstacle sprite")
 	_check_frames(UnitSpriteFrames.get_frames(), "player")
 	for key: StringName in [&"energy", &"movement", &"discard", &"end_turn", &"intent_attack", &"intent_status"]:
 		_check(UIArt.texture(key) != null, "export loads HUD " + String(key))

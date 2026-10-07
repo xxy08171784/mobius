@@ -172,6 +172,35 @@
 [ext_resource type="Resource" path="res://content/statuses/stun.tres" id="104_dgs2s"]
 [ext_resource type="Resource" path="res://content/statuses/slow.tres" id="105_vst1u"]
 [ext_resource type="Resource" path="res://content/statuses/knife_mark.tres" id="106_3fo7x"]
+[ext_resource type="Script" path="res://gameplay/board/obstacle_def.gd" id="sc_obsdef"]
+[ext_resource type="Script" path="res://gameplay/board/obstacle_pool_def.gd" id="sc_opool"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_angel_statue.tres" id="od_act1_angel_statue"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_brazier_pillar.tres" id="od_act1_brazier_pillar"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_cross_tombstone.tres" id="od_act1_cross_tombstone"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_dead_tree.tres" id="od_act1_dead_tree"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_mausoleum.tres" id="od_act1_mausoleum"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_obelisk.tres" id="od_act1_obelisk"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_open_sarcophagus.tres" id="od_act1_open_sarcophagus"]
+[ext_resource type="Resource" path="res://content/obstacles/act1_rubble.tres" id="od_act1_rubble"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_bone_pile.tres" id="od_act2_bone_pile"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_brazier_pillar.tres" id="od_act2_brazier_pillar"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_broken_pillar.tres" id="od_act2_broken_pillar"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_broken_sarcophagus.tres" id="od_act2_broken_sarcophagus"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_chained_pillar.tres" id="od_act2_chained_pillar"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_collapsed_beam.tres" id="od_act2_collapsed_beam"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_sealed_gate.tres" id="od_act2_sealed_gate"]
+[ext_resource type="Resource" path="res://content/obstacles/act2_skull_mound.tres" id="od_act2_skull_mound"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_broken_ritual_pillar.tres" id="od_act3_broken_ritual_pillar"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_chained_coffin.tres" id="od_act3_chained_coffin"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_damaged_throne.tres" id="od_act3_damaged_throne"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_guardian_angel.tres" id="od_act3_guardian_angel"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_king_sarcophagus.tres" id="od_act3_king_sarcophagus"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_lion_brazier.tres" id="od_act3_lion_brazier"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_seal_obelisk.tres" id="od_act3_seal_obelisk"]
+[ext_resource type="Resource" path="res://content/obstacles/act3_shattered_seal.tres" id="od_act3_shattered_seal"]
+[ext_resource type="Resource" path="res://content/pools/obstacle_pool.act1.tres" id="op_act1"]
+[ext_resource type="Resource" path="res://content/pools/obstacle_pool.act2.tres" id="op_act2"]
+[ext_resource type="Resource" path="res://content/pools/obstacle_pool.act3.tres" id="op_act3"]
 
 [resource]
 script = ExtResource("23_3ouml")
@@ -185,3 +214,5 @@ encounters = Array[ExtResource("35_encdef")]([ExtResource("37_encmon1"), ExtReso
 shops = Array[ExtResource("42_shopdef")]([ExtResource("44_shop01")])
 events = Array[ExtResource("43_evdef")]([ExtResource("45_ev01"), ExtResource("46_ev02"), ExtResource("68_ev03"), ExtResource("69_ev04"), ExtResource("70_ev05"), ExtResource("71_ev06")])
 monster_pools = Array[ExtResource("47_pooldef")]([ExtResource("57_pool1"), ExtResource("66_pool2"), ExtResource("cpool_mon"), ExtResource("cpool_elite"), ExtResource("ypool_mon"), ExtResource("ypool_elite")])
+obstacles = Array[ExtResource("sc_obsdef")]([ExtResource("od_act1_angel_statue"), ExtResource("od_act1_brazier_pillar"), ExtResource("od_act1_cross_tombstone"), ExtResource("od_act1_dead_tree"), ExtResource("od_act1_mausoleum"), ExtResource("od_act1_obelisk"), ExtResource("od_act1_open_sarcophagus"), ExtResource("od_act1_rubble"), ExtResource("od_act2_bone_pile"), ExtResource("od_act2_brazier_pillar"), ExtResource("od_act2_broken_pillar"), ExtResource("od_act2_broken_sarcophagus"), ExtResource("od_act2_chained_pillar"), ExtResource("od_act2_collapsed_beam"), ExtResource("od_act2_sealed_gate"), ExtResource("od_act2_skull_mound"), ExtResource("od_act3_broken_ritual_pillar"), ExtResource("od_act3_chained_coffin"), ExtResource("od_act3_damaged_throne"), ExtResource("od_act3_guardian_angel"), ExtResource("od_act3_king_sarcophagus"), ExtResource("od_act3_lion_brazier"), ExtResource("od_act3_seal_obelisk"), ExtResource("od_act3_shattered_seal")])
+obstacle_pools = Array[ExtResource("sc_opool")]([ExtResource("op_act1"), ExtResource("op_act2"), ExtResource("op_act3")])

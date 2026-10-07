@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObstacleDef" format=3]
+
+[ext_resource type="Script" path="res://gameplay/board/obstacle_def.gd" id="1_obs"]
+
+[resource]
+script = ExtResource("1_obs")
+id = &"obstacle.act1.open_sarcophagus"
+display_name = "打开的石棺"
+appearance_key = &"act1_open_sarcophagus"
+visual_scale = 1.0
+traversable = false
+blocks_los = true
+trap = false

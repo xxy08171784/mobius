@@ -44,7 +44,7 @@ func play_sfx(stream: AudioStream) -> void:
 
 
 func play_music(key: StringName) -> void:
-	if key in [&"menu", &"route", &"battle"]:
+	if key in [&"menu", &"route", &"battle", &"opening"]:
 		play_bgm(catalog.get(String(key)))
 
 
