@@ -14,6 +14,7 @@ var _after_music: StringName = &""
 var _last_cue_ms: Dictionary = {}
 var _voice_cursor := 0
 var _quitting := false
+var _shutting_down := false
 
 
 func _ready() -> void:
@@ -63,9 +64,11 @@ func stop_all() -> void:
 
 
 func shutdown() -> void:
+	_shutting_down = true
 	stop_all()
-	# 让音频线程完成停止队列，避免退出时仍持有 WAV/MP3 播放实例。
-	await get_tree().create_timer(0.12, true).timeout
+	# 混音线程停止后还需主线程回收播放实例；短至 120ms 在渲染忙时不足。
+	# 不受暂停和 Engine.time_scale 影响，关闭期间也不再接收新声音。
+	await get_tree().create_timer(0.35, true, false, true).timeout
 
 
 func quit_game() -> void:
@@ -78,7 +81,7 @@ func quit_game() -> void:
 
 ## 场景重复刷新不重启音乐；奖励读档不会重播胜利音。
 func enter_scene(key: StringName) -> void:
-	if scene_key == key:
+	if _shutting_down or scene_key == key:
 		return
 	var previous := scene_key
 	scene_key = key
@@ -123,6 +126,8 @@ func play_bgm(stream: AudioStream, volume_db: float = -6.0) -> void:
 
 
 func _transition_music(stream: AudioStream, gain: float, looped: bool) -> void:
+	if _shutting_down:
+		return
 	if _music_tween != null:
 		_music_tween.kill()
 	_music_tween = create_tween()
@@ -158,6 +163,8 @@ func _loop_copy(stream: AudioStream, looped: bool) -> AudioStream:
 
 
 func set_campfire(enabled: bool) -> void:
+	if _shutting_down and enabled:
+		return
 	if not enabled:
 		_ambience.stop()
 		return
@@ -173,6 +180,8 @@ func play_sfx(stream: AudioStream, gain: float = -4.0) -> void:
 
 
 func play_cue(key: StringName) -> void:
+	if _shutting_down:
+		return
 	if key in [&"victory", &"defeat"]:
 		play_jingle(key)
 		return
@@ -187,7 +196,7 @@ func play_cue(key: StringName) -> void:
 
 
 func _start_voice(stream: AudioStream, gain: float, key: StringName) -> void:
-	if stream == null or _voices.is_empty():
+	if _shutting_down or stream == null or _voices.is_empty():
 		return
 	var voice: AudioStreamPlayer = null
 	var same: Array[AudioStreamPlayer] = []

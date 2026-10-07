@@ -164,6 +164,9 @@ func _run() -> void:
 	AudioServer.remove_bus_effect(sfx_bus, effect_index)
 	screen.queue_free()
 	await get_tree().process_frame
+	var count_before_shutdown := cues.size()
+	get_tree().create_timer(0.01).timeout.connect(func() -> void: AudioService.play_cue(&"click"))
 	await AudioService.shutdown()
+	check(cues.size() == count_before_shutdown, "shutdown ignores late UI or action callbacks")
 	print("Audio smoke: %d failures" % failures.size())
 	get_tree().quit(0 if failures.is_empty() else 1)
