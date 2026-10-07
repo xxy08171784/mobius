@@ -18,7 +18,7 @@ kind = 0
 target_policy = 0
 range = 1
 range_shape = 1
-damage = 7
+damage = 10
 advance_steps = 2
 
 [sub_resource type="Resource" id="act_stone_skin"]
@@ -26,7 +26,7 @@ script = ExtResource("2_act")
 id = &"stone_lion.stone_skin"
 kind = 3
 target_policy = 1
-block = 5
+block = 8
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

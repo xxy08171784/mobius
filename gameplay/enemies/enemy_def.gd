@@ -19,3 +19,5 @@ extends Resource
 
 ## 被动反应（死亡/受击触发，见 ReactionDef）。随战斗装配下发（不进 BattleState/存档）。
 @export var reactions: Array[ReactionDef] = []
+## 只影响棋子美术大小，不改变属性、占格或攻击距离。
+@export_range(0.5, 2.0) var visual_scale: float = 1.0

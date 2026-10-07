@@ -11,8 +11,22 @@ card_category = 3
 visual_key = &"card_31"
 icon_key = &"icon_31"
 display_name = "膝盖一箭"
-description = "[消耗] 造成9伤害，施加钝足1回合。"
+description = "[消耗] 造成9伤害，施加1层减速，持续1回合。"
+rule_values = {
+"damage": 9.0,
+"status_stacks": 1.0
+}
 base_cost = 1
 tags = Array[StringName]([&"attack"])
 exhaust_on_play = true
+attack_range = 3
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 造成12伤害，施加2层减速，持续1回合。",
+"rule_values": {
+"damage": 12.0,
+"status_stacks": 2.0
+}
+}
+}

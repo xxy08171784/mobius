@@ -6,4 +6,4 @@
 script = ExtResource("1_entangle")
 status_id = &"status.entangle"
 display_name = "缠绕"
-description = "完全无法移动。"
+description = "禁止主动移动，包括走位、冲锋、冲刺与后退招式；拉拽和击退仍可生效。"

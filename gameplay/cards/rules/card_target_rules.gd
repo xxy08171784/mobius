@@ -9,6 +9,8 @@ static func validate_target(
 ) -> Dictionary:
 	if state == null or definition == null:
 		return {"ok": false, "fizzle": false}
+	if definition.requires_active_movement and StatusRules.move_locked(state.get_unit(actor_id)):
+		return {"ok": false, "fizzle": false}
 	if definition.card_id == STARTER_CHARGE:
 		var target_id := _target_unit_id(target)
 		return {
@@ -22,12 +24,13 @@ static func validate_target(
 			return {"ok": false, "fizzle": false}
 		var from := state.board.get_unit_cell(actor_id)
 		var to := cell as Vector2i
-		if not _straight_line(from, to) or _manhattan(from, to) > 2:
+		if not _straight_line(from, to) or _manhattan(from, to) > definition.attack_range:
 			return {"ok": false, "fizzle": false}
 		var target_id := state.board.get_unit_at(to)
-		var has_knife := target_id >= 0 and _knife_count(state.get_unit(target_id)) > 0
+		var enemy := state.get_unit(target_id)
+		var has_enemy := enemy != null and enemy.is_alive() and enemy.team == UnitState.Team.ENEMY
 		var items: Variant = state.ground_items.get(to, [])
-		return {"ok": has_knife or (items is Array and not (items as Array).is_empty()), "fizzle": false}
+		return {"ok": has_enemy or (items is Array and not (items as Array).is_empty()), "fizzle": false}
 	if number in [15, 17]:
 		var target_id := _target_unit_id(target)
 		var from := state.board.get_unit_cell(actor_id)
@@ -37,3 +40,42 @@ static func validate_target(
 		var target_id := _target_unit_id(target)
 		return {"ok": _adjacent(state, actor_id, target_id), "fizzle": false}
 	return {"ok": true, "fizzle": false}
+
+
+static func validate_range(
+	state: Variant,
+	card: BattleCardState,
+	definition: CardDef,
+	target: Variant
+) -> Dictionary:
+	if not state is BattleState:
+		return {"ok": false}
+	var rule := definition.get_target_rule(card.upgrade_level)
+	if rule == null or rule is TargetSpec.DirectionTarget:
+		return {"ok": true}
+	var battle := state as BattleState
+	var players := battle.alive_player_ids()
+	if players.is_empty():
+		return {"ok": false}
+	var actor_cell := battle.board.get_unit_cell(int(players[0]))
+	var target_cell := BoardState.INVALID_CELL
+	if rule is TargetSpec.UnitTarget:
+		target_cell = battle.board.get_unit_cell(_target_unit_id(target))
+	elif rule is TargetSpec.CellTarget:
+		var cell: Variant = EffectStateAccess.target_cell(_context(int(players[0]), target))
+		if cell is Vector2i:
+			target_cell = cell
+	else:
+		return {"ok": true}
+	if target_cell == BoardState.INVALID_CELL:
+		return {"ok": false, "fizzle": true}
+	var distance := absi(actor_cell.x - target_cell.x) + absi(actor_cell.y - target_cell.y)
+	var attack_range := definition.get_attack_range(card.upgrade_level)
+	var los_ok := (
+		not definition.needs_line_of_sight(card.upgrade_level)
+		or BoardQuery.has_line_of_sight(battle.board, actor_cell, target_cell)
+	)
+	return {
+		"ok": distance <= attack_range and los_ok,
+		"fizzle": false,
+	}

@@ -11,6 +11,19 @@ card_category = 4
 visual_key = &"card_39"
 icon_key = &"icon_39"
 display_name = "防守秘术"
-description = "护甲+5。每有一张其他牌同出，额外+3护甲。"
+description = "获得5护盾，同组其他牌每计数1张，再+3护盾。"
+rule_values = {
+"block": 5.0,
+"per_card": 3.0
+}
 base_cost = 1
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "获得7护盾，同组其他牌每计数1张，再+4护盾。",
+"rule_values": {
+"block": 7.0,
+"per_card": 4.0
+}
+}
+}

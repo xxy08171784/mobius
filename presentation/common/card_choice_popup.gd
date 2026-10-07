@@ -52,13 +52,14 @@ func setup(
 		var button := Button.new()
 		button.toggle_mode = true
 		button.custom_minimum_size = Vector2(130, 175)
-		button.tooltip_text = CardInfo.tooltip_for(definition, card.upgrade_level)
+		button.tooltip_text = CardInfo.tooltip_for(definition, card.upgrade_level, card, state)
+		button.text = definition.get_display_name(card.upgrade_level)
 		var texture := CardVisuals.icon_for(definition)
 		if texture != null:
 			button.icon = texture
 			button.expand_icon = true
 		else:
-			button.text = definition.display_name
+			button.text = definition.get_display_name(card.upgrade_level)
 		button.toggled.connect(_on_card_toggled.bind(uid, button))
 		grid.add_child(button)
 

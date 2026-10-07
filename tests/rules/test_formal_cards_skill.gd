@@ -19,24 +19,18 @@ func run() -> Array[String]:
 
 func _test_01_lasso() -> void:
 	var state := FormalCardFixture.state(30, 30, 30, Vector2i(2, 2), Vector2i(4, 2))
-	var knife := StatusState.new()
-	knife.instance_id = 100
-	knife.status_id = StatusRules.KNIFE_MARK
-	knife.stacks = 2
-	knife.duration = -1
-	state.get_unit(2).set_status(100, knife)
 	FormalCardFixture.add_card(state, 1, 101)
 	var target := FormalCardFixture.cell_target(Vector2i(4, 2))
 	assert_true(
 		bool(FormalCardRules.validate_target(state, 1, FormalCardFixture.definition(1), target).get("ok", false)),
-		"套索应允许直线2格内带飞刀敌人"
+		"套索不需要飞刀标记"
 	)
 	var result := FormalCardFixture.resolve(state, 1, 101, target)
-	assert_true(bool(result.get("ok", false)), "套索取回飞刀应成功")
+	assert_true(bool(result.get("ok", false)), "套索拉拽应成功")
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
-		assert_equal(out.get_unit(2).hp, 18, "2把飞刀各造成6伤害")
-		assert_equal(StatusRules.stacks(out.get_unit(2), StatusRules.KNIFE_MARK), 0, "取回后清除飞刀标记")
+		assert_equal(out.get_unit(2).hp, 25, "套索造成5伤害")
+		assert_equal(out.board.get_unit_cell(2), Vector2i(3, 2), "套索拉近1格")
 
 	state = FormalCardFixture.state(30, 30, 30, Vector2i(2, 2), Vector2i(6, 6))
 	FormalCardFixture.add_card(state, 1, 102)
@@ -131,12 +125,12 @@ func _test_09_inspire() -> void:
 	var result := FormalCardFixture.resolve(state, 9, 901)
 	assert_true(bool(result.get("ok", false)), "振奋零勇气应成功")
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(1).get_resource(&"courage"), 7, "零勇气时+7")
+		assert_equal((result["state_out"] as BattleState).get_unit(1).get_resource(&"courage"), 3, "零勇气时+3")
 	state = FormalCardFixture.state(30, 30, 30, Vector2i(2, 2), Vector2i(3, 2), 3, 2)
 	FormalCardFixture.add_card(state, 9, 902)
 	result = FormalCardFixture.resolve(state, 9, 902)
 	if bool(result.get("ok", false)):
-		assert_equal((result["state_out"] as BattleState).get_unit(1).get_resource(&"courage"), 5, "已有勇气时+3")
+		assert_equal((result["state_out"] as BattleState).get_unit(1).get_resource(&"courage"), 3, "已有勇气时+1")
 
 
 func _test_10_fear() -> void:

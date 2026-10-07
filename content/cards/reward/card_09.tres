@@ -11,5 +11,18 @@ card_category = 1
 visual_key = &"card_09"
 icon_key = &"icon_09"
 display_name = "振奋"
-description = "如果没有勇气，则+7勇气，否则+3勇气。"
+description = "没有勇气时获得3勇气，否则获得1勇气。"
+rule_values = {
+"courage": 1.0,
+"initial_courage": 3.0
+}
 tags = Array[StringName]([&"skill"])
+upgrade_overrides = {
+1: {
+"description": "没有勇气时获得4勇气，否则获得2勇气。",
+"rule_values": {
+"courage": 2.0,
+"initial_courage": 4.0
+}
+}
+}

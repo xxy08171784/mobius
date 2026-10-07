@@ -5,6 +5,7 @@ extends Node
 ## 一场战斗进入终态时发出（携带 BattleResult）。B 线 RunFlow 据此回写 RunState。
 signal battle_finished(result: BattleResult)
 signal checkpoint_requested(state: BattleState)
+signal feedback_requested(message: String)
 
 var _session: BattleSession = null
 var _card_defs: Dictionary = {}
@@ -31,6 +32,13 @@ func on_card_pressed(uid: int) -> void:
 	if _selected_cards.has(uid):
 		_selected_cards.erase(uid)
 	else:
+		if not _session.state.deck.hand.has(uid):
+			return
+		var candidate := _selected_cards.duplicate()
+		candidate.append(uid)
+		if CardSelectionBudget.total_cost(_session.state, _card_defs, candidate) > CardSelectionBudget.energy(_session.state):
+			feedback_requested.emit("能量不足")
+			return
 		_selected_cards.append(uid)
 	_sync_selection()
 
@@ -45,7 +53,12 @@ func on_cell_pressed(cell: Vector2i) -> void:
 		if unit != null and unit.team == UnitState.Team.ENEMY and unit.is_alive():
 			_selected_target_unit = unit_id
 			_sync_selection()
+		else:
+			_selected_target_unit = -1
+			_sync_selection()
 		return
+	_selected_target_unit = -1
+	_sync_selection()
 	if _selected_cards.is_empty():
 		_submit_move(cell)
 	else:
@@ -54,6 +67,9 @@ func on_cell_pressed(cell: Vector2i) -> void:
 
 func play_selected() -> void:
 	if _busy or _session == null or _selected_cards.is_empty():
+		return
+	if CardSelectionBudget.total_cost(_session.state, _card_defs, _selected_cards) > CardSelectionBudget.energy(_session.state):
+		feedback_requested.emit("能量不足")
 		return
 	_busy = true
 	_presenter.set_busy(true)
@@ -65,6 +81,7 @@ func play_selected() -> void:
 		if request.is_empty():
 			continue
 		if Array(request.get("candidates", [])).size() < int(request.get("min_count", 0)):
+			feedback_requested.emit("没有可选择的卡牌")
 			_busy = false
 			_presenter.set_busy(false)
 			return
@@ -88,6 +105,10 @@ func _build_play_command(command_id: int) -> PlayCardsCommand:
 	command.command_id = command_id
 	command.actor_id = _player_id()
 	command.card_uids = _selected_cards.duplicate()
+	return _fill_targets(command, _selected_cell, _selected_target_unit)
+
+
+func _fill_targets(command: PlayCardsCommand, cell: Vector2i, target_unit: int) -> PlayCardsCommand:
 	var targets: Array = []
 	for uid: int in command.card_uids:
 		var card := _session.state.deck.get_card(uid)
@@ -104,23 +125,69 @@ func _build_play_command(command_id: int) -> PlayCardsCommand:
 			if unit_rule.team == TargetSpec.UnitTarget.Team.SELF:
 				unit_target.unit_id = command.actor_id
 			else:
-				unit_target.unit_id = _selected_target_unit
+				unit_target.unit_id = target_unit
 			targets.append(unit_target)
 		elif rule is TargetSpec.CellTarget:
 			var cell_target := TargetSpec.CellTarget.new()
-			cell_target.cell = _selected_cell
+			cell_target.cell = cell
 			targets.append(cell_target)
 		elif rule is TargetSpec.DirectionTarget:
 			var direction_target := TargetSpec.DirectionTarget.new()
 			var actor_cell := _session.state.board.get_unit_cell(command.actor_id)
-			if _selected_cell != Vector2i(-1, -1) and actor_cell != BoardState.INVALID_CELL:
-				var delta := _selected_cell - actor_cell
+			if cell != Vector2i(-1, -1) and actor_cell != BoardState.INVALID_CELL:
+				var delta := cell - actor_cell
 				direction_target.direction = Vector2i(signi(delta.x), signi(delta.y))
 			targets.append(direction_target)
 		else:
 			targets.append(null)
 	command.targets = targets
 	return command
+
+
+func can_start_drag(uid: int) -> bool:
+	if _busy or _session == null or not _session.state.accepts_input() or not _session.state.deck.hand.has(uid):
+		return false
+	if CardSelectionBudget.total_cost(_session.state, _card_defs, [uid]) > CardSelectionBudget.energy(_session.state):
+		feedback_requested.emit("能量不足")
+		return false
+	return true
+
+
+## 悬停只预演；拖到盘外、无效目标或取消选择都不消耗卡牌/资源。
+func drop_status(uid: int, cell: Vector2i) -> String:
+	if _busy or _session == null or not _session.state.accepts_input() or not _session.state.deck.hand.has(uid):
+		return "当前无法出牌"
+	if CardSelectionBudget.total_cost(_session.state, _card_defs, [uid]) > CardSelectionBudget.energy(_session.state):
+		return "能量不足"
+	if not _session.state.board.is_inside(cell):
+		return "请拖到棋盘上的有效目标"
+	var command := PlayCardsCommand.new()
+	command.command_id = -1
+	command.actor_id = _player_id()
+	command.card_uids = [uid]
+	_fill_targets(command, cell, _session.state.board.get_unit_at(cell))
+	var request := FormalCardRules.choice_request(_session.state, uid, [uid], _card_defs)
+	if not request.is_empty():
+		var candidates: Array = request.get("candidates", [])
+		var count := int(request.get("min_count", 0))
+		if candidates.size() < count:
+			return "没有可选择的卡牌"
+		# 只用于校验；真正释放时仍打开选择弹窗，由玩家确认目标牌。
+		command.choices[uid] = candidates.slice(0, count)
+	var result := _session.preview(command)
+	return "" if result.accepted else _presenter._error_text(result.error_code)
+
+
+func play_dropped(uid: int, cell: Vector2i) -> void:
+	var reason := drop_status(uid, cell)
+	if not reason.is_empty():
+		feedback_requested.emit(reason)
+		return
+	_selected_cards = [uid]
+	_selected_cell = cell
+	_selected_target_unit = _session.state.board.get_unit_at(cell)
+	_sync_selection()
+	play_selected()
 
 
 func end_turn() -> void:
@@ -153,6 +220,8 @@ func _submit(command: GameCommand) -> void:
 	var result := _session.submit(command)
 	if result != null and result.accepted:
 		checkpoint_requested.emit(_session.state)
+	elif result != null:
+		feedback_requested.emit(_presenter._error_text(result.error_code))
 	await _presenter.present_result(result)
 	if result != null and result.accepted:
 		_session.finish_presentation()

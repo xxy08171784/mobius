@@ -11,10 +11,17 @@ Godot 4.7.2、GDScript 制作的回合制棋盘卡牌 Roguelike。正式入口�
 3. 编辑器右侧 **Mobius 工作台** 提供内容搜索、Inspector 编辑、主要场景入口和内容校验。未显示时在“项目 → 项目设置 → 插件”启用 Mobius Workbench。
 4. 正式内容统一登记到 `content/catalog.tres`；仅把资源文件放入文件夹不会自动注册。
 
-默认操作：鼠标选择卡牌/格子，Q 出牌，E 结束回合，Backspace 清除选择，数字 1–9 选手牌，方向键与 Enter 操作棋盘；设置页可修改三个战斗快捷键。手柄基础映射为 X/Y/B 和方向导航，完整手柄体验尚需实机验收。
+默认操作：拖拽单张卡牌到有效目标后释放出牌；点击卡牌/格子选择组合，Q 确认组合，E 结束回合，Backspace 清除选择，数字 1–9 选手牌，方向键与 Enter 操作棋盘；设置页可修改三个战斗快捷键。手柄基础映射为 X/Y/B 和方向导航，完整手柄体验尚需实机验收。
 
 ## 文档入口
 
+- [0.4.0 拖拽出牌、战斗 HUD、素材与编辑入口](docs/battle_controls_ui_2026-10-07.md)。
+
+- [0.3.1 试玩包棋盘与动画加载修复](docs/export_fix_2026-10-07.md)。
+- [0.3.0 卡牌升级、状态规则、平衡与编辑入口](docs/balance_design_2026-10-07.md)。
+- [三章敌人数值与 180 场固定种子模拟](docs/balance_enemies_and_simulation_2026-10-07.md)。
+- [UI 更新、素材绑定与本轮编辑入口](docs/ui_update_2026-10-06.md)。
+- [技能描述与状态机制待确认清单](docs/ui_skill_status_audit_2026-10-06.md)：历史问题，A1～A10 已按后续确认实施。
 - [接口、可视化编辑入口与内容制作指南](docs/editor_and_api_guide.md)：首先阅读。
 - [本次整合、当前完成情况与验证](docs/current_status.md)：对应 2026-10-06 的改进结果。
 - [存档与整局生命周期](docs/save_and_run_lifecycle.md)：恢复、幂等、迁移和失败处理。
@@ -32,14 +39,17 @@ python tools/verify_project.py --godot $godotExe
 python tools/verify_project.py --godot $godotExe --capture --resolution 1366x768
 ```
 
-检查依次执行导入、内容交叉引用、规则测试、实际场景流程测试和正式入口启动。测试存档隔离在 `.validation/userdata`，日志在 `.validation`，不会读写玩家真实存档。截图模式需要图形环境。
+检查依次执行导入、内容交叉引用、规则测试、实际场景流程、原生 GUI 拖拽交互测试和正式入口启动。测试存档隔离在 `.validation/userdata`，日志在 `.validation`，不会读写玩家真实存档。截图模式需要图形环境。
 
 安装对应版本的 Windows 导出模板后，可在“项目 → 导出 → Windows Desktop”导出，或：
 
 ```powershell
 New-Item -ItemType Directory -Force builds/windows
 & $godotExe --headless --path . --export-release 'Windows Desktop' builds/windows/Mobius.exe
+python tools/verify_export.py --godot $godotExe --package builds/windows/Mobius.pck --capture
 ```
+
+导出后必须再运行 `verify_export.py`：它从真正的 PCK 加载游戏资源，检查地板、人物和三章敌人动画，以及地图 → 部署选格 → 战斗 → 下一回合 → 继续存档。测试驱动在包外，使用相同版本的 Godot 引擎；正式 Windows 模板禁止命令行切换脚本，所以它与 EXE 启动检查分开进行。
 
 发布时 `Mobius.exe` 与 `Mobius.pck` 必须一起提供。预设排除了测试、工具、文档、编辑器插件、临时图和旧原型场景。CI 配置见 `.github/workflows/godot.yml`；推送后才会在 GitHub 执行。
 
@@ -47,7 +57,7 @@ New-Item -ItemType Directory -Force builds/windows
 
 ## 协作约定
 
-- `cxm` 是本次工作分支，已合并朋友的 `xxy` 到 `323d605`。本次未执行远端推送。
+- `cxm` 是工作分支，已合并朋友的 `xxy` 到 `323d605`；UI、卡牌与状态修订、导出修复的说明见上方版本文档。
 - 稳定内容 ID 是存档契约，已发行内容不要随意改名或删除。
 - `*Def` Resource 只读；运行数值写进 `*State`，玩法入口使用 Session。
 - 修改规则后运行完整检查；修改场景后再做截图和实际交互检查。

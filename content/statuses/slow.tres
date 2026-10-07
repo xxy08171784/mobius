@@ -6,4 +6,4 @@
 script = ExtResource("1_slow")
 status_id = &"status.slow"
 display_name = "减速"
-description = "移动受阻：玩家每层令开局移动力 -1；敌人每次接近移动 -1。"
+description = "每层减少1点主动移动：玩家回合开始的移动点、敌人的接近与突进步数；不影响拉拽和击退。"

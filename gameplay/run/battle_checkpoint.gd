@@ -14,6 +14,10 @@ static func restore(payload: Dictionary, content: Object) -> Dictionary:
 	var state := SaveCodec.new().decode_state(payload.get("battle", {})) as BattleState
 	if state == null:
 		return {}
+	state.relic_hooks = state.relic_hooks.filter(func(entry: Dictionary) -> bool:
+		var relic: RelicDef = content.get_relic(StringName(entry.get("id", "")))
+		return relic != null and relic.enabled
+	)
 	if state.phase == BattleState.Phase.RESOLVING:
 		state.phase = state.resume_phase
 		state.command_locked = false

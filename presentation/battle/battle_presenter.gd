@@ -98,7 +98,7 @@ func refresh() -> void:
 	if selection_label != null:
 		selection_label.text = _selection_text()
 	if preview_label != null:
-		preview_label.text = _preview_text()
+		preview_label.visible = false
 
 	if result_label != null:
 		if state.phase == BattleState.Phase.VICTORY:
@@ -111,6 +111,8 @@ func refresh() -> void:
 	var can_input := state.accepts_input() and not _busy
 	if play_button != null:
 		play_button.disabled = not can_input or _selected_cards.is_empty()
+		var play_key := OS.get_keycode_string(SettingsService.keys["battle_play"])
+		play_button.text = ("打出所选" if _selected_cards.is_empty() else "打出 %d 张" % _selected_cards.size()) + " [%s]" % play_key
 	if clear_button != null:
 		clear_button.disabled = not can_input or (_selected_cards.is_empty() and _target_unit_id < 0)
 	if end_turn_button != null:
@@ -145,7 +147,7 @@ func reset_log() -> void:
 	var log := _ui.get("event_log") as RichTextLabel
 	if log != null:
 		log.clear()
-		log.append_text("[b]战斗记录[/b]\n选择卡牌后点敌人，再点击“打出所选”。没有选牌时点击空格可移动。\n")
+		log.append_text("[b]战斗记录[/b]\n拖牌至目标松手出牌；点选多张牌后选择目标，按 Q 组合打出。未选牌时点击空格移动。\n")
 
 
 func _present_event(event: GameEvent) -> void:
@@ -425,32 +427,49 @@ func _sync_enemy_intent_bubbles(state: BattleState) -> void:
 		if view == null:
 			continue
 		var intent: IntentState = state.enemy_intents.get(enemy_id)
+		if StatusRules.stacks(state.get_unit(enemy_id), StatusRules.STUN) > 0:
+			view.set_intent("…", "眩晕：本回合无法行动", &"status.stun")
+			continue
 		if intent == null or intent.is_empty():
-			view.set_intent("等待", "本回合无有效行动")
+			view.set_intent("…", "本回合无有效行动", &"end_turn")
 			continue
 		var action := _intent_action(enemy_id, intent.action_id)
 		if action == null:
 			view.set_intent("行动 %d" % maxi(0, intent.magnitude), String(intent.action_id))
 			continue
-		view.set_intent(_intent_badge_text(action, intent), _monster_skill_text(action))
+		var icon := _intent_icon(action)
+		var secondary: StringName = &"intent_status" if icon == &"intent_attack" and not action.apply_status_id.is_empty() else &""
+		view.set_intent(_intent_badge_text(action, intent), _monster_skill_text(action), icon, secondary)
+
+
+func _intent_icon(action: EnemyActionDef) -> StringName:
+	if action.kind == EnemyActionDef.Kind.DEFEND:
+		return &"shield"
+	if action.kind == EnemyActionDef.Kind.APPROACH:
+		return &"movement"
+	if action.kind in [EnemyActionDef.Kind.ATTACK, EnemyActionDef.Kind.CHARGE, EnemyActionDef.Kind.DASH] and _damage_value(action) > 0:
+		return &"intent_attack"
+	return &"intent_status"
 
 
 func _intent_badge_text(action: EnemyActionDef, intent: IntentState) -> String:
 	match action.kind:
 		EnemyActionDef.Kind.ATTACK:
+			if _damage_value(action) <= 0:
+				return str(action.apply_status_stacks) if not action.apply_status_id.is_empty() else "…"
 			if action.hit_count > 1:
-				return "攻击 %d×%d" % [action.damage, action.hit_count]
-			return "攻击 %d" % action.damage
+				return "%s×%d" % [_damage_text(action), action.hit_count]
+			return _damage_text(action)
 		EnemyActionDef.Kind.DEFEND:
-			return "防御 %d" % action.block
+			return _block_text(action)
 		EnemyActionDef.Kind.DASH:
-			return "冲撞 %d+" % action.damage
+			return "%d+" % action.damage
 		EnemyActionDef.Kind.CHARGE:
-			return "蓄力 %d" % action.damage
+			return _damage_text(action)
 		EnemyActionDef.Kind.APPROACH:
-			return "移动 %d" % maxi(1, action.move_steps)
+			return str(maxi(1, action.move_steps))
 		EnemyActionDef.Kind.SUMMON:
-			return "召唤 1"
+			return "召"
 		_:
 			return "行动 %d" % maxi(0, intent.magnitude)
 

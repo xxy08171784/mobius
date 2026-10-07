@@ -18,10 +18,10 @@ kind = 0
 target_policy = 0
 range = 1
 range_shape = 1
-damage = 5
+damage = 8
 apply_status_id = &"status.corrode"
-apply_status_stacks = 2
-apply_status_duration = 2
+apply_status_stacks = 1
+apply_status_duration = 1
 advance_steps = 2
 
 [sub_resource type="Resource" id="behavior"]

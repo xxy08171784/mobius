@@ -19,7 +19,7 @@ kind = 0
 target_policy = 0
 range = 1
 range_shape = 1
-damage = 6
+damage = 9
 advance_steps = 2
 
 [sub_resource type="Resource" id="behavior"]

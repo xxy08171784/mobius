@@ -6,4 +6,4 @@
 script = ExtResource("1_poison")
 status_id = &"status.poison"
 display_name = "中毒"
-description = "拥有者回合结束时受到等于中毒层数的伤害；持续时间随后减少。"
+description = "自己的回合结束时，受到等于总层数的伤害，无视护盾；随后总层数减1。"

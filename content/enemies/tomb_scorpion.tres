@@ -12,9 +12,9 @@ target_policy = 0
 range = 1
 range_shape = 1
 apply_status_id = &"status.poison"
-apply_status_stacks = 4
+apply_status_stacks = 1
 apply_status_duration = 99
-advance_steps = 2
+advance_steps = 1
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

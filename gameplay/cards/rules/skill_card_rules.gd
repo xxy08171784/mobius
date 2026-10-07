@@ -15,47 +15,43 @@ static func resolve(
 	var choices := _choice_array(command, card.battle_uid)
 	match definition.card_number:
 		1:
-			return _resolve_lasso(state, rng, actor_id, target)
+			return _resolve_lasso(state, rng, actor_id, card, definition, target)
 		2:
-			return _resolve_requisition(state, rng, card, choices)
+			return _resolve_requisition(state, rng, card, definition, choices)
 		3:
-			return _resolve_cautious(state, rng, actor_id, card)
+			return _resolve_cautious(state, rng, actor_id, card, definition)
 		4:
-			return _resolve_generate_fists(state, rng)
+			return _resolve_generate_fists(state, rng, card)
 		5:
 			return _resolve_technique_insight(state, rng, choices)
 		6:
-			return _resolve_dismiss(state, rng, actor_id, card, choices)
+			return _resolve_dismiss(state, rng, actor_id, card, definition, choices)
 		9:
-			return _resolve_inspire(state, rng, actor_id)
+			return _resolve_inspire(state, rng, actor_id, card, definition)
 		10:
 			return _apply(
 				state, rng, actor_id, card.battle_uid, target,
 				[{"type_key": &"push", "params": {"steps": 2, "direction_mode": &"away_from_source"}}]
 			)
 		11:
-			return _resolve_area_damage(state, rng, actor_id, card, 2, 12.0, false)
+			return _resolve_area_damage(state, rng, actor_id, card, 2, definition.get_rule_value("damage", card.upgrade_level, 12), false)
 		12:
 			return _resolve_copy(state, rng, choices)
 		_:
 			return {"handled": false}
 
 
-static func _resolve_lasso(state: BattleState, rng: Variant, actor_id: int, target: Variant) -> Dictionary:
+static func _resolve_lasso(state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant) -> Dictionary:
 	var cell: Variant = EffectStateAccess.target_cell(_context(actor_id, target))
 	if not cell is Vector2i:
 		return _failure(state, rng)
 	var target_cell := cell as Vector2i
 	var unit_id := state.board.get_unit_at(target_cell)
 	if unit_id >= 0:
-		var target_unit := state.get_unit(unit_id)
-		var knives := _remove_knives(target_unit)
-		if knives <= 0:
-			return _failure(state, rng)
-		return _apply(
-			state, rng, actor_id, -1, unit_id,
-			[{"type_key": &"damage", "params": {"amount": knives * 6}}]
-		)
+		return _apply(state, rng, actor_id, card.battle_uid, unit_id, [
+			{"type_key": &"pull", "params": {"toward_cell": state.board.get_unit_cell(actor_id), "distance": int(definition.get_rule_value("pull", card.upgrade_level, 1))}},
+			{"type_key": &"damage", "params": {"amount": _damage_amount(card, state.round_index, definition.get_rule_value("damage", card.upgrade_level, 5))}},
+		])
 	var raw_items: Variant = state.ground_items.get(target_cell, [])
 	if not raw_items is Array or (raw_items as Array).is_empty():
 		return _failure(state, rng)
@@ -65,32 +61,32 @@ static func _resolve_lasso(state: BattleState, rng: Variant, actor_id: int, targ
 	return _success(state, rng)
 
 static func _resolve_requisition(
-	state: BattleState, rng: Variant, _source: BattleCardState, choices: Array[int]
+	state: BattleState, rng: Variant, card: BattleCardState, definition: CardDef, choices: Array[int]
 ) -> Dictionary:
 	if choices.size() != 1:
 		return _failure(state, rng)
 	var picked := state.deck.get_card(choices[0])
 	if picked == null or not state.deck.move_card(picked.battle_uid, DeckState.ZONE_DRAW, DeckState.ZONE_HAND):
 		return _failure(state, rng)
-	picked.runtime_data["turn_damage_bonus"] = 6
+	picked.runtime_data["turn_damage_bonus"] = int(definition.get_rule_value("bonus", card.upgrade_level, 6))
 	picked.runtime_data["turn_damage_bonus_round"] = state.round_index
 	return _success(state, rng)
 
 static func _resolve_cautious(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef
 ) -> Dictionary:
 	var actor := state.get_unit(actor_id)
 	if actor == null:
 		return _failure(state, rng)
 	var courage := maxi(0, actor.get_resource(&"courage"))
 	actor.set_resource(&"courage", 0)
-	return _block(state, rng, actor_id, card, float(courage * 2))
+	return _block(state, rng, actor_id, card, float(courage) * definition.get_rule_value("per_courage", card.upgrade_level, 2))
 
-static func _resolve_generate_fists(state: BattleState, rng: Variant) -> Dictionary:
+static func _resolve_generate_fists(state: BattleState, rng: Variant, card: BattleCardState) -> Dictionary:
 	var card_system := CardSystem.new()
 	for _i in range(3):
 		var uid := _allocate_card_uid(state.deck)
-		var generated := card_system.create_generated_card(TOKEN_FIST, uid)
+		var generated := card_system.create_generated_card(TOKEN_FIST, uid, card.upgrade_level)
 		state.deck.add_card(generated, DeckState.ZONE_HAND)
 	return _success(state, rng)
 
@@ -106,20 +102,20 @@ static func _resolve_technique_insight(
 	return _success(state, rng)
 
 static func _resolve_dismiss(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, choices: Array[int]
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, choices: Array[int]
 ) -> Dictionary:
 	if choices.size() > 2:
 		return _failure(state, rng)
 	for uid: int in choices:
 		if not state.deck.move_card(uid, DeckState.ZONE_HAND, DeckState.ZONE_EXHAUST):
 			return _failure(state, rng)
-	return _block(state, rng, actor_id, card, float(choices.size() * 8))
+	return _block(state, rng, actor_id, card, float(choices.size()) * definition.get_rule_value("per_exhaust", card.upgrade_level, 8))
 
-static func _resolve_inspire(state: BattleState, rng: Variant, actor_id: int) -> Dictionary:
+static func _resolve_inspire(state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef) -> Dictionary:
 	var actor := state.get_unit(actor_id)
 	if actor == null:
 		return _failure(state, rng)
-	var amount := 7 if actor.get_resource(&"courage") <= 0 else 3
+	var amount := definition.get_rule_value("initial_courage", card.upgrade_level, 3) if actor.get_resource(&"courage") <= 0 else definition.get_rule_value("courage", card.upgrade_level, 1)
 	return _apply(
 		state, rng, actor_id, -1, null,
 		[{"type_key": &"resource", "params": {

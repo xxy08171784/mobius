@@ -1,9 +1,10 @@
 class_name UnitView
 extends Node2D
+signal inspection_requested(unit_id: int)
 ## 等轴测棋盘上的单位棋子。
 ## 精灵接口（与玩家同一套）：两段**待机动画** = 朝屏幕左/右（互为镜像），无其它动画；
 ## 位移与待机都复用这两段。玩家走内置目录，敌人按 appearance_key 加载（见 UnitSpriteFrames）。
-## 素材缺失：色块菱形。上方数值浮标（HP/护盾/状态）两类共用。
+## 素材缺失：色块菱形。怪物头顶只显示意图，详情在点选后的 HUD 中。
 ## 只投影 UnitState，不修改规则状态。
 
 const PLAYER_COLOR := Color(0.35, 0.70, 1.0, 0.95)
@@ -15,20 +16,17 @@ const HIT_KNOCKBACK := 12.0
 
 ## 精灵缩放：角色内容约 940px 高 → 盘上约 200px（配 300×200 地块）。调观感改这一个。
 const SPRITE_SCALE := 0.22
-## 脚底锚点：画布 1280×1280、脚底 y≈1219，相对画布中心 (640,640) 即 (0,-579)。
-## 让角色脚踩在格子菱形中心（画布中心落在节点原点，见 iso_grid.gd 说明）。
-const SPRITE_FEET_OFFSET := Vector2(0.0, -579.0)
-## 角色头顶在节点局部的大约 y（由 (内容顶 280 - 脚底 1219) * SPRITE_SCALE 推得）。
-const SPRITE_HEAD_Y := -206.0
 
 var _unit_id: int = -1
 var _is_player: bool = false
 var _poly: Polygon2D = null
 var _sprite: AnimatedSprite2D = null
 var _label: Label = null
-var _status_row: StatusIconRow = null
 var _intent_bubble: EnemyIntentBubble = null
 var _facing: StringName = UnitSpriteFrames.ANIM_RIGHT
+var _appearance_key: StringName = &""
+var _ground_anchor := Vector2(640, 1219)
+static var _hit_images: Dictionary = {}
 
 
 func unit_id() -> int:
@@ -39,9 +37,23 @@ func is_player() -> bool:
 	return _is_player
 
 
-func setup(unit_id_value: int, is_player: bool, appearance_key: StringName = &"") -> void:
+func setup(unit_id_value: int, is_player: bool, appearance_key: StringName = &"", visual_scale: float = 1.0) -> void:
 	_unit_id = unit_id_value
 	_is_player = is_player
+	_appearance_key = appearance_key
+	var art_scale := 1.0
+	var art_top := 280.0
+	match appearance_key:
+		&"catacomb_corpse_beetle":
+			_ground_anchor.y = 1002.0
+		&"catacomb_spider":
+			_ground_anchor.y = 1140.0
+			art_top = 422.0
+		&"catacomb_ghost_soldier":
+			_ground_anchor = Vector2(615, 1128)
+			art_top = 536.0
+			art_scale = 1.6
+	var sprite_scale := SPRITE_SCALE * visual_scale * art_scale
 	var hw := float(IsoGrid.DIAMOND_W) * 0.18
 	var hh := float(IsoGrid.DIAMOND_H) * 0.18
 	var lift := -float(IsoGrid.DIAMOND_H) * 0.10
@@ -55,17 +67,32 @@ func setup(unit_id_value: int, is_player: bool, appearance_key: StringName = &""
 	)
 	# 飞行单位悬停：精灵与浮标整体上移（hover 为纹理像素；浮标按精灵缩放换算成屏幕像素）。
 	var hover := UnitSpriteFrames.hover_offset(appearance_key)
-	var hover_screen := hover * SPRITE_SCALE
+	var hover_screen := hover * sprite_scale
+	var shadow := Polygon2D.new()
+	var points := PackedVector2Array()
+	var crawling := appearance_key in [&"catacomb_spider", &"catacomb_corpse_beetle"]
+	for i in 24:
+		var angle := TAU * i / 24.0
+		points.append(Vector2(cos(angle) * (72.0 if crawling else 42.0), sin(angle) * 14.0) * visual_scale)
+	shadow.polygon = points
+	shadow.color = Color(0.02, 0.02, 0.025, 0.30)
+	add_child(shadow)
 	if frames != null and frames.has_animation(UnitSpriteFrames.ANIM_LEFT):
 		_sprite = AnimatedSprite2D.new()
 		_sprite.sprite_frames = frames
-		_sprite.scale = Vector2(SPRITE_SCALE, SPRITE_SCALE)
-		_sprite.offset = Vector2(SPRITE_FEET_OFFSET.x, SPRITE_FEET_OFFSET.y - hover)
+		_sprite.scale = Vector2.ONE * sprite_scale
+		_sprite.offset = Vector2(640, 640) - _ground_anchor - Vector2(0, hover)
+		if appearance_key in [&"catacomb_ghost_soldier", &"catacomb_corpse_beetle"]:
+			var cleanup := ShaderMaterial.new()
+			cleanup.shader = preload("res://presentation/battle/white_matte.gdshader")
+			cleanup.set_shader_parameter("remove_white", appearance_key == &"catacomb_ghost_soldier")
+			cleanup.set_shader_parameter("bottom_cutoff", 0.86 if crawling else 1.0)
+			_sprite.material = cleanup
 		_sprite.animation = _facing
 		_sprite.frame = 0
 		add_child(_sprite)
 		_sprite.play(_facing)   # 待机即复用两朝向动画：进场就开始播
-		label_y = SPRITE_HEAD_Y - 38.0 - hover_screen
+		label_y = (art_top - _ground_anchor.y) * sprite_scale - 38.0 - hover_screen
 
 	if _sprite == null:
 		_poly = Polygon2D.new()
@@ -82,19 +109,16 @@ func setup(unit_id_value: int, is_player: bool, appearance_key: StringName = &""
 	_label.custom_minimum_size = Vector2(160, 0)
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_label.position = Vector2(-80, label_y)
+	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_label.visible = is_player
 	add_child(_label)
 
-	# 玩家状态统一看左侧 HUD；敌人状态跟随单位，保证多怪时不会串状态。
+	# 敌人只保留行动意图；生命、护盾、状态在点选后的右侧面板显示。
 	if not is_player:
-		_status_row = StatusIconRow.new()
-		_status_row.icon_size = 30.0
-		_status_row.position = Vector2(-70.0, label_y + 43.0)
-		_status_row.custom_minimum_size = Vector2(140.0, 30.0)
-		add_child(_status_row)
-
 		_intent_bubble = EnemyIntentBubble.new()
-		_intent_bubble.position = Vector2(-71.0, label_y - 76.0)
+		_intent_bubble.position = Vector2(-87.0, label_y - 36.0)
 		add_child(_intent_bubble)
+		_intent_bubble.pressed.connect(func() -> void: inspection_requested.emit(unit_id()))
 
 
 func update(unit: UnitState) -> void:
@@ -104,13 +128,32 @@ func update(unit: UnitState) -> void:
 	if unit.block > 0:
 		parts.append("盾 %d" % unit.block)
 	_label.text = "\n".join(parts)
-	if _status_row != null:
-		_status_row.render(unit)
 
 
-func set_intent(text_value: String, detail: String = "") -> void:
+## 点击可见身体也能选中单位，透明画布、白底和底部杂点不拦截后面的棋子。
+func contains_pointer(global_pos: Vector2) -> bool:
+	if _sprite == null:
+		return _poly != null and Geometry2D.is_point_in_polygon(to_local(global_pos) - _poly.position, _poly.polygon)
+	var texture := _sprite.sprite_frames.get_frame_texture(_sprite.animation, _sprite.frame)
+	var pixel := _sprite.to_local(global_pos) - _sprite.offset + texture.get_size() * 0.5
+	if not Rect2(Vector2.ZERO, texture.get_size()).has_point(pixel):
+		return false
+	if _appearance_key == &"catacomb_corpse_beetle" and pixel.y / texture.get_height() > 0.86:
+		return false
+	if not _hit_images.has(texture):
+		_hit_images[texture] = texture.get_image()
+	var image: Image = _hit_images[texture]
+	if image == null:
+		return false
+	var color := image.get_pixelv(Vector2i(pixel))
+	if _appearance_key == &"catacomb_ghost_soldier" and minf(color.r, minf(color.g, color.b)) > 0.92:
+		return false
+	return color.a > 0.15
+
+
+func set_intent(text_value: String, detail: String = "", icon: StringName = &"", secondary: StringName = &"") -> void:
 	if _intent_bubble != null:
-		_intent_bubble.set_intent(text_value, detail)
+		_intent_bubble.set_intent(text_value, detail, icon, secondary)
 
 
 ## 朝向判定（纯函数，可测）：按**屏幕左右**分，不按逻辑轴。
@@ -136,6 +179,8 @@ func face_dir(delta: Vector2i) -> void:
 	if decided == &"" or decided == _facing:
 		return
 	_facing = decided
+	if _appearance_key == &"catacomb_ghost_soldier":
+		_sprite.offset.x = 25.0 if _facing == UnitSpriteFrames.ANIM_RIGHT else -25.0
 	if _sprite.sprite_frames.has_animation(_facing):
 		_sprite.play(_facing)
 

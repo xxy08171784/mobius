@@ -11,8 +11,21 @@ card_category = 1
 visual_key = &"card_01"
 icon_key = &"icon_01"
 display_name = "套索"
-description = "直线2格距离内拾取地面物品，或从敌人身上取回飞刀（每1把造成6点伤害）。"
+description = "直线3格内：将敌人拉近1格并造成5伤害，或拾取地面物品。"
+rule_values = {
+"damage": 5.0,
+"pull": 1.0
+}
 base_cost = 1
 tags = Array[StringName]([&"skill"])
-attack_range = 2
+attack_range = 3
 content_target_kind = 2
+upgrade_overrides = {
+1: {
+"description": "直线3格内：将敌人拉近2格并造成8伤害，或拾取地面物品。",
+"rule_values": {
+"damage": 8.0,
+"pull": 2.0
+}
+}
+}

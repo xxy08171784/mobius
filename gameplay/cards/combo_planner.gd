@@ -170,6 +170,8 @@ func build_plan(
 		)
 		steps.append(_make_step(uid, target, definition, false, false))
 
+	if work_state is BattleState:
+		FormalCardRules.apply_combo_post_modifiers(work_state, command, card_defs, steps)
 	var invariant := work_deck.validate_invariants()
 	if not bool(invariant.get("ok", false)):
 		return _failure(state_in, deck_in, rng_in, ERROR_COMBO)

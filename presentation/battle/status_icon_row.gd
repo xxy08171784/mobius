@@ -1,20 +1,21 @@
 class_name StatusIconRow
-extends HBoxContainer
-## 战斗状态图标条：使用用户提供的图标表；右下角显示状态层数，并做轻微呼吸动画。
+extends HFlowContainer
+## 战斗状态图标条：新素材优先，右下角显示层数，多图标自动换行。
 
 const ICON_ATLAS: Texture2D = preload("res://assets/textures/ui/status_icons.png")
 const SOURCE_CELL := 48
 const DEFAULT_ICON_SIZE := 40.0
 
 @export var icon_size: float = DEFAULT_ICON_SIZE
-@export var animate_icons: bool = true
+@export var animate_icons: bool = false
 
 var _signature: String = ""
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_theme_constant_override("separation", 2)
+	add_theme_constant_override("h_separation", 4)
+	add_theme_constant_override("v_separation", 4)
 
 
 func render(unit: UnitState) -> void:
@@ -26,6 +27,8 @@ func render(unit: UnitState) -> void:
 				continue
 			var status_id := status.status_id
 			totals[status_id] = int(totals.get(status_id, 0)) + maxi(1, status.stacks)
+		if unit.get_resource(&"courage") > 0:
+			totals[&"resource.courage"] = unit.get_resource(&"courage")
 
 	var ids: Array = totals.keys()
 	ids.sort()
@@ -53,8 +56,8 @@ func _rebuild(ids: Array, totals: Dictionary) -> void:
 func _make_icon(status_id: StringName, count: int, index: int) -> Control:
 	var holder := Control.new()
 	holder.custom_minimum_size = Vector2(icon_size, icon_size)
-	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	holder.tooltip_text = "%s ×%d" % [_status_name(status_id), count]
+	holder.mouse_filter = Control.MOUSE_FILTER_STOP
+	holder.tooltip_text = "%s ×%d\n%s" % [_status_name(status_id), count, _status_description(status_id)]
 
 	var art := TextureRect.new()
 	holder.add_child(art)
@@ -62,7 +65,9 @@ func _make_icon(status_id: StringName, count: int, index: int) -> Control:
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	art.texture = _atlas_texture(_icon_cell(status_id))
+	art.texture = UIArt.texture(status_id)
+	if art.texture == null:
+		art.texture = _atlas_texture(_icon_cell(status_id))
 	art.pivot_offset = Vector2(icon_size, icon_size) * 0.5
 
 	var amount := Label.new()
@@ -116,6 +121,13 @@ func _icon_cell(status_id: StringName) -> Vector2i:
 
 
 func _status_name(status_id: StringName) -> String:
+	if status_id == &"resource.courage":
+		return "勇气"
+	var content := get_node_or_null("/root/ContentDB")
+	if content != null:
+		var definition: StatusDef = content.get_status(status_id)
+		if definition != null:
+			return definition.display_name
 	match status_id:
 		StatusRules.BLEED:
 			return "流血"
@@ -128,9 +140,15 @@ func _status_name(status_id: StringName) -> String:
 		StatusRules.STUN:
 			return "眩晕"
 		StatusRules.SLOW:
-			return "钝足"
+			return "减速"
 		StatusRules.KNIFE_MARK:
 			return "飞刀标记"
 		_:
 			return String(status_id)
 
+
+func _status_description(status_id: StringName) -> String:
+	if status_id == &"resource.courage":
+		return CardInfo.COURAGE_DESCRIPTION
+	var definition: StatusDef = ContentDB.get_status(status_id)
+	return definition.description if definition != null else ""

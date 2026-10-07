@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://yn4avli3xvlf" path="res://presentation/battle/battle_hud.tscn" id="4_hud"]
 [ext_resource type="PackedScene" uid="uid://dl87rvtdlv5uk" path="res://presentation/battle/battle_card_hud.tscn" id="5_card_hud"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_board"]
+
 [node name="BattleScreen" type="Control" unique_id=629808483]
 layout_mode = 3
 anchors_preset = 15
@@ -15,6 +17,27 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_screen")
 metadata/_edit_vertical_guides_ = [990.0]
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=421947522]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.03, 0.04, 1)
+
+[node name="ChapterBackground" type="TextureRect" parent="." unique_id=1256088449]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="BoardZone" type="PanelContainer" parent="." unique_id=556854100]
 layout_mode = 1
@@ -29,11 +52,12 @@ offset_right = 29.800049
 offset_bottom = -40.440002
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_board")
 
 [node name="BoardView" parent="BoardZone" unique_id=382694379 instance=ExtResource("2_board")]
 layout_mode = 2
 
-[node name="DeploymentUI" type="Control" parent="."]
+[node name="DeploymentUI" type="Control" parent="." unique_id=998091072]
 visible = false
 z_index = 40
 layout_mode = 1
@@ -44,7 +68,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Title" type="Label" parent="DeploymentUI"]
+[node name="Title" type="Label" parent="DeploymentUI" unique_id=179417245]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.32
@@ -53,13 +77,12 @@ anchor_right = 0.68
 anchor_bottom = 0.068
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_font_sizes/font_size = 26
 text = "选择进场位置"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Hint" type="Label" parent="DeploymentUI"]
+[node name="Hint" type="Label" parent="DeploymentUI" unique_id=366315962]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.24
@@ -68,12 +91,11 @@ anchor_right = 0.76
 anchor_bottom = 0.103
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 text = "红格是怪物位置，绿格是可选进场格（点击绿格进入战场）。"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BackButton" type="Button" parent="DeploymentUI"]
+[node name="BackButton" type="Button" parent="DeploymentUI" unique_id=497545663]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.02
@@ -82,7 +104,6 @@ anchor_right = 0.98
 anchor_bottom = 0.97
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
 text = "返回地图"
 
 [node name="SelectionLabel" type="Label" parent="." unique_id=1739840863]
@@ -100,6 +121,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PreviewLabel" type="Label" parent="." unique_id=1014773901]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.29
@@ -141,18 +163,17 @@ layout_mode = 1
 
 [node name="ActionButtons" type="VBoxContainer" parent="." unique_id=1549515658]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.835
-anchor_top = 0.805
-anchor_right = 0.975
-anchor_bottom = 0.98
-offset_left = 40.80005
-offset_top = 54.599976
-offset_right = 40.80005
-offset_bottom = 54.599976
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 7
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_right = -24.0
+offset_top = -130.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="PlayButton" type="Button" parent="ActionButtons" unique_id=1511580843]
@@ -247,6 +268,15 @@ bbcode_enabled = true
 [node name="BattleHud" parent="." unique_id=1585482555 instance=ExtResource("4_hud")]
 layout_mode = 1
 
+[node name="PlayerHUD" parent="BattleHud" index="0"]
+anchors_preset = 0
+
+[node name="EnemyHUD" parent="BattleHud" index="1"]
+anchors_preset = 0
+
+[node name="EnergyText" parent="BattleHud" index="4"]
+layout_mode = 0
+
 [node name="DefeatOverlay" type="ColorRect" parent="." unique_id=2099030437]
 visible = false
 z_index = 100
@@ -299,5 +329,4 @@ layout_mode = 2
 text = "重新开始"
 
 [editable path="HandScroll/HandView"]
-[editable path="BattleCardHud"]
 [editable path="BattleHud"]

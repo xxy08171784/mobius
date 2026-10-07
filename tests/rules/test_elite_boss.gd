@@ -1,5 +1,5 @@
 extends "res://tests/test_case.gd"
-## 精英/Boss 组装测试：精英战 = 1 精英 + 2 小怪；Boss 节点 = 墓外石像（带召唤池）。
+## 精英/Boss 组装测试：精英战 = 1 精英 + 1 小怪；Boss 节点 = 墓外石像（带召唤池）。
 
 const CONTENT_DB_SCRIPT := preload("res://autoload/content_db.gd")
 
@@ -58,14 +58,14 @@ func _test_elite_composition() -> void:
 	var elite := _pool(&"monster_pool.test_elite", &"elite", [&"enemy.e1", &"enemy.e2", &"enemy.e3"])
 	var mobs := _pool(&"monster_pool.test_mob", &"monster", [&"enemy.m1", &"enemy.m2", &"enemy.m3", &"enemy.m4"])
 	var comp := MonsterPool.draw_elite_composition(elite, mobs, _rng(7))
-	assert_equal(comp.size(), 3, "精英战 = 1 精英 + 2 小怪")
+	assert_equal(comp.size(), 2, "精英战 = 1 精英 + 1 小怪")
 	assert_true(elite.enemy_ids.has(comp[0]), "首个是精英")
-	assert_true(mobs.enemy_ids.has(comp[1]) and mobs.enemy_ids.has(comp[2]), "后两个来自小怪池")
+	assert_true(mobs.enemy_ids.has(comp[1]), "随从来自小怪池")
 	assert_equal(comp, MonsterPool.draw_elite_composition(elite, mobs, _rng(7)), "同种子同组成")
 
 	var encounter := MonsterPool.build_elite_encounter(elite, mobs, 3, _rng(7))
 	assert_true(encounter != null and encounter.is_valid(), "合成精英遭遇合法")
-	assert_equal(encounter.enemy_ids.size(), 3, "精英遭遇 3 个敌人")
+	assert_equal(encounter.enemy_ids.size(), 2, "精英遭遇 2 个敌人")
 	assert_equal(encounter.tier, &"elite", "层级 elite")
 
 
@@ -98,7 +98,7 @@ func _test_elite_node(content: Object) -> void:
 	assert_true(state != null, "携带 BattleState")
 	if state == null:
 		return
-	assert_equal(state.enemy_ids().size(), 3, "精英战 = 1 精英 + 2 小怪")
+	assert_equal(state.enemy_ids().size(), 2, "精英战 = 1 精英 + 1 小怪")
 	var elite_count := 0
 	var mob_count := 0
 	for enemy_id: int in state.enemy_ids():
@@ -108,7 +108,7 @@ func _test_elite_node(content: Object) -> void:
 		elif String(def_id).begins_with("unit.enemy.tomb."):
 			mob_count += 1
 	assert_equal(elite_count, 1, "恰一只墓外精英")
-	assert_equal(mob_count, 2, "恰两只墓外小怪")
+	assert_equal(mob_count, 1, "恰一只墓外小怪")
 
 
 func _test_boss_node(content: Object) -> void:

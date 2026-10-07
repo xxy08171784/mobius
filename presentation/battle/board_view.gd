@@ -7,6 +7,11 @@ extends Control
 ## 战斗屏/表现层/输入层无需因换美术而改动；另加 render_deployment 供进场选格屏复用。
 
 signal cell_pressed(cell: Vector2i)
+signal card_dropped(uid: int, cell: Vector2i)
+signal drop_rejected(message: String)
+var drop_validator: Callable
+var _drop_cell := Vector2i(-1, -1)
+var _drop_error := ""
 
 ## 内嵌高亮层：在本层绘制菱形（与地块同在 _world 局部空间，位于地块之上、单位之下）。
 class _HighlightLayer:
@@ -19,7 +24,6 @@ class _HighlightLayer:
 
 
 const REACHABLE_COLOR := Color(0.35, 0.95, 0.55, 0.30)
-const INTENT_COLOR := Color(1.0, 0.35, 0.35, 0.40)
 const TARGET_COLOR := Color(1.0, 0.85, 0.25, 0.50)
 const WALL_COLOR := Color(0.0, 0.0, 0.0, 0.45)
 const HOVER_COLOR := Color(1.0, 0.9, 0.2, 0.95)
@@ -33,6 +37,7 @@ var _highlight_layer: _HighlightLayer = null
 var _unit_root: Node2D = null
 
 var _units: Dictionary[int, UnitView] = {}
+var _unit_cells: Dictionary[int, Vector2i] = {}
 var _highlights: Dictionary[Vector2i, Color] = {}
 var _threat_cells: Array[Vector2i] = []
 var _hover: Vector2i = Vector2i(-1, -1)
@@ -85,16 +90,10 @@ func render_state(state: BattleState, selected_target_unit: int = -1, busy: bool
 	if state.accepts_input() and not players.is_empty():
 		var player_id := int(players[0])
 		var from_cell := board.get_unit_cell(player_id)
-		var budget := state.get_unit(player_id).get_resource(TurnSystem.MOVE_RESOURCE)
+		var player := state.get_unit(player_id)
+		var budget := 0 if StatusRules.move_locked(player) else player.get_resource(TurnSystem.MOVE_RESOURCE)
 		for cell: Vector2i in BoardQuery.reachable_cells(board, from_cell, budget):
 			highlights[cell] = REACHABLE_COLOR
-	# 敌人意图覆盖格。
-	for enemy_id: int in state.enemy_intents:
-		var intent: IntentState = state.enemy_intents[enemy_id]
-		if intent == null:
-			continue
-		for cell: Vector2i in intent.affected_cells:
-			highlights[cell] = INTENT_COLOR
 	# 已选目标单位格。
 	if selected_target_unit >= 0:
 		var target_cell := board.get_unit_cell(selected_target_unit)
@@ -267,7 +266,36 @@ func _gui_input(event: InputEvent) -> void:
 			cell_pressed.emit(cell)
 
 
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	if not data is Dictionary or data.get("kind") != &"battle_card" or not drop_validator.is_valid():
+		return false
+	_drop_cell = _cell_at(get_global_transform() * at_position)
+	_drop_error = drop_validator.call(int(data.get("card_uid", -1)), _drop_cell)
+	_highlight_layer.queue_redraw()
+	return _drop_error.is_empty()
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	var cell := _cell_at(get_global_transform() * at_position)
+	card_dropped.emit(int(data.get("card_uid", -1)), cell)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DRAG_END:
+		if not get_viewport().gui_is_drag_successful() and not _drop_error.is_empty() and get_global_rect().has_point(get_global_mouse_position()):
+			drop_rejected.emit(_drop_error)
+		_drop_cell = Vector2i(-1, -1)
+		_drop_error = ""
+		if _highlight_layer != null:
+			_highlight_layer.queue_redraw()
+
+
 func _cell_at(global_pos: Vector2) -> Vector2i:
+	var front_to_back: Array = _units.values()
+	front_to_back.sort_custom(func(a: UnitView, b: UnitView) -> bool: return a.position.y > b.position.y)
+	for view: UnitView in front_to_back:
+		if view.contains_pointer(global_pos):
+			return _unit_cells.get(view.unit_id(), BoardState.INVALID_CELL)
 	if _tile_layer == null or _tile_layer.tile_set == null:
 		return Vector2i(-1, -1)
 	return IsoGrid.cell_at(_tile_layer, _tile_layer.to_local(global_pos))
@@ -305,6 +333,7 @@ func _ensure_world() -> void:
 	_world.add_child(_highlight_layer)
 	_unit_root = Node2D.new()
 	_unit_root.name = "Units"
+	_unit_root.y_sort_enabled = true
 	_world.add_child(_unit_root)
 
 
@@ -320,7 +349,9 @@ func _rebuild_tiles(cols: int, rows: int) -> void:
 		for row in range(rows):
 			for col in range(cols):
 				var cell := Vector2i(col, row)
-				_tile_layer.set_cell(cell, IsoBoardTheme.floor_source_for(cell), Vector2i(0, 0))
+				var source := IsoBoardTheme.floor_source_for(cell)
+				if source >= 0:
+					_tile_layer.set_cell(cell, source, Vector2i(0, 0))
 	_tiles_built = true
 	_layout_world()
 
@@ -350,11 +381,17 @@ func _sync_units(state: BattleState) -> void:
 		if cell == BoardState.INVALID_CELL:
 			continue
 		wanted[unit_id] = true
+		_unit_cells[unit_id] = cell
 		var view: UnitView = _units.get(unit_id)
 		if view == null:
 			view = UnitView.new()
 			_unit_root.add_child(view)
-			view.setup(unit_id, unit.is_player(), _appearance_key_for(unit))
+			view.inspection_requested.connect(func(id: int) -> void:
+				if _unit_cells.has(id):
+					cell_pressed.emit(_unit_cells[id])
+			)
+			var enemy: EnemyDef = ContentDB.get_enemy(unit.enemy_id) if not unit.is_player() else null
+			view.setup(unit_id, unit.is_player(), _appearance_key_for(unit), enemy.visual_scale if enemy != null else 1.0)
 			_units[unit_id] = view
 		view.position = IsoGrid.center_of(_tile_layer, cell)
 		view.update(unit)
@@ -363,6 +400,7 @@ func _sync_units(state: BattleState) -> void:
 			var stale: UnitView = _units[unit_id]
 			stale.queue_free()
 			_units.erase(unit_id)
+			_unit_cells.erase(unit_id)
 
 
 func _clear_units() -> void:
@@ -370,6 +408,7 @@ func _clear_units() -> void:
 		var view: UnitView = _units[unit_id]
 		view.queue_free()
 	_units.clear()
+	_unit_cells.clear()
 
 
 ## 外观键：敌人经 ContentDB 从单位定义解析（表现层只读 Def）。玩家走 UnitSpriteFrames
@@ -389,13 +428,17 @@ func _draw_highlights_on(layer: Node2D) -> void:
 	var hw := float(IsoGrid.DIAMOND_W) * 0.5
 	var hh := float(IsoGrid.DIAMOND_H) * 0.5
 	# 无贴图（素材缺失）时画素色地板，保证仍可辨认棋盘。
-	if _tile_layer.tile_set == null:
+	if _tile_layer.tile_set != null and _tile_layer.tile_set.get_source_count() == 0:
 		for row in range(_rows):
 			for col in range(_cols):
 				var cell := Vector2i(col, row)
 				layer.draw_colored_polygon(
 					IsoGrid.diamond_points(IsoGrid.center_of(_tile_layer, cell), hw, hh),
 					Color(0.24, 0.26, 0.31)
+				)
+				layer.draw_polyline(
+					IsoGrid.diamond_points(IsoGrid.center_of(_tile_layer, cell), hw, hh),
+					Color(0.48, 0.50, 0.55), 2.0, true
 				)
 	for cell: Vector2i in _highlights:
 		layer.draw_colored_polygon(
@@ -412,4 +455,9 @@ func _draw_highlights_on(layer: Node2D) -> void:
 		layer.draw_polyline(
 			IsoGrid.diamond_points(IsoGrid.center_of(_tile_layer, _hover), hw, hh),
 			HOVER_COLOR, 3.0, true
+		)
+	if get_viewport().gui_is_dragging() and _inside(_drop_cell):
+		layer.draw_polyline(
+			IsoGrid.diamond_points(IsoGrid.center_of(_tile_layer, _drop_cell), hw, hh),
+			Color(0.6, 1.0, 0.7) if _drop_error.is_empty() else Color(1, 0.35, 0.3), 9.0, true
 		)

@@ -1,5 +1,5 @@
 extends "res://tests/test_case.gd"
-## 5 种正式通用初始牌 + 15 张初始牌组。
+## 5 种正式通用初始牌 + 10 张初始牌组。
 
 
 func run() -> Array[String]:
@@ -16,15 +16,15 @@ func _test_starter_deck_counts() -> void:
 	assert_true(hero != null, "hero should load")
 	if hero == null:
 		return
-	assert_equal(hero.starter_deck.size(), 15, "starter deck should contain 15 cards")
+	assert_equal(hero.starter_deck.size(), 10, "starter deck should contain 10 cards")
 	var counts: Dictionary = {}
 	for card_id: StringName in hero.starter_deck:
 		counts[card_id] = int(counts.get(card_id, 0)) + 1
-	assert_equal(int(counts.get(&"card.starter.punch", 0)), 2, "拳头 x2")
-	assert_equal(int(counts.get(&"card.starter.attack", 0)), 3, "攻击 x3")
-	assert_equal(int(counts.get(&"card.starter.charge", 0)), 2, "突击 x2")
-	assert_equal(int(counts.get(&"card.starter.relentless", 0)), 2, "持续打击 x2")
-	assert_equal(int(counts.get(&"card.starter.defend", 0)), 6, "防守 x6")
+	assert_equal(int(counts.get(&"card.starter.punch", 0)), 1, "拳击 x1")
+	assert_equal(int(counts.get(&"card.starter.attack", 0)), 2, "攻击 x2")
+	assert_equal(int(counts.get(&"card.starter.charge", 0)), 1, "冲锋 x1")
+	assert_equal(int(counts.get(&"card.starter.relentless", 0)), 1, "穷追 x1")
+	assert_equal(int(counts.get(&"card.starter.defend", 0)), 5, "防御 x5")
 
 
 func _test_atomic_starters() -> void:

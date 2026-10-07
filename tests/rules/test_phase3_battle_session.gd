@@ -35,6 +35,7 @@ func _test_setup_locks_intent_and_resets_resources() -> void:
 func _test_preview_and_rejected_command_have_zero_side_effects() -> void:
 	var streams := Phase3Fixture.rng("preview")
 	var attack_card := Phase3Fixture.damage_card(&"card.hit", 1, 4)
+	attack_card.attack_range = 2
 	var expensive := Phase3Fixture.damage_card(&"card.expensive", 9, 9)
 	var deck := DeckState.new()
 	deck.add_card(Phase3Fixture.battle_card(10, attack_card.card_id), DeckState.ZONE_HAND)

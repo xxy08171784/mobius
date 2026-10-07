@@ -11,8 +11,19 @@ card_category = 3
 visual_key = &"card_20"
 icon_key = &"icon_20"
 display_name = "击晕"
-description = "[消耗] 造成12伤害，施加眩晕1回合。"
+description = "[消耗] 造成12伤害，眩晕敌人1回合。"
+rule_values = {
+"damage": 12.0
+}
 base_cost = 2
 tags = Array[StringName]([&"attack"])
 exhaust_on_play = true
 content_target_kind = 1
+upgrade_overrides = {
+1: {
+"description": "[消耗] 造成16伤害，眩晕敌人1回合。",
+"rule_values": {
+"damage": 16.0
+}
+}
+}

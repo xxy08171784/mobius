@@ -52,6 +52,8 @@ func _finish_single_owner_turn(state: BattleState, rng: RngStreams, unit_id: int
 		if StatusRules.is_stack_decaying(dot_id):
 			StatusRules.decay_stacks(unit, dot_id)
 
+	# 勇气每次自己的回合结束保留一半，向下取整。
+	unit.set_resource(&"courage", unit.get_resource(&"courage") / 2)
 	var expired: Array[int] = []
 	for instance_id: int in unit.status_ids():
 		var status := unit.get_status(instance_id)

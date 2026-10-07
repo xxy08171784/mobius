@@ -83,34 +83,20 @@ static func _load_directional_frames(dir: String, prefix: String) -> Array[Textu
 	for fname: String in _list_pngs(dir, prefix):
 		var path := dir.path_join(fname)
 		var tex := load(path) as Texture2D
-		if tex == null:
-			# 兜底：素材尚未导入时退回原始解码（仅编辑器/开发期）。
-			var img := Image.load_from_file(path)
-			if img != null:
-				tex = ImageTexture.create_from_image(img)
 		if tex != null:
 			out.append(tex)
 	return out
 
 
 ## 列出某朝向的 `<prefix>*.png`，按文件名排序。
-## 源工程目录列出 *.png；导出后 res:// 只列出 *.png.import（源图被导入数据替换，原始 .png
-## 不在包里，但 load("*.png") 仍经 remap 可用）。故先去掉 .import 后缀、再按路径去重。
+## 用资源 API 取逻辑文件名，编辑器与导出包一致（导出后 DirAccess 只看到 *.png.import）。
 static func _list_pngs(dir: String, prefix: String) -> Array[String]:
 	var names: Array[String] = []
-	var seen := {}
-	var da := DirAccess.open(dir)
-	if da == null:
+	if not DirAccess.dir_exists_absolute(dir):
 		return names
-	da.list_dir_begin()
-	var name := da.get_next()
-	while name != "":
-		if not da.current_is_dir():
-			var key := name.trim_suffix(".import")
-			if key.begins_with(prefix) and key.ends_with(".png") and not seen.has(key):
-				seen[key] = true
-				names.append(key)
-		name = da.get_next()
-	da.list_dir_end()
+	# DirAccess 在导出包只看到 .png.import；资源 API 返回可直接 load 的逻辑路径。
+	for name: String in ResourceLoader.list_directory(dir):
+		if name.begins_with(prefix) and name.ends_with(".png"):
+			names.append(name)
 	names.sort()
 	return names

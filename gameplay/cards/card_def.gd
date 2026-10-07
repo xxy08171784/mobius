@@ -25,6 +25,9 @@ enum ComboClass { ATTACK, DEFENSE, NO_COMBO, NEUTRAL }
 @export var icon_key: StringName = &""
 @export var display_name: String = ""
 @export_multiline var description: String = ""
+## 特殊卡的数值参数；升级覆盖中的 rule_values 按键覆盖。
+@export var rule_values: Dictionary = {}
+@export var requires_active_movement: bool = false
 @export var base_cost: int = 0
 ## 是否允许进入普通战后奖励池。尚未实现规则的正式卡可先注册/展示，但不能被玩家抽到。
 @export var reward_pool_enabled: bool = true
@@ -45,7 +48,7 @@ enum ComboClass { ATTACK, DEFENSE, NO_COMBO, NEUTRAL }
 var target_rule: TargetSpec = null
 
 ## level -> Dictionary 覆盖。
-## 支持字段：cost / tags / effects / target_rule / exhaust_on_play / play_count_weight。
+## 支持字段：cost / tags / effects / target_rule / exhaust_on_play / play_count_weight / range / requires_los / description / rule_values。
 @export var upgrade_overrides: Dictionary = {}
 
 
@@ -132,6 +135,7 @@ func get_play_count_weight(upgrade_level: int = 0) -> int:
 func _upgrade_data(level: int) -> Dictionary:
 	if level <= 0:
 		return {}
+	level = 1
 	if upgrade_overrides.has(level):
 		return upgrade_overrides[level]
 	if upgrade_overrides.has(str(level)):
@@ -151,3 +155,16 @@ func _content_target_rule() -> TargetSpec:
 			return TargetSpec.DirectionTarget.new()
 		_:
 			return null
+
+
+func get_rule_value(key: String, level: int = 0, fallback: float = 0.0) -> float:
+	var upgraded: Dictionary = _upgrade_data(level).get("rule_values", {})
+	return float(upgraded.get(key, rule_values.get(key, fallback)))
+
+
+func get_description(level: int = 0) -> String:
+	return String(_upgrade_data(level).get("description", description))
+
+
+func get_display_name(level: int = 0) -> String:
+	return (display_name if not display_name.is_empty() else String(card_id)) + ("+" if level > 0 else "")

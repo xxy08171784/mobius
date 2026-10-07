@@ -37,7 +37,7 @@ func _test_run_card_becomes_battle_instance() -> void:
 	assert_equal(battle.battle_uid, 900, "battle instance gets its own UID")
 	assert_equal(battle.source_run_uid, 77, "battle instance remembers source run card")
 	assert_equal(battle.card_id, &"card.guard", "definition ID carries into battle")
-	assert_equal(battle.upgrade_level, 2, "permanent upgrade carries into battle")
+	assert_equal(battle.upgrade_level, 1, "legacy levels clamp to the single upgrade cap")
 	assert_true(not battle.generated, "run-owned card is not generated")
 
 

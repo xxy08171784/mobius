@@ -35,7 +35,7 @@ func _played_run(content: Object) -> RunState:
 	session.enter_node(target)
 	run = session.state
 	run.add_card(&"card.warrior.execute")   # 模拟战后加卡
-	run.relics[0].set_counter(&"used", 2)   # 模拟遗物计数
+	run.add_relic(&"relic.echo_shell").set_counter(&"used", 2)   # 模拟战后获得遗物并记录计数
 	return run
 
 

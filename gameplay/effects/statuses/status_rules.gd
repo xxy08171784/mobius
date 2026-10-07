@@ -9,13 +9,13 @@ extends RefCounted
 const BLEED: StringName = &"status.bleed"
 const VULNERABLE: StringName = &"status.vulnerable"
 const FOCUS: StringName = &"status.focus"
-## 中毒：与流血同型（拥有者回合结束按层数掉血），只是稳定键不同以便区分文案/来源。
+## 中毒：回合结束按总层数受到无视护盾的伤害，随后总层数减 1。
 const POISON: StringName = &"status.poison"
 ## 虚弱：拥有者造成的普通伤害 -25%（来源侧百分比修饰）。
 const WEAK: StringName = &"status.weak"
-## 减速：每层令开局移动力 -1（施加给玩家，第二幕泥俑）。
+## 减速：玩家回合移动点和敌人主动移动步数每层 -1。
 const SLOW: StringName = &"status.slow"
-## 缠绕：存在时完全不能移动（施加给玩家，第二幕蜘蛛）。
+## 缠绕：禁止主动位移，拉拽/击退例外。
 const ENTANGLE: StringName = &"status.entangle"
 ## 腐蚀：拥有者获得的护盾 -25%（施加给玩家，第三幕史莱姆/食尸鬼）。
 const CORRODE: StringName = &"status.corrode"
@@ -57,7 +57,8 @@ static func stacks(unit: UnitState, status_id: StringName) -> int:
 
 static func outgoing_damage_flat(unit: UnitState) -> float:
 	return float(stacks(unit, FOCUS)) * FOCUS_DAMAGE_PER_STACK \
-		+ float(stacks(unit, RAGE)) * RAGE_DAMAGE_PER_STACK
+		+ float(stacks(unit, RAGE)) * RAGE_DAMAGE_PER_STACK \
+		+ float(unit.get_resource(&"courage") if unit != null else 0)
 
 
 static func incoming_damage_percent(unit: UnitState) -> float:
@@ -113,14 +114,18 @@ static func is_stack_decaying(status_id: StringName) -> bool:
 	return status_id == POISON or status_id == IGNITE
 
 
-## 对拥有者身上该 id 的每个状态实例减层（最小 0）。
+## 总层数仅减 amount，按稳定实例顺序消耗，避免多个来源额外加快衰减。
 static func decay_stacks(unit: UnitState, status_id: StringName, amount: int = 1) -> void:
 	if unit == null:
 		return
 	for instance_id: int in unit.status_ids():
 		var status := unit.get_status(instance_id)
 		if status != null and status.status_id == status_id:
-			status.stacks = maxi(0, status.stacks - maxi(0, amount))
+			var removed := mini(status.stacks, maxi(0, amount))
+			status.stacks -= removed
+			amount -= removed
+			if amount <= 0:
+				break
 
 
 static func is_stunned(unit: UnitState) -> bool:
@@ -128,7 +133,7 @@ static func is_stunned(unit: UnitState) -> bool:
 
 
 static func slow_penalty(unit: UnitState) -> int:
-	return 1 if stacks(unit, SLOW) > 0 else 0
+	return move_penalty(unit)
 
 
 static func is_negative(status_id: StringName) -> bool:
@@ -143,3 +148,7 @@ static func has_negative_status(unit: UnitState) -> bool:
 		if status != null and not status.is_expired() and is_negative(status.status_id):
 			return true
 	return false
+
+
+static func movement_budget(unit: UnitState, base: int) -> int:
+	return 0 if move_locked(unit) else maxi(0, base - move_penalty(unit))

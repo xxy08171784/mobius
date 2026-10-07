@@ -7,7 +7,7 @@ script = ExtResource("1_unit")
 id = &"unit.enemy.tomb.crossbow"
 base_stats = Dictionary[StringName, int]({
 &"stat.attack": 8,
-&"stat.max_hp": 27,
+&"stat.max_hp": 30,
 &"stat.move": 3,
 &"stat.range": 2
 })

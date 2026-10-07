@@ -7,7 +7,7 @@ script = ExtResource("1_unit")
 id = &"unit.enemy.crypt.ghoul"
 base_stats = Dictionary[StringName, int]({
 &"stat.attack": 7,
-&"stat.max_hp": 40,
+&"stat.max_hp": 58,
 &"stat.move": 3,
 &"stat.range": 1
 })

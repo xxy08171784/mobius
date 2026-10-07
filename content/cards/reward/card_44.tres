@@ -11,6 +11,17 @@ card_category = 4
 visual_key = &"card_44"
 icon_key = &"icon_44"
 display_name = "应激格挡"
-description = "护甲+10，选择1张手牌放入弃牌堆。"
+description = "弃掉1张手牌，获得10护盾。"
+rule_values = {
+"block": 10.0
+}
 base_cost = 1
 tags = Array[StringName]([&"defense"])
+upgrade_overrides = {
+1: {
+"description": "弃掉1张手牌，获得14护盾。",
+"rule_values": {
+"block": 14.0
+}
+}
+}

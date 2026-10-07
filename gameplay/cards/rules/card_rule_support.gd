@@ -119,20 +119,8 @@ static func _estimate_technique_damage(
 		return 0.0
 	var base := 0.0
 	match definition.card_number:
-		13:
-			var direction: Variant = EffectStateAccess.target_direction(_context(-1, target))
-			var moved := 0
-			if direction is Vector2i:
-				moved = _dash_distance(state, state.player_ids()[0] if not state.player_ids().is_empty() else -1, direction)
-			base = 10.0 + float(moved * 5)
-		14:
-			base = 9.0
-		15:
-			base = 5.0
-		16:
-			base = 5.0
-		17:
-			base = 8.0
+		13, 14, 15, 16, 17:
+			base = definition.get_rule_value("damage", card.upgrade_level)
 		_:
 			for raw: Variant in definition.get_effects(card.upgrade_level):
 				var item: Variant = (raw as EffectDef).to_plan_item() if raw is EffectDef else raw

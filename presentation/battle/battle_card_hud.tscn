@@ -1,49 +1,8 @@
 [gd_scene format=3 uid="uid://dl87rvtdlv5uk"]
 
-[ext_resource type="Script" uid="uid://3ioopc1q8doe" path="res://presentation/battle/battle_card_hud.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bq23wykd4eftl" path="res://assets/textures/ui/battle_card_hud_atlas.png" id="2_atlas"]
+[ext_resource type="Script" path="res://presentation/battle/battle_card_hud.gd" id="1"]
 
-[sub_resource type="AtlasTexture" id="Atlas_hand_backdrop"]
-atlas = ExtResource("2_atlas")
-region = Rect2(26, 50, 915, 245)
-
-[sub_resource type="AtlasTexture" id="Atlas_deck_count"]
-atlas = ExtResource("2_atlas")
-region = Rect2(332, 317, 270, 283)
-
-[sub_resource type="AtlasTexture" id="Atlas_discard_count"]
-atlas = ExtResource("2_atlas")
-region = Rect2(607, 316, 300, 285)
-
-[sub_resource type="AtlasTexture" id="Atlas_energy_badge"]
-atlas = ExtResource("2_atlas")
-region = Rect2(947, 926, 275, 274)
-
-[sub_resource type="AtlasTexture" id="Atlas_turn_normal"]
-atlas = ExtResource("2_atlas")
-region = Rect2(931, 323, 302, 280)
-
-[sub_resource type="AtlasTexture" id="Atlas_turn_pressed"]
-atlas = ExtResource("2_atlas")
-region = Rect2(336, 621, 293, 271)
-
-[sub_resource type="AtlasTexture" id="Atlas_turn_hover"]
-atlas = ExtResource("2_atlas")
-region = Rect2(15, 612, 313, 292)
-
-[sub_resource type="AtlasTexture" id="Atlas_turn_disabled"]
-atlas = ExtResource("2_atlas")
-region = Rect2(641, 619, 292, 272)
-
-[sub_resource type="AtlasTexture" id="Atlas_deck_plain"]
-atlas = ExtResource("2_atlas")
-region = Rect2(935, 42, 301, 278)
-
-[sub_resource type="AtlasTexture" id="Atlas_discard_plain"]
-atlas = ExtResource("2_atlas")
-region = Rect2(26, 331, 282, 267)
-
-[node name="BattleCardHud" type="Control" unique_id=1609259028]
+[node name="BattleCardHud" type="Control"]
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -52,135 +11,184 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_script")
-metadata/_edit_vertical_guides_ = [990.0]
+texture_filter = 1
+script = ExtResource("1")
 
-[node name="HandBackdrop" type="TextureRect" parent="." unique_id=1331894727]
-visible = false
-z_index = -20
-layout_mode = 0
-offset_left = 532.0
-offset_top = 828.0
-offset_right = 1447.0
-offset_bottom = 1008.0
-mouse_filter = 2
-texture = SubResource("Atlas_hand_backdrop")
+[node name="EnergyBadge" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_right = 140.0
+offset_top = -158.0
+offset_bottom = -40.0
+mouse_filter = 1
+tooltip_text = "能量：每回合恢复，用于支付卡牌费用"
 expand_mode = 1
+stretch_mode = 5
 
-[node name="DeckPile" type="TextureRect" parent="." unique_id=1853276194]
-layout_mode = 0
-offset_left = 226.0
-offset_top = 820.0
-offset_right = 386.0
-offset_bottom = 988.0
-tooltip_text = "牌库"
-mouse_filter = 2
-texture = SubResource("Atlas_deck_count")
-expand_mode = 1
-metadata/_edit_group_ = true
-
-[node name="DeckCount" type="Label" parent="DeckPile" unique_id=1841925890]
+[node name="CardEnergyCount" type="Label" parent="EnergyBadge"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 97.0
-offset_top = 100.0
-offset_right = 145.0
+offset_left = 0.0
+offset_right = 112.0
+offset_top = 44.0
+offset_bottom = 90.0
+mouse_filter = 2
+text = "3/3"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnergyTitle" type="Label" parent="EnergyBadge"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_right = 112.0
+offset_top = 120.0
 offset_bottom = 148.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
+mouse_filter = 2
+text = "能量"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 24
-text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DiscardPile" type="TextureRect" parent="." unique_id=1626077406]
-layout_mode = 0
-offset_left = 1566.0
-offset_top = 813.0
-offset_right = 1726.0
-offset_bottom = 965.0
-tooltip_text = "弃牌堆"
-mouse_filter = 2
-texture = SubResource("Atlas_discard_count")
+[node name="MovementBadge" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 170.0
+offset_right = 260.0
+offset_top = -162.0
+offset_bottom = -74.0
+mouse_filter = 1
+tooltip_text = "移动力：点击可达空格移动；缠绕时不能主动位移"
 expand_mode = 1
-metadata/_edit_group_ = true
+stretch_mode = 5
 
-[node name="DiscardCount" type="Label" parent="DiscardPile" unique_id=1975011922]
+[node name="MovementCount" type="Label" parent="MovementBadge"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 95.0
-offset_top = 89.0
-offset_right = 141.0
-offset_bottom = 135.0
-theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.03, 0.95)
+offset_left = 0.0
+offset_right = 90.0
+offset_top = 83.0
+offset_bottom = 113.0
+mouse_filter = 2
+text = "2/2"
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 24
-text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EnergyBadge" type="TextureRect" parent="." unique_id=1754290153]
+[node name="MovementTitle" type="Label" parent="MovementBadge"]
+unique_name_in_owner = true
 layout_mode = 0
-offset_left = 21.0
-offset_top = 941.0
-offset_right = 141.0
-offset_bottom = 1061.0
-tooltip_text = "当前能量 / 卡牌费用"
+offset_left = 0.0
+offset_right = 90.0
+offset_top = 119.0
+offset_bottom = 145.0
 mouse_filter = 2
-texture = SubResource("Atlas_energy_badge")
-expand_mode = 1
-metadata/_edit_group_ = true
+text = "移动"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="CardEnergyCount" type="Label" parent="EnergyBadge" unique_id=892181375]
+[node name="DeckPile" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 308.0
+offset_right = 418.0
+offset_top = -150.0
+offset_bottom = -46.0
+mouse_filter = 1
+tooltip_text = "抽牌堆"
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DeckCount" type="Label" parent="DeckPile"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -12.0
+offset_right = 122.0
+offset_top = 106.0
+offset_bottom = 140.0
+mouse_filter = 2
+text = "抽牌堆 0"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiscardPile" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_top = 1.0
+anchor_bottom = 1.0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -394.0
+offset_right = -289.0
+offset_top = -146.0
+offset_bottom = -38.0
+mouse_filter = 1
+tooltip_text = "弃牌堆"
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DiscardCount" type="Label" parent="DiscardPile"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -16.0
+offset_right = 121.0
+offset_top = 110.0
+offset_bottom = 142.0
+mouse_filter = 2
+text = "弃牌堆 0"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndTurnButton" type="TextureButton" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 3
+anchor_left = 1.0
 anchor_right = 1.0
+anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -1.0
-offset_bottom = -1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0.04, 0.12, 0.18, 0.95)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
+offset_left = -186.0
+offset_right = -60.0
+offset_top = -310.0
+offset_bottom = -184.0
+tooltip_text = "结束回合 [E]"
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="EndTurnButton" type="TextureButton" parent="." unique_id=469403461]
+[node name="EndTurnTitle" type="Label" parent="EndTurnButton"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1720.0
-offset_top = 689.0
-offset_right = 1890.0
-offset_bottom = 859.0
-tooltip_text = "结束回合"
-texture_normal = SubResource("Atlas_turn_normal")
-texture_pressed = SubResource("Atlas_turn_pressed")
-texture_hover = SubResource("Atlas_turn_hover")
-texture_disabled = SubResource("Atlas_turn_disabled")
-ignore_texture_size = true
-stretch_mode = 0
-
-[node name="DeckIconPlainTemplate" type="TextureRect" parent="." unique_id=1756180305]
-visible = false
-layout_mode = 0
-offset_left = 1450.0
-offset_top = 600.0
-offset_right = 1600.0
-offset_bottom = 740.0
+offset_left = -33.0
+offset_right = 159.0
+offset_top = 130.0
+offset_bottom = 162.0
 mouse_filter = 2
-texture = SubResource("Atlas_deck_plain")
-expand_mode = 1
-
-[node name="DiscardIconPlainTemplate" type="TextureRect" parent="." unique_id=1784715727]
-visible = false
-layout_mode = 0
-offset_left = 315.0
-offset_top = 610.0
-offset_right = 465.0
-offset_bottom = 752.0
-mouse_filter = 2
-texture = SubResource("Atlas_discard_plain")
-expand_mode = 1
+text = "结束回合 [E]"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0.04, 0.05, 0.07, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1

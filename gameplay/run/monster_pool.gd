@@ -1,16 +1,16 @@
 class_name MonsterPool
 extends RefCounted
 ## 怪物池抽取（纯函数，确定性）。规则（设计 `游戏机制.md`）：
-##   普通战斗：前 2 个战斗节点固定 2 只，其后随机 2~4 只；**有放回**（允许同种重复）。
-##   精英战斗：1 精英（精英池随机）+ 2 小怪（小怪池有放回）。
+##   普通战斗：前 2 个战斗节点固定 2 只，其后随机 2~3 只；**有放回**（允许同种重复）。
+##   精英战斗：1 精英（精英池随机）+ 1 小怪（小怪池有放回）。
 ## battle_index = RunState.next_battle_id（1 起、每进一个战斗节点 +1、已随存档持久化）。
 ## 随机取自调用方传入的 RandomNumberGenerator（encounter 流），本类不用全局随机。
 
 const EARLY_BATTLES := 2   # 前 N 个战斗节点
 const EARLY_COUNT := 2     # 前 N 个战斗节点的固定数量
 const MIN_COUNT := 2       # 随机下限
-const MAX_COUNT := 4       # 随机上限
-const ELITE_MOB_COUNT := 2 # 精英战附带的小怪数量
+const MAX_COUNT := 3       # 随机上限
+const ELITE_MOB_COUNT := 1 # 精英战附带的小怪数量
 
 
 ## 抽取数量：battle_index <= EARLY_BATTLES -> 2；否则 [MIN_COUNT, MAX_COUNT]。
@@ -37,7 +37,7 @@ static func draw_ids(pool: MonsterPoolDef, battle_index: int, rng: RandomNumberG
 	return draw_n(pool, draw_count(battle_index, rng), rng)
 
 
-## 精英战组成：1 精英（精英池随机）+ 2 小怪（小怪池有放回）。
+## 精英战组成：1 精英（精英池随机）+ 1 小怪（小怪池有放回）。
 static func draw_elite_composition(
 	elite_pool: MonsterPoolDef,
 	mob_pool: MonsterPoolDef,
@@ -64,7 +64,7 @@ static func build_encounter(pool: MonsterPoolDef, battle_index: int, rng: Random
 	return _compose(StringName("%s.draw%d" % [String(pool.id), battle_index]), ids, pool, pool.tier)
 
 
-## 合成精英遭遇：1 精英 + 2 小怪（棋盘模板取小怪池）。
+## 合成精英遭遇：1 精英 + 1 小怪（棋盘模板取小怪池）。
 static func build_elite_encounter(
 	elite_pool: MonsterPoolDef,
 	mob_pool: MonsterPoolDef,

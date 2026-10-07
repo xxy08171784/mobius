@@ -11,7 +11,13 @@ card_category = 1
 visual_key = &"card_05"
 icon_key = &"icon_05"
 display_name = "招式领悟"
-description = "[消耗] 选择手牌中的1张招式牌，降低其在本场战斗中的行动点消耗1点。"
-base_cost = 2
+description = "[消耗] 选择1张手牌中的招式，费用-1，持续至战斗结束。"
+base_cost = 1
 tags = Array[StringName]([&"skill"])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"cost": 0.0,
+"description": "[消耗] 选择1张手牌中的招式，费用-1，持续至战斗结束。"
+}
+}

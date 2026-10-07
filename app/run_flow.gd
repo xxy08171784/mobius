@@ -14,7 +14,7 @@ var _save_warning: AcceptDialog = null
 var _hud: Label = null
 
 ## 常驻顶部条（地图/节点/战斗各屏都显示）：遗物按钮 + 查看卡组。
-var _top_bar: HBoxContainer = null
+var _top_bar: RunToolbar = null
 var _relic_box: HBoxContainer = null
 
 ## 非战斗节点屏的当前模式与瞬态数据。
@@ -23,6 +23,7 @@ var _shop_def: ShopDef = null
 var _shop_state: ShopState = null
 var _event_def: EventDef = null
 var _reward_pending: RewardState = null
+var _announced_chapter: String = ""
 
 
 func _ready() -> void:
@@ -72,11 +73,15 @@ func _refresh_top_bar() -> void:
 	if _session != null and _session.state != null:
 		for relic: RelicState in _session.state.relics:
 			var definition: RelicDef = ContentDB.get_relic(relic.relic_id)
+			if definition == null or not definition.enabled:
+				continue
 			var button := Button.new()
 			button.text = CardInfo.display_name_of_relic(definition)
 			button.tooltip_text = CardInfo.relic_tooltip(definition)
 			button.focus_mode = Control.FOCUS_NONE
 			_relic_box.add_child(button)
+	if _session != null:
+		_top_bar.set_gold(_session.state.gold)
 	_place_top_bar()
 
 
@@ -128,6 +133,13 @@ func _show_route() -> void:
 	add_child(route)
 	route.bind_run_session(_session)
 	route.activated.connect(_on_route_node_activated)
+	var chapter_key := "%s:%d" % [_session.state.instance_id, _session.state.act_index]
+	if App.ensure_profile().tutorial_seen and _announced_chapter != chapter_key:
+		_announced_chapter = chapter_key
+		var intro: ChapterIntro = preload("res://presentation/common/chapter_intro.tscn").instantiate()
+		intro.chapter_index = _session.state.act_index
+		add_child(intro)
+		move_child(intro, get_child_count() - 1)
 
 
 ## 地图节点被点击。战斗节点先让玩家选进场格，再进入；其余直接进入并派发。
@@ -151,6 +163,7 @@ func _show_deployment(node_id: int) -> void:
 	_update_hud()
 	var screen: BattleScreen = BATTLE_SCENE.instantiate()
 	screen.demo_autostart = false
+	screen.chapter_index = _session.state.act_index
 	add_child(screen)
 	screen.battle_finished.connect(_on_battle_finished)
 	screen.checkpoint_requested.connect(_session.checkpoint_battle)
@@ -202,6 +215,7 @@ func _show_battle(data: Dictionary) -> void:
 	_update_hud()
 	var screen: BattleScreen = BATTLE_SCENE.instantiate()
 	screen.demo_autostart = false   # 必须在 add_child 前设，避免 _ready 自动开 demo
+	screen.chapter_index = _session.state.act_index
 	add_child(screen)
 	screen.battle_finished.connect(_on_battle_finished)
 	screen.checkpoint_requested.connect(_session.checkpoint_battle)
@@ -290,14 +304,14 @@ func _on_continue_run() -> void:
 func _show_defeat() -> void:
 	AudioService.play_cue(&"defeat")
 	App.end_run()
-	var screen := _make_node_screen("你倒下了", "回环吞没了这次冒险。", show_main_menu)
+	var screen := _make_node_screen("你倒下了", "这次冒险已经结束。", show_main_menu)
 	screen.set_leave_text("返回主菜单")
 
 
 func _show_run_complete() -> void:
 	AudioService.play_cue(&"victory")
 	App.end_run()
-	var screen := _make_node_screen("通关！", "你走出了莫比乌斯之环。", show_main_menu)
+	var screen := _make_node_screen("通关！", "你完成了三章挑战。", show_main_menu)
 	screen.set_leave_text("返回主菜单")
 
 
@@ -388,7 +402,6 @@ func _rebuild_shop() -> void:
 	options.append({"text": "删除一张卡 — %d 金币" % _shop_def.remove_price,
 		"disabled": _shop_state.remove_used or run.gold < _shop_def.remove_price,
 		"data": {"action": "remove_menu"}})
-	options.append({"text": "离开", "data": {"action": "leave"}})
 	screen.set_options(options)
 
 
@@ -409,7 +422,7 @@ func _show_remove_menu() -> void:
 	var options: Array = []
 	for card: RunCardState in run.deck:
 		options.append({
-			"text": _card_name(card.card_id),
+			"text": _card_name(card.card_id, card.upgrade_level),
 			"disabled": run.deck.size() <= 1,
 			"data": {"action": "remove", "uid": card.run_uid},
 		})
@@ -465,11 +478,11 @@ func _show_reward(_kind: StringName) -> void:
 	var options: Array = []
 	for i in _reward_pending.offers.size():
 		options.append({
-			"text": _card_name(_reward_pending.offers[i]),
+			"card_id": _reward_pending.offers[i],
+			"index": i,
 			"data": {"action": "reward_choice", "index": i},
 		})
-	options.append({"text": "放弃", "data": {"action": "reward_skip"}})
-	screen.set_options(options)
+	screen.set_card_options(options)
 
 
 func _on_reward_chose(data: Dictionary) -> void:
@@ -513,10 +526,10 @@ func _on_node_chose(data: Dictionary) -> void:
 			_leave_node()
 
 
-func _card_name(card_id: StringName) -> String:
+func _card_name(card_id: StringName, level: int = 0) -> String:
 	var definition := ContentDB.get_card(card_id)
 	if definition != null and not definition.display_name.is_empty():
-		return definition.display_name
+		return definition.get_display_name(level)
 	return String(card_id)
 
 
@@ -689,6 +702,8 @@ func _show_library(kind: StringName = &"cards") -> void:
 			label = "%s · HP %d" % [enemy.display_name, unit.base_stat(StatSystem.STAT_MAX_HP)]
 		else:
 			var relic := ContentDB.get_relic(id)
+			if not relic.enabled:
+				continue
 			label = "%s\n%s" % [relic.display_name, relic.description]
 		options.append({"text": label, "disabled": true})
 	screen.set_options(options)
@@ -697,7 +712,7 @@ func _show_library(kind: StringName = &"cards") -> void:
 
 
 func _show_help(on_done: Callable) -> void:
-	var screen := _make_node_screen("操作说明", "1. 沿路线选择节点；战斗前从棋盘外圈部署。\n2. 点击手牌选择组合，再点击敌人或格子确定目标。\n3. 攻击与招式可组合；防御单独成组；技能单独出。\n4. 没有选牌时点击空格移动；资源不足时操作会被拒绝。\n5. Q 出牌，E 结束回合，Backspace 清除选择；设置中可改键。\n6. Tab 切换焦点；棋盘方向键移动光标，Enter 确认；数字键选前 9 张手牌。\n7. 手柄方向键导航，A 确认，X 出牌，Y 结束回合，B 清除。\n8. 每次操作后自动保存；暂停菜单可返回主菜单继续。", func() -> void:
+	var screen := _make_node_screen("操作说明", "1. 沿路线选择节点；战斗前从棋盘外圈部署。\n2. 拖动单张手牌到敌人或格子，松手出牌；无目标牌可拖到棋盘内。\n   点击手牌仍选择组合，点击目标后按出牌键确认。\n3. 攻击与招式可组合；防御单独成组；技能单独出。\n4. 没有选牌时点击空格移动；能量不足的牌变暗并禁止选入组合。\n   拖到棋盘外取消；完整卡牌说明在悬浮详情中查看。\n5. Q 出牌，E 结束回合，Backspace 清除选择；设置中可改键。\n6. Tab 切换焦点；棋盘方向键移动光标，Enter 确认；数字键选前 9 张手牌。\n7. 手柄方向键导航，A 确认，X 出牌，Y 结束回合，B 清除。\n8. 每次操作后自动保存；暂停菜单可返回主菜单继续。", func() -> void:
 		App.ensure_profile().tutorial_seen = true
 		SaveService.save_profile(App.current_profile)
 		on_done.call()

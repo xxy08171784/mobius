@@ -12,38 +12,40 @@ static func resolve(
 	combo_metadata: Dictionary,
 	card_defs: Dictionary
 ) -> Dictionary:
+	if definition.requires_active_movement and StatusRules.move_locked(state.get_unit(actor_id)):
+		return _failure(state, rng)
 	var choices := _choice_array(command, card.battle_uid)
 	match definition.card_id:
 		STARTER_CHARGE:
-			return _resolve_starter_charge(state, rng, actor_id, card, target)
+			return _resolve_starter_charge(state, rng, actor_id, card, definition, target)
 		STARTER_RELENTLESS:
-			return _resolve_starter_relentless(state, rng, actor_id, card, target)
+			return _resolve_starter_relentless(state, rng, actor_id, card, definition, target)
 	match definition.card_number:
 		13:
-			return _resolve_dash_slash(state, rng, actor_id, card, target)
+			return _resolve_dash_slash(state, rng, actor_id, card, definition, target)
 		14:
-			return _resolve_kick_backflip(state, rng, actor_id, card, target)
+			return _resolve_kick_backflip(state, rng, actor_id, card, definition, target)
 		15:
-			return _resolve_hook(state, rng, actor_id, card, target)
+			return _resolve_hook(state, rng, actor_id, card, definition, target)
 		16:
-			return _resolve_whirlwind(state, rng, actor_id, card)
+			return _resolve_whirlwind(state, rng, actor_id, card, definition)
 		17:
-			return _resolve_throwing_knife(state, rng, actor_id, card, target)
+			return _resolve_throwing_knife(state, rng, actor_id, card, definition, target)
 		18:
-			return _resolve_blood_sword(state, rng, actor_id, card, target)
+			return _resolve_blood_sword(state, rng, actor_id, card, definition, target)
 		19:
-			return _resolve_demon_blade(state, rng, actor_id, card, target)
+			return _resolve_demon_blade(state, rng, actor_id, card, definition, target)
 		20:
-			return _resolve_damage_status(state, rng, actor_id, card, target, 12.0, StatusRules.STUN)
+			return _resolve_damage_status(state, rng, actor_id, card, definition, target, definition.get_rule_value("damage", card.upgrade_level, 12), StatusRules.STUN)
 		21:
-			var amount := 6.0 + 3.0 * float(maxi(0, command.card_uids.size() - 1))
+			var amount := definition.get_rule_value("damage", card.upgrade_level, 6) + definition.get_rule_value("per_card", card.upgrade_level, 3) * float(combo_metadata.get("other_play_count", 0))
 			return _damage(state, rng, actor_id, card, target, amount)
 		22:
 			var unit := state.get_unit(_target_unit_id(target))
-			var amount := 18.0 if StatusRules.has_negative_status(unit) else 6.0
+			var amount := definition.get_rule_value("damage", card.upgrade_level, 6) * (2.0 if StatusRules.has_negative_status(unit) else 1.0)
 			return _damage(state, rng, actor_id, card, target, amount)
 		23:
-			var result := _damage(state, rng, actor_id, card, target, 15.0)
+			var result := _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 10))
 			if bool(result.get("ok", false)):
 				var out := result["state_out"] as BattleState
 				out.scheduled_effects.append({
@@ -54,28 +56,28 @@ static func resolve(
 				})
 			return result
 		25:
-			return _damage(state, rng, actor_id, card, target, 13.0)
+			return _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 12))
 		26:
 			return _success(state, rng)
 		27:
 			return _resolve_technique_synergy(
-				state, rng, actor_id, card, target, command, card_defs
+				state, rng, actor_id, card, definition, target, command, card_defs
 			)
 		30:
-			var amount := float(_enemies_within(state, actor_id, 2).size() * 5)
+			var amount := float(_enemies_within(state, actor_id, 2).size()) * definition.get_rule_value("per_enemy", card.upgrade_level, 5)
 			return _damage(state, rng, actor_id, card, target, amount)
 		31:
-			return _resolve_damage_status(state, rng, actor_id, card, target, 9.0, StatusRules.SLOW)
+			return _resolve_damage_status(state, rng, actor_id, card, definition, target, definition.get_rule_value("damage", card.upgrade_level, 9), StatusRules.SLOW)
 		33:
-			return _resolve_overflow(state, rng, actor_id, card, target)
+			return _resolve_overflow(state, rng, actor_id, card, definition, target)
 		35:
-			return _resolve_rooted_attack(state, rng, actor_id, card, target)
+			return _resolve_rooted_attack(state, rng, actor_id, card, definition, target)
 		_:
 			return {"handled": false}
 
 
 static func _resolve_dash_slash(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var direction: Variant = EffectStateAccess.target_direction(_context(actor_id, target))
 	if not direction is Vector2i or (direction as Vector2i) == Vector2i.ZERO:
@@ -112,11 +114,11 @@ static func _resolve_dash_slash(
 		))
 	if hit_id < 0:
 		return _success(state, rng, events)
-	var amount := 10.0 + float(moved * 5)
+	var amount := definition.get_rule_value("damage", card.upgrade_level, 10) + float(moved) * definition.get_rule_value("per_step", card.upgrade_level, 4)
 	return _damage(state, rng, actor_id, card, hit_id, amount, events)
 
 static func _resolve_starter_charge(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var target_id := _target_unit_id(target)
 	if target_id < 0:
@@ -143,13 +145,13 @@ static func _resolve_starter_charge(
 				"move_points": maxi(0, displacement.path.size() - 1),
 			}
 		))
-	return _damage(state, rng, actor_id, card, target, 5.0, events)
+	return _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 5), events)
 
 static func _resolve_starter_relentless(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var used_once := bool(card.runtime_data.get("relentless_used_once", false))
-	var amount := 11.0 if used_once else 6.0
+	var amount := definition.get_rule_value("repeat_damage", card.upgrade_level, 11) if used_once else definition.get_rule_value("damage", card.upgrade_level, 6)
 	var result := _damage(state, rng, actor_id, card, target, amount)
 	if bool(result.get("ok", false)):
 		var out := result["state_out"] as BattleState
@@ -159,12 +161,12 @@ static func _resolve_starter_relentless(
 	return result
 
 static func _resolve_kick_backflip(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var target_id := _target_unit_id(target)
 	var target_cell := state.board.get_unit_cell(target_id)
 	var source_cell := state.board.get_unit_cell(actor_id)
-	var result := _damage(state, rng, actor_id, card, target, 9.0)
+	var result := _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 9))
 	if not bool(result.get("ok", false)):
 		return result
 	var out := result["state_out"] as BattleState
@@ -192,7 +194,7 @@ static func _resolve_kick_backflip(
 	return result
 
 static func _resolve_hook(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var target_id := _target_unit_id(target)
 	var before := state.board.get_unit_cell(target_id)
@@ -207,13 +209,13 @@ static func _resolve_hook(
 	var out := pulled["state_out"] as BattleState
 	var after := out.board.get_unit_cell(target_id)
 	var moved := maxi(absi(after.x - before.x), absi(after.y - before.y))
-	var amount := 5.0 * (1.0 + 0.12 * float(moved))
+	var amount := definition.get_rule_value("damage", card.upgrade_level, 6) + definition.get_rule_value("per_step", card.upgrade_level, 2) * float(moved)
 	return _damage(
 		out, pulled["rng_out"], actor_id, card, target, amount, pulled["events"]
 	)
 
 static func _resolve_whirlwind(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef
 ) -> Dictionary:
 	var hits := _enemies_adjacent(state, actor_id)
 	var effects: Array = []
@@ -221,33 +223,33 @@ static func _resolve_whirlwind(
 		effects.append({
 			"type_key": &"damage",
 			"target": enemy_id,
-			"params": {"amount": _damage_amount(card, state.round_index, 5.0)},
+			"params": {"amount": _damage_amount(card, state.round_index, definition.get_rule_value("damage", card.upgrade_level, 5))},
 		})
 	if not hits.is_empty():
 		effects.append({
 			"type_key": &"block",
-			"params": {"amount": hits.size() * 2 + card.block_modifier, "target_mode": &"source"},
+			"params": {"amount": hits.size() * definition.get_rule_value("per_enemy_block", card.upgrade_level, 2) + card.block_modifier, "target_mode": &"source"},
 		})
 	return _apply(state, rng, actor_id, card.battle_uid, null, effects)
 
 static func _resolve_throwing_knife(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	return _apply(
 		state, rng, actor_id, card.battle_uid, target,
 		[
-			{"type_key": &"damage", "params": {"amount": _damage_amount(card, state.round_index, 8.0)}},
+			{"type_key": &"damage", "params": {"amount": _damage_amount(card, state.round_index, definition.get_rule_value("damage", card.upgrade_level, 7))}},
 			{"type_key": &"apply_status", "params": {
-				"status_id": StatusRules.KNIFE_MARK, "stacks": 1, "persistent": true
+				"status_id": StatusRules.POISON, "stacks": int(definition.get_rule_value("poison", card.upgrade_level, 2)), "persistent": true
 			}},
 		]
 	)
 
 static func _resolve_blood_sword(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var target_id := _target_unit_id(target)
-	var result := _damage(state, rng, actor_id, card, target, 9.0)
+	var result := _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 9))
 	if not bool(result.get("ok", false)):
 		return result
 	var out := result["state_out"] as BattleState
@@ -256,6 +258,8 @@ static func _resolve_blood_sword(
 		return result
 	var actor := out.get_unit(actor_id)
 	if actor == null:
+		return result
+	if int(out.run_changes.get("max_hp_delta", 0)) >= 3:
 		return result
 	actor.max_hp += 3
 	out.run_changes["max_hp_delta"] = int(out.run_changes.get("max_hp_delta", 0)) + 3
@@ -266,25 +270,28 @@ static func _resolve_blood_sword(
 	)
 
 static func _resolve_demon_blade(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var target_id := _target_unit_id(target)
 	var before := state.get_unit(target_id)
 	var hp_before := before.hp if before != null else 0
-	var result := _damage(state, rng, actor_id, card, target, 6.0)
+	var result := _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 6))
 	if bool(result.get("ok", false)):
 		var after := (result["state_out"] as BattleState).get_unit(target_id)
 		if after != null and after.hp < hp_before:
 			var out_card := (result["state_out"] as BattleState).deck.get_card(card.battle_uid)
 			if out_card != null:
-				out_card.damage_modifier += 4
+				var growth := int(out_card.runtime_data.get("demon_growth", 0))
+				var gain := mini(int(definition.get_rule_value("growth", card.upgrade_level, 2)), maxi(0, int(definition.get_rule_value("growth_cap", card.upgrade_level, 6)) - growth))
+				out_card.damage_modifier += gain
+				out_card.runtime_data["demon_growth"] = growth + gain
 	return result
 
 static func _resolve_damage_status(
 	state: BattleState,
 	rng: Variant,
 	actor_id: int,
-	card: BattleCardState,
+	card: BattleCardState, definition: CardDef,
 	target: Variant,
 	amount: float,
 	status_id: StringName
@@ -293,7 +300,7 @@ static func _resolve_damage_status(
 		state, rng, actor_id, card.battle_uid, target,
 		[
 			{"type_key": &"damage", "params": {"amount": _damage_amount(card, state.round_index, amount)}},
-			{"type_key": &"apply_status", "params": {"status_id": status_id, "stacks": 1, "duration": 1}},
+			{"type_key": &"apply_status", "params": {"status_id": status_id, "stacks": int(definition.get_rule_value("status_stacks", card.upgrade_level, 1)), "duration": 1}},
 		]
 	)
 
@@ -301,7 +308,7 @@ static func _resolve_technique_synergy(
 	state: BattleState,
 	rng: Variant,
 	actor_id: int,
-	card: BattleCardState,
+	card: BattleCardState, definition: CardDef,
 	target: Variant,
 	command: PlayCardsCommand,
 	card_defs: Dictionary
@@ -317,10 +324,10 @@ static func _resolve_technique_synergy(
 			var other_target: Variant = command.targets[index] if index < command.targets.size() else null
 			technique_value = _estimate_technique_damage(state, other, other_def, other_target)
 			break
-	return _damage(state, rng, actor_id, card, target, technique_value * 1.5)
+	return _damage(state, rng, actor_id, card, target, technique_value * definition.get_rule_value("multiplier", card.upgrade_level, 1.0))
 
 static func _resolve_overflow(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var target_id := _target_unit_id(target)
 	var target_unit := state.get_unit(target_id)
@@ -328,7 +335,7 @@ static func _resolve_overflow(
 		return _failure(state, rng)
 	var hp_before := target_unit.hp
 	var target_cell := state.board.get_unit_cell(target_id)
-	var result := _damage(state, rng, actor_id, card, target, 7.0)
+	var result := _damage(state, rng, actor_id, card, target, definition.get_rule_value("damage", card.upgrade_level, 7))
 	if not bool(result.get("ok", false)):
 		return result
 	var out := result["state_out"] as BattleState
@@ -348,15 +355,15 @@ static func _resolve_overflow(
 			continue
 		var cell := out.board.get_unit_cell(enemy_id)
 		if maxi(absi(cell.x - target_cell.x), absi(cell.y - target_cell.y)) <= 1:
-			effects.append({"type_key": &"damage", "target": enemy_id, "params": {"amount": overflow}})
+			effects.append({"type_key": &"damage", "target": enemy_id, "params": {"amount": overflow, "ignore_status_modifiers": true}})
 	return _apply(out, result["rng_out"], actor_id, card.battle_uid, null, effects, batch)
 
 static func _resolve_rooted_attack(
-	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, target: Variant
+	state: BattleState, rng: Variant, actor_id: int, card: BattleCardState, definition: CardDef, target: Variant
 ) -> Dictionary:
 	var actor := state.get_unit(actor_id)
 	if actor == null:
 		return _failure(state, rng)
 	var move := maxi(0, actor.get_resource(TurnSystem.MOVE_RESOURCE))
 	actor.set_resource(TurnSystem.MOVE_RESOURCE, 0)
-	return _damage(state, rng, actor_id, card, target, float(move * 4))
+	return _damage(state, rng, actor_id, card, target, float(move) * definition.get_rule_value("per_move", card.upgrade_level, 4))

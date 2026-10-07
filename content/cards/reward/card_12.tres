@@ -11,7 +11,13 @@ card_category = 1
 visual_key = &"card_12"
 icon_key = &"icon_12"
 display_name = "复制"
-description = "[消耗] 复制1张手牌（能力类除外）。"
+description = "[消耗] 复制1张手牌（能力牌除外），仅本场战斗有效。"
 base_cost = 2
 tags = Array[StringName]([&"skill"])
 exhaust_on_play = true
+upgrade_overrides = {
+1: {
+"cost": 1.0,
+"description": "[消耗] 复制1张手牌（能力牌除外），仅本场战斗有效。"
+}
+}

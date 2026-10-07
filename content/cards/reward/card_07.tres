@@ -8,10 +8,26 @@
 script = ExtResource("2_4lyy7")
 type_key = &"block"
 params = {
-"amount": 4.0
+"amount": 4.0,
+"target_mode": "source"
 }
 
 [sub_resource type="Resource" id="Resource_4lyy7"]
+script = ExtResource("2_4lyy7")
+type_key = &"draw"
+params = {
+"count": 2.0
+}
+
+[sub_resource type="Resource" id="Resource_uhbo8"]
+script = ExtResource("2_4lyy7")
+type_key = &"block"
+params = {
+"amount": 7.0,
+"target_mode": "source"
+}
+
+[sub_resource type="Resource" id="Resource_hoh8t"]
 script = ExtResource("2_4lyy7")
 type_key = &"draw"
 params = {
@@ -26,7 +42,13 @@ card_category = 1
 visual_key = &"card_07"
 icon_key = &"icon_07"
 display_name = "躁动"
-description = "护甲+4，抽2张牌。"
+description = "获得4护盾，抽2张牌。"
 base_cost = 1
 tags = Array[StringName]([&"skill"])
 effects = Array[ExtResource("1_dle43")]([SubResource("Resource_3bui8"), SubResource("Resource_4lyy7")])
+upgrade_overrides = {
+1: {
+"description": "获得7护盾，抽2张牌。",
+"effects": Array[ExtResource("1_dle43")]([SubResource("Resource_uhbo8"), SubResource("Resource_hoh8t")])
+}
+}

@@ -2,7 +2,7 @@ class_name IsoBoardTheme
 extends RefCounted
 ## 运行时从 normalized/*.png 构建并缓存等轴测 TileSet（无手工编辑器步骤）。
 ## 规格冻结于 docs/battle_board_art_requirements.md；铺法沿用 tile_preview.gd。
-## 若素材目录缺失/为空，get_tileset() 返回 null，BoardView 退化为纯色地板（可无头跑）。
+## 素材缺失时仍返回几何 TileSet，BoardView 退化为可正常拾取的纯色地板。
 
 const TILE_DIR := "res://assets/textures/tiles/act1/normalized"
 
@@ -10,60 +10,50 @@ static var _tileset: TileSet = null
 static var _source_ids: Array[int] = []
 
 
-## 首次调用扫描目录构建 TileSet 并缓存；失败返回 null（不抛错）。
-static func get_tileset() -> TileSet:
-	if _tileset != null:
-		return _tileset
-	var dir := DirAccess.open(TILE_DIR)
-	if dir == null:
-		push_warning("IsoBoardTheme: 打不开 %s（棋盘退回纯色地板）" % TILE_DIR)
-		return null
-	var names: Array[String] = []
-	var seen := {}
-	for fname: String in DirAccess.get_files_at(TILE_DIR):
-		# 源工程目录列出 *.png；导出后 res:// 只列出 *.png.import（源图已被导入数据替换，
-		# 原始 .png 不在包里，但 load("*.png") 仍经 remap 可用）。两种都认，统一成可 load 的路径。
-		if not (fname.ends_with(".png") or fname.ends_with(".png.import")):
-			continue
-		var key := fname.trim_suffix(".import")
-		if not seen.has(key):
-			seen[key] = true
-			names.append(key)
-	names.sort()
-	if names.is_empty():
-		push_warning("IsoBoardTheme: %s 没有地块 PNG" % TILE_DIR)
-		return null
-
+## 地块缺图不能丢失几何；map_to_local/local_to_map 都依赖 TileSet。
+static func create_geometry_tileset() -> TileSet:
 	var ts := TileSet.new()
 	ts.tile_shape = TileSet.TILE_SHAPE_ISOMETRIC
 	ts.tile_layout = TileSet.TILE_LAYOUT_DIAMOND_RIGHT
 	ts.tile_size = Vector2i(IsoGrid.DIAMOND_W, IsoGrid.DIAMOND_H)
+	return ts
 
+
+## 通过资源目录读取原始逻辑名称；导出包内的 PNG 实际存为导入资源。
+static func get_tileset() -> TileSet:
+	if _tileset != null:
+		return _tileset
+	_tileset = create_geometry_tileset()
 	_source_ids.clear()
+	if not DirAccess.dir_exists_absolute(TILE_DIR):
+		push_warning("IsoBoardTheme: 地块目录缺失，使用纯色棋盘")
+		return _tileset
+	var names: Array[String] = []
+	for fname: String in ResourceLoader.list_directory(TILE_DIR):
+		if fname.ends_with(".png"):
+			names.append(fname)
+	names.sort()
+	if names.is_empty():
+		push_warning("IsoBoardTheme: %s 没有地块 PNG" % TILE_DIR)
+		return _tileset
+
 	for fname: String in names:
 		var tex := load(TILE_DIR.path_join(fname)) as Texture2D
-		if tex == null:
-			# 兜底：素材尚未导入时退回原始解码（仅编辑器/开发期）。
-			var img := Image.load_from_file(TILE_DIR.path_join(fname))
-			if img != null:
-				tex = ImageTexture.create_from_image(img)
 		if tex == null:
 			continue
 		var src := TileSetAtlasSource.new()
 		src.texture = tex
 		src.texture_region_size = Vector2i(IsoGrid.CANVAS_W, IsoGrid.CANVAS_H)
 		src.create_tile(Vector2i(0, 0))
-		_source_ids.append(ts.add_source(src))
+		_source_ids.append(_tileset.add_source(src))
 
 	if _source_ids.is_empty():
 		push_warning("IsoBoardTheme: 地块 PNG 均无法加载")
-		return null
-	_tileset = ts
 	return _tileset
 
 
 static func has_tiles() -> bool:
-	return _tileset != null
+	return _tileset != null and not _source_ids.is_empty()
 
 
 static func floor_source_ids() -> Array[int]:

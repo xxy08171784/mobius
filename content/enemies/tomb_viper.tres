@@ -12,9 +12,9 @@ target_policy = 0
 range = 2
 range_shape = 1
 apply_status_id = &"status.poison"
-apply_status_stacks = 4
+apply_status_stacks = 2
 apply_status_duration = 99
-advance_steps = 3
+advance_steps = 2
 
 [sub_resource type="Resource" id="act_bite"]
 script = ExtResource("2_act")
@@ -24,7 +24,7 @@ target_policy = 0
 range = 2
 range_shape = 1
 damage = 7
-advance_steps = 3
+advance_steps = 2
 
 [sub_resource type="Resource" id="behavior"]
 script = ExtResource("1_seq")

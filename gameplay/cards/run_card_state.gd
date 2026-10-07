@@ -4,7 +4,9 @@ extends RefCounted
 
 var run_uid: int = -1
 var card_id: StringName = &""
-var upgrade_level: int = 0
+var upgrade_level: int = 0:
+	set(value):
+		upgrade_level = clampi(value, 0, 1)
 var permanent_modifiers: Dictionary = {}
 
 

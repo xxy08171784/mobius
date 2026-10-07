@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="CardDef" format=3]
 
+[ext_resource type="Script" path="res://gameplay/effects/effect_def.gd" id="1_5jje0"]
 [ext_resource type="Script" path="res://gameplay/cards/card_def.gd" id="1_card"]
 
 [resource]
@@ -7,11 +8,22 @@ script = ExtResource("1_card")
 card_id = &"card.starter.relentless"
 card_category = 3
 icon_key = &"icon_01"
-display_name = "持续打击"
-description = "首次造成6点伤害，之后每次造成11点伤害。"
+display_name = "穷追"
+description = "本场首次造成6伤害，之后造成11伤害。"
+rule_values = {
+"damage": 6.0,
+"repeat_damage": 11.0
+}
 base_cost = 1
 reward_pool_enabled = false
 tags = Array[StringName]([&"attack"])
 content_target_kind = 1
-content_target_team = 2
-
+upgrade_overrides = {
+1: {
+"description": "本场首次造成9伤害，之后造成15伤害。",
+"rule_values": {
+"damage": 9.0,
+"repeat_damage": 15.0
+}
+}
+}

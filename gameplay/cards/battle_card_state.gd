@@ -5,7 +5,9 @@ extends RefCounted
 var battle_uid: int = -1
 var source_run_uid: int = -1
 var card_id: StringName = &""
-var upgrade_level: int = 0
+var upgrade_level: int = 0:
+	set(value):
+		upgrade_level = clampi(value, 0, 1)
 var cost_modifier: int = 0
 ## 战斗内攻击/护甲永久修正；仅活到本场战斗结束。
 var damage_modifier: int = 0
