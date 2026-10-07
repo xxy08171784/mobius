@@ -568,9 +568,8 @@ func _update_hud() -> void:
 		return
 	var run := _session.state
 	_hud.visible = run.flow_phase not in [&"battle", &"deployment"]
-	_hud.text = "第 %d 章 · HP %d/%d · 金币 %d · 卡组 %d 张" % [
-		run.act_index + 1, run.hp, run.max_hp, run.gold, run.deck.size()
-	]
+	# 金币/卡组已由右上角顶栏显示，这里只留章节与 HP，避免左上角与顶栏重复。
+	_hud.text = "第 %d 章 · HP %d/%d" % [run.act_index + 1, run.hp, run.max_hp]
 	_refresh_top_bar()
 
 

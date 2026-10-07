@@ -19,6 +19,7 @@ var _revealed := 0
 var _total_pages := 0
 var _timer: Timer = null
 var _fade: Tween = null
+var _hint: Label = null
 var _done := false
 
 
@@ -29,9 +30,25 @@ func _ready() -> void:
 	_timer = $Timer
 	_timer.wait_time = hold_seconds
 	_timer.timeout.connect(_advance)
+	_hint = $Hint
+	_start_hint()
 	_start_page()
 	_timer.start()
 	AudioService.play_music(&"opening")
+
+
+## 「点击进入下一步」提示：无 reduced_motion 时循环明暗闪烁，否则保持半亮。
+func _start_hint() -> void:
+	if _hint == null:
+		return
+	if SettingsService.reduced_motion:
+		_hint.modulate = Color(1, 1, 1, 0.85)
+		return
+	_hint.modulate = Color(1, 1, 1, 0.3)
+	var blink := create_tween()
+	blink.set_loops()
+	blink.tween_property(_hint, "modulate:a", 1.0, 0.7)
+	blink.tween_property(_hint, "modulate:a", 0.3, 0.7)
 
 
 func _load_images() -> Array[Texture2D]:
