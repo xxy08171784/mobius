@@ -142,6 +142,7 @@ func _run() -> void:
 	input_viewport.queue_free()
 	await get_tree().process_frame
 	print("Battle controls: %d failures" % failures.size())
+	await AudioService.shutdown()
 	get_tree().quit(0 if failures.is_empty() else 1)
 
 func settled() -> void:

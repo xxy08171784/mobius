@@ -217,12 +217,13 @@ func _submit_move(cell: Vector2i) -> void:
 func _submit(command: GameCommand) -> void:
 	_busy = true
 	_presenter.set_busy(true)
+	var before := _session.state
 	var result := _session.submit(command)
 	if result != null and result.accepted:
 		checkpoint_requested.emit(_session.state)
 	elif result != null:
 		feedback_requested.emit(_presenter._error_text(result.error_code))
-	await _presenter.present_result(result)
+	await _presenter.present_result(result, command, before)
 	if result != null and result.accepted:
 		_session.finish_presentation()
 		_selected_cards.clear()

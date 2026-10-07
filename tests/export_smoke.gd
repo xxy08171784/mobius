@@ -20,6 +20,9 @@ func _check(condition: bool, message: String) -> void:
 
 
 func _run() -> void:
+	for key: StringName in AudioCatalog.MUSIC_KEYS + AudioCatalog.CUE_KEYS + [&"campfire"]:
+		var stream: AudioStream = AudioService.catalog.get(String(key))
+		_check(stream != null and stream.get_length() > 0.05, "export loads audio " + String(key))
 	var tiles := IsoBoardTheme.get_tileset()
 	_check(tiles != null and tiles.get_source_count() == 16, "export loads all 16 floor textures")
 	_check_frames(UnitSpriteFrames.get_frames(), "player")
@@ -78,6 +81,7 @@ func _run() -> void:
 	_check(board._clickable(picked), "green deployment tile is clickable")
 	board.cell_pressed.emit(picked)
 	await _snapshot("03-battle")
+	_check(AudioService.music_key == &"battle", "export enters battle music")
 	_check(not battle._deployment_mode and battle._session != null, "picked tile enters battle")
 	for unit_id: int in battle._session.state.board.get_unit_ids():
 		_check(board.unit_view(unit_id)._sprite != null, "battle unit has animated sprite")
@@ -100,6 +104,10 @@ func _run() -> void:
 			break
 	_check(defend_uid >= 0, "seeded export hand includes defense for drop test")
 	if defend_uid >= 0:
+		var played_cues: Array[StringName] = []
+		var collect_cue := func(key: StringName) -> void: played_cues.append(key)
+		AudioService.cue_started.connect(collect_cue)
+		AudioService._last_cue_ms.clear()
 		var player := battle._session.state.get_unit(battle._session.state.alive_player_ids()[0])
 		var old_block := player.block
 		var old_energy := CardSelectionBudget.energy(battle._session.state)
@@ -113,6 +121,8 @@ func _run() -> void:
 		_check(player.block > old_block, "export card drop grants shield")
 		_check(CardSelectionBudget.energy(battle._session.state) == old_energy - 1, "export drop pays energy once")
 		_check(not battle._session.state.deck.hand.has(defend_uid), "export drop consumes card once")
+		_check(played_cues.has(&"card_use") and played_cues.has(&"shield"), "export plays accepted card and shield audio")
+		AudioService.cue_started.disconnect(collect_cue)
 		await _snapshot("03b-card-dropped")
 	var round_before := battle._session.state.round_index
 	battle._battle_input.end_turn()
@@ -156,4 +166,5 @@ func _snapshot(label: String) -> void:
 
 func _finish() -> void:
 	print("Export smoke: %d failures" % _failures.size())
+	await AudioService.shutdown()
 	get_tree().quit(0 if _failures.is_empty() else 1)

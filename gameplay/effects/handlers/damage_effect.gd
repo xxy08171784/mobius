@@ -64,6 +64,7 @@ func apply(
 		{"hp": hp_before, "block": block_before},
 		{"hp": hp_after, "block": block_after},
 		{
+			"card_uid": context.source_card_uid,
 			"amount": final_damage,
 			"raw_amount": raw_amount,
 			"flat_bonus": flat_bonus,

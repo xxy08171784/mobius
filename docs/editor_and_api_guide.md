@@ -57,7 +57,7 @@
 | 商店 | `content/shops/route_shop.tres` | 卡池、数量、卡价、删牌价、治疗价与治疗量 |
 | 遗物 | `content/relics/*.tres` | `RelicDef` 的 trigger_key、trigger_params、priority |
 | 状态 | `content/statuses/*.tres` | 定义图标/显示参数；新状态的实际算法在 StatusRules/StatusTickSystem |
-| 音频 | `content/audio/default_audio.tres` | menu/route/battle 背景音乐，victory/defeat/click 音效；拖入 AudioStream |
+| 音频 | `content/audio/default_audio.tres` | 五段音乐、动作与界面音效、篝火、预留槽位、混音与卡牌音色映射；见 `audio_integration_2026-10-07.md` |
 | 本地化 | `localization/ui.csv` | CSV 第一列为键，zh_CN/en 列为翻译；保存后由 Godot 导入生成 translation |
 | 地图美术 | `presentation/route_map/route_map_skin.gd` | RouteMapSkin 的各章背景、节点图标与连线样式 |
 | 卡面美术 | `assets/textures/cards/frames`、`icons` | `CardVisuals` 根据卡类别和 icon_key 读取 |
@@ -119,8 +119,8 @@
 | `SaveService` | `load_run(include_settled=false)`、`load_profile()`、`has_run()` | 检查主档/备份；has_run 仅对活动局为 true |
 | `SaveService` | `archive_run(run)`、`clear_run()` | 终局归档并清理 current；应用层优先调用 App.end_run |
 | `SettingsService` | `apply()`、`save_settings()`、`set_key(action,keycode)` | changed 信号；保存与改键返回 bool |
-| `AudioService` | `play_music(key)`、`play_cue(key)` | 使用 AudioCatalog；未填音频的槽位静音 |
-| `AudioService` | `play_bgm(stream,volume_db)`、`play_sfx(stream)` | 直接播放；音乐循环，音效 8 声部 |
+| `AudioService` | `enter_scene(key)`、`play_music(key)`、`play_cue(key)` | 场景音乐/环境切换或指定音轨；未填槽位静音 |
+| `AudioService` | `play_bgm(stream,volume_db)`、`play_sfx(stream)` | 直接播放；音乐循环，音效 12 声部；胜负短曲用 `play_jingle` |
 
 ### 整局玩法 RunSession
 

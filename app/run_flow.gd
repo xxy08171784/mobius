@@ -125,7 +125,7 @@ func start_run(character_id: StringName = &"character.hero", seed_text: String =
 
 
 func _show_route() -> void:
-	AudioService.play_music(&"route")
+	AudioService.enter_scene(&"route")
 	_clear_screen()
 	_update_hud()
 	var route: RouteMapScreen = ROUTE_SCENE.instantiate()
@@ -159,6 +159,7 @@ func _on_route_node_activated(node_id: int) -> void:
 ## 开战前选进场格：复用 BattleScreen 的 BoardZone 和 DeploymentUI。
 ## 这里仅负责 RunSession -> BattleScreen 的数据/导航，不再动态创建任何战斗 UI。
 func _show_deployment(node_id: int) -> void:
+	AudioService.enter_scene(&"deployment")
 	_clear_screen()
 	_update_hud()
 	var screen: BattleScreen = BATTLE_SCENE.instantiate()
@@ -185,7 +186,7 @@ func _on_deploy_cell(node_id: int, cell: Vector2i, screen: BattleScreen) -> void
 		# BoardZone 因而不会发生位置或尺寸跳变。
 		if is_instance_valid(screen):
 			_update_hud()
-			AudioService.play_music(&"battle")
+			AudioService.enter_scene(&"battle")
 			screen.configure(transition.get("battle", {}))
 	else:
 		_on_node_entered(transition)
@@ -210,7 +211,7 @@ func _on_node_entered(transition: Dictionary) -> void:
 # ---- 战斗 ----------------------------------------------------------------
 
 func _show_battle(data: Dictionary) -> void:
-	AudioService.play_music(&"battle")
+	AudioService.enter_scene(&"battle")
 	_clear_screen()
 	_update_hud()
 	var screen: BattleScreen = BATTLE_SCENE.instantiate()
@@ -243,7 +244,7 @@ func _on_battle_finished(result: BattleResult) -> void:
 ## 主菜单（游戏入口）。继续按钮仅在存在存档时可用。
 func show_main_menu() -> void:
 	App.recover_ended_run()
-	AudioService.play_music(&"menu")
+	AudioService.enter_scene(&"menu")
 	_session = null
 	_clear_screen()
 	_update_hud()
@@ -257,7 +258,7 @@ func show_main_menu() -> void:
 	menu.history_requested.connect(_show_history)
 	menu.library_requested.connect(_show_library)
 	menu.help_requested.connect(func() -> void: _show_help(show_main_menu))
-	menu.quit.connect(func() -> void: get_tree().quit())
+	menu.quit.connect(AudioService.quit_game)
 
 
 func _show_character_select() -> void:
@@ -302,14 +303,14 @@ func _on_continue_run() -> void:
 
 
 func _show_defeat() -> void:
-	AudioService.play_cue(&"defeat")
+	AudioService.enter_scene(&"defeat")
 	App.end_run()
 	var screen := _make_node_screen("你倒下了", "这次冒险已经结束。", show_main_menu)
 	screen.set_leave_text("返回主菜单")
 
 
 func _show_run_complete() -> void:
-	AudioService.play_cue(&"victory")
+	AudioService.enter_scene(&"victory")
 	App.end_run()
 	var screen := _make_node_screen("通关！", "你完成了三章挑战。", show_main_menu)
 	screen.set_leave_text("返回主菜单")
@@ -318,6 +319,7 @@ func _show_run_complete() -> void:
 # ---- 休息 ----------------------------------------------------------------
 
 func _show_rest() -> void:
+	AudioService.enter_scene(&"rest")
 	var run := _session.state
 	_node_mode = &"rest"
 	var screen := _make_node_screen("休息", "你在营火旁稍作喘息。")
@@ -370,6 +372,7 @@ func _on_rest_chose(data: Dictionary) -> void:
 # ---- 商店 ----------------------------------------------------------------
 
 func _show_shop(transition: Dictionary) -> void:
+	AudioService.enter_scene(&"shop")
 	_node_mode = &"shop"
 	_shop_def = ContentDB.get_shop(StringName(String(transition.get("content_id", ""))))
 	_shop_state = transition.get("shop", null) as ShopState
@@ -433,6 +436,7 @@ func _show_remove_menu() -> void:
 # ---- 事件 ----------------------------------------------------------------
 
 func _show_event(event_id: StringName) -> void:
+	AudioService.enter_scene(&"event")
 	_event_def = ContentDB.get_event(event_id)
 	if _event_def == null:
 		_show_route()
@@ -454,6 +458,7 @@ func _on_event_chose(data: Dictionary) -> void:
 # ---- 宝箱 ----------------------------------------------------------------
 
 func _show_treasure(transition: Dictionary) -> void:
+	AudioService.enter_scene(&"treasure")
 	_node_mode = &"treasure"
 	var relic_id := StringName(String(transition.get("relic_id", "")))
 	var screen := _make_node_screen(
@@ -466,6 +471,7 @@ func _show_treasure(transition: Dictionary) -> void:
 # ---- 奖励（战后三选一） ---------------------------------------------------
 
 func _show_reward(_kind: StringName) -> void:
+	AudioService.enter_scene(&"reward")
 	_reward_pending = _session.generate_reward()
 	if _reward_pending == null or _reward_pending.offers.is_empty():
 		_show_route()
@@ -493,6 +499,8 @@ func _on_reward_chose(data: Dictionary) -> void:
 	elif action == &"reward_skip":
 		result = _session.claim_reward(_reward_pending, -1)
 	if bool(result.get("ok", false)):
+		if action == &"reward_choice":
+			AudioService.play_cue(&"reward")
 		_resume_flow()
 
 
@@ -594,8 +602,13 @@ func _resume_flow() -> void:
 
 
 func _resolve_action(action: StringName, data: Dictionary = {}) -> void:
+	var previous_mode := _node_mode
 	var result := _session.resolve_node_action(action, data)
 	if bool(result.get("ok", false)):
+		if action == &"upgrade":
+			AudioService.play_cue(&"card_upgrade")
+		elif action == &"buy" or (previous_mode == &"treasure" and action == &"leave"):
+			AudioService.play_cue(&"reward")
 		_resume_flow()
 	else:
 		for child: Node in get_children():

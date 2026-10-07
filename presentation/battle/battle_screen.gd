@@ -49,6 +49,8 @@ var _feedback_tween: Tween
 
 func _ready() -> void:
 	set_chapter(chapter_index)
+	$ActionButtons/PlayButton.set_meta("audio_cue", &"confirm")
+	_battle_card_hud.end_turn_button.set_meta("audio_cue", &"confirm")
 	_deployment_back_button.icon = UIArt.texture(&"back")
 	_deployment_back_button.expand_icon = true
 	_deployment_back_button.add_theme_constant_override("icon_max_width", 30)
@@ -199,6 +201,7 @@ func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
 		_battle_input.queue_free()
 
 	_session = BattleSession.new()
+	var fresh := (data["state"] as BattleState).phase == BattleState.Phase.SETUP
 	_session.setup(
 		data["rng"],
 		data["state"],
@@ -211,6 +214,7 @@ func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
 	_card_defs = data["card_defs"]
 
 	_presenter = BattlePresenter.new()
+	_presenter.audio_feedback.default_surface = &"grass" if chapter_index == 0 else &"stone"
 	add_child(_presenter)
 	_presenter.bind(
 		_session,
@@ -228,6 +232,8 @@ func _start_battle(data: Dictionary, remember_initial: bool = false) -> void:
 	_battle_input.feedback_requested.connect(show_feedback)
 	_battle_input.checkpoint_requested.connect(func(state: BattleState) -> void: checkpoint_requested.emit(state))
 	checkpoint_requested.emit(_session.state)
+	if fresh and not _session.state.deck.hand.is_empty():
+		AudioService.play_cue(&"card_draw")
 	if _session.state.is_terminal():
 		_on_battle_input_finished.call_deferred(_session.battle_result())
 

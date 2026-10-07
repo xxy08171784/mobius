@@ -12,6 +12,9 @@ var _target_unit_id: int = -1
 var _busy: bool = false
 var _preview_result: CommandResult = null
 var _animation_queue := BattleAnimationQueue.new()
+var audio_feedback := BattleAudioFeedback.new()
+var _last_audio_version := -1
+var _play_audio := false
 
 
 func _ready() -> void:
@@ -119,7 +122,7 @@ func refresh() -> void:
 		end_turn_button.disabled = not can_input
 
 
-func present_result(result: CommandResult) -> void:
+func present_result(result: CommandResult, command: GameCommand = null, before: BattleState = null) -> void:
 	await get_tree().process_frame
 	if result == null:
 		_append_log("命令没有返回结果。")
@@ -127,13 +130,23 @@ func present_result(result: CommandResult) -> void:
 	if not result.accepted:
 		_append_log("操作被拒绝：%s" % _error_text(result.error_code))
 		return
+	_play_audio = result.state_version != _last_audio_version
+	if _play_audio:
+		_last_audio_version = result.state_version
+		audio_feedback.begin_result(command, before, _session.state)
 	if result.events == null or result.events.size() == 0:
+		if _play_audio:
+			audio_feedback.finish_result()
 		_append_log("动作已执行。")
 		return
 	var settings := get_node_or_null("/root/SettingsService")
 	if settings != null and settings.reduced_motion:
 		for event: GameEvent in result.events.events:
+			if _play_audio:
+				audio_feedback.play_event(event, _session.state, false)
 			_present_event(event)
+		if _play_audio:
+			audio_feedback.finish_result()
 		refresh()
 		return
 	await _animation_queue.play(
@@ -141,6 +154,8 @@ func present_result(result: CommandResult) -> void:
 		Callable(self, "_present_event"),
 		Callable(self, "_present_visual_event")
 	)
+	if _play_audio:
+		audio_feedback.finish_result()
 
 
 func reset_log() -> void:
@@ -183,6 +198,8 @@ func _present_event(event: GameEvent) -> void:
 
 ## 返回 Tween 时，动画队列会等它播完（见 BattleAnimationQueue.play）。
 func _present_visual_event(event: GameEvent) -> Variant:
+	if _play_audio:
+		audio_feedback.play_event(event, _session.state, true)
 	if _board_view == null:
 		return null
 	match event.type_key:
@@ -194,7 +211,11 @@ func _present_visual_event(event: GameEvent) -> Variant:
 			if path.size() < 2:
 				return null
 			# 逐格走：每步 0.35s；步数由 path 长度决定。
-			return _board_view.animate_unit_move(mover, path)
+			var unit := _session.state.get_unit(mover)
+			var step_sound := Callable()
+			if _play_audio and unit != null and unit.is_player():
+				step_sound = func(cell: Vector2i) -> void: audio_feedback.play_step(_session.state, cell)
+			return _board_view.animate_unit_move(mover, path, BoardView.WALK_PER_STEP, step_sound)
 		&"damage":
 			# 致命一击：受击反馈（闪红+后弹）→ 死亡动画（缓缓上升 + 虚化）。
 			if event.target_id >= 0 and int(event.after.get("hp", 1)) <= 0 \

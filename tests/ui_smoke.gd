@@ -110,6 +110,7 @@ func _run() -> void:
 	main.queue_free()
 	await get_tree().process_frame
 	print("UI smoke: %d failures" % _failures.size())
+	await AudioService.shutdown()
 	get_tree().quit(0 if _failures.is_empty() else 1)
 
 

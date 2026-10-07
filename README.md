@@ -15,6 +15,7 @@ Godot 4.7.2、GDScript 制作的回合制棋盘卡牌 Roguelike。正式入口�
 
 ## 文档入口
 
+- [0.4.1 音乐与音效接入、触发位置及混音编辑](docs/audio_integration_2026-10-07.md)。
 - [0.4.0 拖拽出牌、战斗 HUD、素材与编辑入口](docs/battle_controls_ui_2026-10-07.md)。
 
 - [0.3.1 试玩包棋盘与动画加载修复](docs/export_fix_2026-10-07.md)。

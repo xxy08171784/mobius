@@ -28,7 +28,7 @@ def main() -> int:
     env['APPDATA'] = str(output / 'userdata')
     env['XDG_DATA_HOME'] = env['APPDATA']
     Path(env['APPDATA']).mkdir(exist_ok=True)
-    command = [args.godot, '--main-pack', str(package), '-s', str(ROOT / 'tests/export_smoke_runner.gd')]
+    command = [args.godot, '--audio-driver', 'Dummy', '--main-pack', str(package), '-s', str(ROOT / 'tests/export_smoke_runner.gd')]
     command += (['--rendering-method', args.renderer, '--resolution', '1366x768']
                 if args.capture else ['--headless'])
     command += ['--', str(ROOT / 'tests/export_smoke.gd'), str(output / 'screenshots')]
@@ -44,7 +44,7 @@ def main() -> int:
     inspected = result.stdout.replace('ERROR: Failed to read the root certificate store.', '')
     failed = (result.returncode != 0 or 'Export smoke: 0 failures' not in result.stdout
               or re.search(r'SCRIPT ERROR:|Parse Error:|ERROR:|\[FAIL\]', inspected))
-    print(result.stdout if failed else '[PASS] export: textures, sprites, HUD layout, deployment, picking, card drop, next turn, continue')
+    print(result.stdout if failed else '[PASS] export: audio, textures, sprites, HUD layout, deployment, picking, card drop, next turn, continue')
     print(f'Logs and screenshots: {output}')
     return 1 if failed else 0
 

@@ -1,6 +1,58 @@
-[gd_resource type="Resource" script_class="AudioCatalog" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="AudioCatalog" load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://core/audio/audio_catalog.gd" id="1"]
+[ext_resource type="AudioStreamMP3" path="res://assets/audio/music/menu.mp3" id="2"]
+[ext_resource type="AudioStreamMP3" path="res://assets/audio/music/route.mp3" id="3"]
+[ext_resource type="AudioStreamMP3" path="res://assets/audio/music/battle.mp3" id="4"]
+[ext_resource type="AudioStreamMP3" path="res://assets/audio/music/victory.mp3" id="5"]
+[ext_resource type="AudioStreamMP3" path="res://assets/audio/music/defeat.mp3" id="6"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/click.wav" id="7"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/confirm.wav" id="8"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/map_open.wav" id="9"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/map_close.wav" id="10"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/reward.wav" id="11"]
+[ext_resource type="AudioStreamMP3" path="res://assets/audio/ambience/campfire.mp3" id="12"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/step_grass.wav" id="13"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/step_stone.wav" id="14"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/step_water.wav" id="15"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/card_draw.wav" id="16"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/card_use.wav" id="17"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/card_upgrade.wav" id="18"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/shield.wav" id="19"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/player_hurt.wav" id="20"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/punch.wav" id="21"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/sword.wav" id="22"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/sword_heavy.wav" id="23"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/sfx/sword_skill.wav" id="24"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/reserved/dice.wav" id="25"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/reserved/water_appear.wav" id="26"]
+[ext_resource type="AudioStreamWAV" path="res://assets/audio/reserved/poison_trap.wav" id="27"]
 
 [resource]
 script = ExtResource("1")
+menu = ExtResource("2")
+route = ExtResource("3")
+battle = ExtResource("4")
+victory = ExtResource("5")
+defeat = ExtResource("6")
+click = ExtResource("7")
+confirm = ExtResource("8")
+map_open = ExtResource("9")
+map_close = ExtResource("10")
+reward = ExtResource("11")
+campfire = ExtResource("12")
+step_grass = ExtResource("13")
+step_stone = ExtResource("14")
+step_water = ExtResource("15")
+card_draw = ExtResource("16")
+card_use = ExtResource("17")
+card_upgrade = ExtResource("18")
+shield = ExtResource("19")
+player_hurt = ExtResource("20")
+punch = ExtResource("21")
+sword = ExtResource("22")
+sword_heavy = ExtResource("23")
+sword_skill = ExtResource("24")
+dice = ExtResource("25")
+water_appear = ExtResource("26")
+poison_trap = ExtResource("27")

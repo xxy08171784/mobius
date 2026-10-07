@@ -183,7 +183,7 @@ func set_speed_multiplier(value: float) -> void:
 ## 移动表现：沿真实路径逐格走（不拉直线，避免"斜穿格子"的错觉），每步定朝向 + 播行走。
 ## 每格叠一次上跳弧（_hop_arc），落地即格中心 —— 棋子式一跳一跳。path 含起点与终点；
 ## 返回 Tween 供动画队列等待。
-func animate_unit_move(unit_id: int, path: Array[Vector2i], per_step: float = WALK_PER_STEP) -> Tween:
+func animate_unit_move(unit_id: int, path: Array[Vector2i], per_step: float = WALK_PER_STEP, step_sound: Callable = Callable()) -> Tween:
 	var view: UnitView = _units.get(unit_id)
 	if view == null or _tile_layer == null or _tile_layer.tile_set == null or path.size() < 2:
 		return null
@@ -196,6 +196,8 @@ func animate_unit_move(unit_id: int, path: Array[Vector2i], per_step: float = WA
 			_hop_arc.bind(view, IsoGrid.center_of(_tile_layer, path[i - 1]), IsoGrid.center_of(_tile_layer, path[i])),
 			0.0, 1.0, step_time
 		)
+		if step_sound.is_valid():
+			tween.tween_callback(step_sound.bind(path[i]))
 	tween.tween_callback(view.play_idle)
 	return tween
 

@@ -32,6 +32,7 @@ def main() -> int:
         ("rules", ["--headless", "-s", "res://tests/run_all.gd"]),
         ("ui", ["--headless", "res://tests/ui_smoke.tscn"]),
         ("controls", ["--headless", "res://tests/battle_controls_smoke.tscn"]),
+        ("audio", ["--headless", "res://tests/audio_smoke.tscn"]),
         ("startup", ["--headless", "--quit-after", "4"]),
     ]
     if args.capture:
@@ -41,7 +42,7 @@ def main() -> int:
                                              "res://tests/battle_controls_smoke.tscn", "--", "--capture"]))
     for name, options in commands:
         try:
-            result = subprocess.run([executable, "--path", str(ROOT), *options], cwd=ROOT,
+            result = subprocess.run([executable, "--audio-driver", "Dummy", "--path", str(ROOT), *options], cwd=ROOT,
                                     env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                     encoding="utf-8", errors="replace", timeout=300)
         except (OSError, subprocess.TimeoutExpired) as exc:
@@ -56,7 +57,7 @@ def main() -> int:
             print(result.stdout)
             return 1
         for line in result.stdout.splitlines():
-            if line.startswith(("Rule tests:", "Content validation:", "UI smoke:", "Battle controls:")):
+            if line.startswith(("Rule tests:", "Content validation:", "UI smoke:", "Battle controls:", "Audio smoke:")):
                 print(line)
     print(f"Logs: {output}")
     return 0

@@ -63,6 +63,7 @@ func set_selected(selected: bool) -> void:
 
 func _on_pressed() -> void:
 	if not _drag_started:
+		AudioService.play_cue(&"click")
 		card_pressed.emit(card_uid)
 
 
