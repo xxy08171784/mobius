@@ -19,9 +19,16 @@ static func get_tileset() -> TileSet:
 		push_warning("IsoBoardTheme: 打不开 %s（棋盘退回纯色地板）" % TILE_DIR)
 		return null
 	var names: Array[String] = []
+	var seen := {}
 	for fname: String in DirAccess.get_files_at(TILE_DIR):
-		if fname.ends_with(".png"):
-			names.append(fname)
+		# 源工程目录列出 *.png；导出后 res:// 只列出 *.png.import（源图已被导入数据替换，
+		# 原始 .png 不在包里，但 load("*.png") 仍经 remap 可用）。两种都认，统一成可 load 的路径。
+		if not (fname.ends_with(".png") or fname.ends_with(".png.import")):
+			continue
+		var key := fname.trim_suffix(".import")
+		if not seen.has(key):
+			seen[key] = true
+			names.append(key)
 	names.sort()
 	if names.is_empty():
 		push_warning("IsoBoardTheme: %s 没有地块 PNG" % TILE_DIR)

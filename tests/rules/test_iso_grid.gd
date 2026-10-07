@@ -1,6 +1,6 @@
 extends "res://tests/test_case.gd"
 ## IsoGrid 等轴测几何测试。run() -> Array[String]，空 = 全过。
-## 覆盖：冻结尺寸常量 / 菱形几何 / cell↔局部坐标往返 / 与 map_to_local 一致 / 包围盒 / 自适应缩放。
+## 覆盖：冻结尺寸常量 / 菱形几何 / cell↔局部坐标往返 / 与 map_to_local 一致 / 无 TileSet 兜底 / 包围盒 / 自适应缩放。
 ## 只用最小 TileSet（设 shape/layout/tile_size），不加载贴图——纯几何，可无头跑。
 
 
@@ -10,6 +10,7 @@ func run() -> Array[String]:
 	_test_diamond_geometry()
 	_test_round_trip()
 	_test_center_matches_map_to_local()
+	_test_geometry_without_tileset()
 	_test_bounds_cover_all_centers()
 	_test_fit_scale()
 	return failures()
@@ -61,6 +62,25 @@ func _test_center_matches_map_to_local() -> void:
 	var expected := layer.map_to_local(cell) + Vector2(IsoGrid.CENTER_OFFSET)
 	assert_equal(IsoGrid.center_of(layer, cell), expected, "中心 = map_to_local + CENTER_OFFSET")
 	layer.free()
+
+
+func _test_geometry_without_tileset() -> void:
+	# 素材缺失时 tile_set 为 null：map_to_local 会报错并返回零向量，IsoGrid 必须改用常量公式，
+	# 使几何与有 tile_set 时完全一致（否则纯色地板/单位会全部堆到原点）。
+	var bare := TileMapLayer.new()  # 不设 tile_set
+	var reference := _make_layer()
+	var bad := 0
+	for row in range(8):
+		for col in range(8):
+			var cell := Vector2i(col, row)
+			if IsoGrid.center_of(bare, cell) != IsoGrid.center_of(reference, cell):
+				bad += 1
+			if IsoGrid.cell_at(bare, IsoGrid.center_of(bare, cell)) != cell:
+				bad += 1
+	assert_equal(bad, 0, "无 TileSet 时几何与有 TileSet 一致且可往返")
+	assert_true(IsoGrid.board_bounds(bare, 8, 8).size.x > 0.0, "无 TileSet 时包围盒有效")
+	bare.free()
+	reference.free()
 
 
 func _test_bounds_cover_all_centers() -> void:

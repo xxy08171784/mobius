@@ -93,16 +93,23 @@ static func _load_directional_frames(dir: String, prefix: String) -> Array[Textu
 	return out
 
 
+## 列出某朝向的 `<prefix>*.png`，按文件名排序。
+## 源工程目录列出 *.png；导出后 res:// 只列出 *.png.import（源图被导入数据替换，原始 .png
+## 不在包里，但 load("*.png") 仍经 remap 可用）。故先去掉 .import 后缀、再按路径去重。
 static func _list_pngs(dir: String, prefix: String) -> Array[String]:
 	var names: Array[String] = []
+	var seen := {}
 	var da := DirAccess.open(dir)
 	if da == null:
 		return names
 	da.list_dir_begin()
 	var name := da.get_next()
 	while name != "":
-		if not da.current_is_dir() and name.begins_with(prefix) and name.ends_with(".png"):
-			names.append(name)
+		if not da.current_is_dir():
+			var key := name.trim_suffix(".import")
+			if key.begins_with(prefix) and key.ends_with(".png") and not seen.has(key):
+				seen[key] = true
+				names.append(key)
 		name = da.get_next()
 	da.list_dir_end()
 	names.sort()

@@ -26,13 +26,38 @@ const CENTER_OFFSET := Vector2i(0, -30)
 
 
 ## cell → 该格菱形中心的 tile-layer 局部坐标。
+## tile_set 为空（素材缺失，见 IsoBoardTheme）时 map_to_local 会报错并返回零向量，
+## 此时改用等价的常量公式 _local_of，保证无贴图时几何仍正确（不再全部堆到原点）。
 static func center_of(tile_layer: TileMapLayer, cell: Vector2i) -> Vector2:
+	if tile_layer == null or tile_layer.tile_set == null:
+		return _local_of(cell) + Vector2(CENTER_OFFSET)
 	return tile_layer.map_to_local(cell) + Vector2(CENTER_OFFSET)
 
 
 ## tile-layer 局部坐标 → cell（center_of 的逆）。
 static func cell_at(tile_layer: TileMapLayer, local_pos: Vector2) -> Vector2i:
+	if tile_layer == null or tile_layer.tile_set == null:
+		return _cell_of(local_pos - Vector2(CENTER_OFFSET))
 	return tile_layer.local_to_map(local_pos - Vector2(CENTER_OFFSET))
+
+
+## 等轴测 cell → 局部坐标的常量公式；等价于 TileSet(TILE_SHAPE_ISOMETRIC, DIAMOND_RIGHT)
+## 且 tile_size == (DIAMOND_W, DIAMOND_H) 时 TileMapLayer.map_to_local 的结果。
+## 仅用于 tile_set 缺失、map_to_local 不可用时；与 map_to_local 的一致性由 test_iso_grid 对拍。
+static func _local_of(cell: Vector2i) -> Vector2:
+	var half_w := float(DIAMOND_W) * 0.5
+	var half_h := float(DIAMOND_H) * 0.5
+	return Vector2(
+		half_w * (1.0 + float(cell.x) + float(cell.y)),
+		half_h * (1.0 - float(cell.x) + float(cell.y))
+	)
+
+
+## _local_of 的逆（对格中心精确往返）。
+static func _cell_of(local_pos: Vector2) -> Vector2i:
+	var u := local_pos.x / (float(DIAMOND_W) * 0.5) - 1.0
+	var v := local_pos.y / (float(DIAMOND_H) * 0.5) - 1.0
+	return Vector2i(roundi((u - v) * 0.5), roundi((u + v) * 0.5))
 
 
 ## 以 center 为中心的菱形四角（闭合，首尾同点），供填充/描边绘制。

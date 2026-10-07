@@ -6,3 +6,6 @@
 builds/
 __pycache__/
 *.pyc
+
+# 导出产物（Godot 4.7 导出路径改到 game/）
+game/
